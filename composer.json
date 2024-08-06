@@ -12,5 +12,14 @@
             "email": "dev@adeliom.com"
         }
     ],
-    "require": {}
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:agence-adeliom/horizon-tools.git"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "agence-adeliom/horizon-tools": "^0.0.8"
+    }
 }
