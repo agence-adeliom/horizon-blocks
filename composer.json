@@ -1,0 +1,16 @@
+{
+    "name": "agence-adeliom/horizon-blocks",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Adeliom\\HorizonBlocks\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Agence Adeliom",
+            "email": "dev@adeliom.com"
+        }
+    ],
+    "require": {}
+}
