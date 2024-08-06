@@ -17,8 +17,6 @@ class ImportBlock extends Command
 	public function handle(): void
 	{
 		$classes = ClassService::getAllImportableBlockClasses();
-		$paths = array_keys($classes);
-		$names = array_values($classes);
 		$shortNames = [];
 		$fullNames = [];
 
@@ -26,6 +24,11 @@ class ImportBlock extends Command
 			$title = null;
 			$fullNames[$importableBlock] = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', '', $importableBlock);
 			$shortNames[$importableBlock] = $importableBlock::$title;
+		}
+
+		if (empty($shortNames)) {
+			$this->error('No block to import!');
+			return;
 		}
 
 		if ($index = $this->choice('Which block would you like to import?', array_values($shortNames), 0)) {
