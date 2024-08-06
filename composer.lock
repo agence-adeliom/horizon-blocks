@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa8f31dc14c281e3cf8d352fdd673c75",
+    "content-hash": "ce068f984fa815bb18de146086b01d48",
     "packages": [
         {
             "name": "agence-adeliom/horizon-tools",
-            "version": "0.0.8.1",
+            "version": "0.0.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/agence-adeliom/horizon-tools.git",
-                "reference": "c9374c34089ca9d7ec1653d5368462b45562ed6d"
+                "reference": "42e52baef22e4bcd0065cccda32d8a4d36b7f62c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/c9374c34089ca9d7ec1653d5368462b45562ed6d",
-                "reference": "c9374c34089ca9d7ec1653d5368462b45562ed6d",
+                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/42e52baef22e4bcd0065cccda32d8a4d36b7f62c",
+                "reference": "42e52baef22e4bcd0065cccda32d8a4d36b7f62c",
                 "shasum": ""
             },
             "require": {
@@ -44,10 +44,10 @@
             ],
             "description": "Tools for Sage WordPress Theme, made by the Adeliom Agency",
             "support": {
-                "source": "https://github.com/agence-adeliom/horizon-tools/tree/0.0.8.1",
+                "source": "https://github.com/agence-adeliom/horizon-tools/tree/0.0.8.3",
                 "issues": "https://github.com/agence-adeliom/horizon-tools/issues"
             },
-            "time": "2024-08-06T09:05:19+00:00"
+            "time": "2024-08-06T10:44:55+00:00"
         },
         {
             "name": "brick/math",
