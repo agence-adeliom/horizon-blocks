@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce068f984fa815bb18de146086b01d48",
+    "content-hash": "c415a66cd5c9a90907b97f6991b41d8f",
     "packages": [
         {
             "name": "agence-adeliom/horizon-tools",
-            "version": "0.0.8.3",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/agence-adeliom/horizon-tools.git",
-                "reference": "42e52baef22e4bcd0065cccda32d8a4d36b7f62c"
+                "reference": "4a939833dd54f203e767d613f4efa6fa1f32af43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/42e52baef22e4bcd0065cccda32d8a4d36b7f62c",
-                "reference": "42e52baef22e4bcd0065cccda32d8a4d36b7f62c",
+                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/4a939833dd54f203e767d613f4efa6fa1f32af43",
+                "reference": "4a939833dd54f203e767d613f4efa6fa1f32af43",
                 "shasum": ""
             },
             "require": {
@@ -27,6 +27,7 @@
                 "roots/acorn": "^4.0",
                 "vinkla/extended-acf": "^14.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -44,10 +45,10 @@
             ],
             "description": "Tools for Sage WordPress Theme, made by the Adeliom Agency",
             "support": {
-                "source": "https://github.com/agence-adeliom/horizon-tools/tree/0.0.8.3",
+                "source": "https://github.com/agence-adeliom/horizon-tools/tree/0.0.8.10",
                 "issues": "https://github.com/agence-adeliom/horizon-tools/issues"
             },
-            "time": "2024-08-06T10:44:55+00:00"
+            "time": "2024-08-07T10:14:37+00:00"
         },
         {
             "name": "brick/math",
@@ -1004,7 +1005,7 @@
         },
         {
             "name": "illuminate/bus",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/bus.git",
@@ -1057,7 +1058,7 @@
         },
         {
             "name": "illuminate/cache",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/cache.git",
@@ -1119,7 +1120,7 @@
         },
         {
             "name": "illuminate/collections",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
@@ -1174,7 +1175,7 @@
         },
         {
             "name": "illuminate/conditionable",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/conditionable.git",
@@ -1220,7 +1221,7 @@
         },
         {
             "name": "illuminate/config",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/config.git",
@@ -1268,7 +1269,7 @@
         },
         {
             "name": "illuminate/console",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/console.git",
@@ -1333,7 +1334,7 @@
         },
         {
             "name": "illuminate/container",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
@@ -1384,7 +1385,7 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -1432,16 +1433,16 @@
         },
         {
             "name": "illuminate/database",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "ba9a3fe3a834c47f7a0aef1697816c3063cb692e"
+                "reference": "ff0e1ec24f85909aec26f3c2324b7633c0d82600"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/ba9a3fe3a834c47f7a0aef1697816c3063cb692e",
-                "reference": "ba9a3fe3a834c47f7a0aef1697816c3063cb692e",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/ff0e1ec24f85909aec26f3c2324b7633c0d82600",
+                "reference": "ff0e1ec24f85909aec26f3c2324b7633c0d82600",
                 "shasum": ""
             },
             "require": {
@@ -1501,11 +1502,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-30T06:53:27+00:00"
+            "time": "2024-08-01T13:19:52+00:00"
         },
         {
             "name": "illuminate/encryption",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/encryption.git",
@@ -1556,7 +1557,7 @@
         },
         {
             "name": "illuminate/events",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/events.git",
@@ -1611,7 +1612,7 @@
         },
         {
             "name": "illuminate/filesystem",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/filesystem.git",
@@ -1678,16 +1679,16 @@
         },
         {
             "name": "illuminate/http",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/http.git",
-                "reference": "44b22f724338919dd7015830c2b40b15b1a84330"
+                "reference": "bde2f993d77a8a10027376a18c90d1ba7ef0f214"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/http/zipball/44b22f724338919dd7015830c2b40b15b1a84330",
-                "reference": "44b22f724338919dd7015830c2b40b15b1a84330",
+                "url": "https://api.github.com/repos/illuminate/http/zipball/bde2f993d77a8a10027376a18c90d1ba7ef0f214",
+                "reference": "bde2f993d77a8a10027376a18c90d1ba7ef0f214",
                 "shasum": ""
             },
             "require": {
@@ -1734,11 +1735,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-29T06:54:36+00:00"
+            "time": "2024-08-05T17:20:47+00:00"
         },
         {
             "name": "illuminate/log",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/log.git",
@@ -1787,7 +1788,7 @@
         },
         {
             "name": "illuminate/macroable",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -1833,7 +1834,7 @@
         },
         {
             "name": "illuminate/pipeline",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pipeline.git",
@@ -1881,7 +1882,7 @@
         },
         {
             "name": "illuminate/queue",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/queue.git",
@@ -1948,7 +1949,7 @@
         },
         {
             "name": "illuminate/routing",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/routing.git",
@@ -2012,7 +2013,7 @@
         },
         {
             "name": "illuminate/session",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/session.git",
@@ -2069,7 +2070,7 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
@@ -2140,7 +2141,7 @@
         },
         {
             "name": "illuminate/translation",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/translation.git",
@@ -2191,7 +2192,7 @@
         },
         {
             "name": "illuminate/validation",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/validation.git",
@@ -2252,7 +2253,7 @@
         },
         {
             "name": "illuminate/view",
-            "version": "v10.48.18",
+            "version": "v10.48.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/view.git",
@@ -2364,26 +2365,27 @@
         },
         {
             "name": "laravel/serializable-closure",
-            "version": "v1.3.3",
+            "version": "v1.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/serializable-closure.git",
-                "reference": "3dbf8a8e914634c48d389c1234552666b3d43754"
+                "reference": "61b87392d986dc49ad5ef64e75b1ff5fee24ef81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/3dbf8a8e914634c48d389c1234552666b3d43754",
-                "reference": "3dbf8a8e914634c48d389c1234552666b3d43754",
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/61b87392d986dc49ad5ef64e75b1ff5fee24ef81",
+                "reference": "61b87392d986dc49ad5ef64e75b1ff5fee24ef81",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.3|^8.0"
             },
             "require-dev": {
-                "nesbot/carbon": "^2.61",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
+                "nesbot/carbon": "^2.61|^3.0",
                 "pestphp/pest": "^1.21.3",
                 "phpstan/phpstan": "^1.8.2",
-                "symfony/var-dumper": "^5.4.11"
+                "symfony/var-dumper": "^5.4.11|^6.2.0|^7.0.0"
             },
             "type": "library",
             "extra": {
@@ -2420,7 +2422,7 @@
                 "issues": "https://github.com/laravel/serializable-closure/issues",
                 "source": "https://github.com/laravel/serializable-closure"
             },
-            "time": "2023-11-08T14:08:06+00:00"
+            "time": "2024-08-02T07:48:17+00:00"
         },
         {
             "name": "league/flysystem",
@@ -6012,7 +6014,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "agence-adeliom/horizon-tools": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
