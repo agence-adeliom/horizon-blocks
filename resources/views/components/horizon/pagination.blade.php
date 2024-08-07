@@ -62,7 +62,7 @@
         }
     @endphp
 
-    @if(!empty($displayValues))
+    @if(!empty($displayValues) && $pages > 1)
         @if($hasButtons)
             @if($current > 1)
                 <a @if($handle) wire:click="{{ $handle }}({{ $current - 1 }})" @endif>{{ $previousLabel }}</a>
