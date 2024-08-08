@@ -3,6 +3,9 @@
         $nextLabel = $nextLabel ?? 'Suivant';
         $previousLabel = $previousLabel ?? 'Précédent';
 
+		$activeClass = 'cursor-pointer';
+		$inactiveClass = '';
+
         $displayAround = 5;
         $halfAround = ($displayAround - 1) / 2;
         $separator ='...';
@@ -65,17 +68,19 @@
     @if(!empty($displayValues) && $pages > 1)
         @if($hasButtons)
             @if($current > 1)
-                <a @if($handle) wire:click="{{ $handle }}({{ $current - 1 }})" @endif>{{ $previousLabel }}</a>
+                <a class="{{ $activeClass }}"
+                   @if($handle) wire:click="{{ $handle }}({{ $current - 1 }})" @endif>{{ $previousLabel }}</a>
             @else
-                <span>{{ $previousLabel }}</span>
+                <span class="{{ $inactiveClass }}">{{ $previousLabel }}</span>
             @endif
         @endif
 
         @foreach($displayValues as $page)
             @if($page == $current)
-                <span>{{ $page }}</span>
+                <span class="{{ $inactiveClass }}">{{ $page }}</span>
             @elseif($page != $separator)
-                <a @if($handle) wire:click="{{ $handle }}({{ $page }})" @endif>{{ $page }}</a>
+                <a class="{{ $activeClass }}"
+                   @if($handle) wire:click="{{ $handle }}({{ $page }})" @endif>{{ $page }}</a>
             @else
                 <span>{{ $separator }}</span>
             @endif
@@ -83,9 +88,10 @@
 
         @if($hasButtons)
             @if($current < $pages)
-                <a @if($handle) wire:click="{{ $handle }}({{ $current + 1 }})" @endif>{{ $nextLabel }}</a>
+                <a class="{{ $activeClass }}"
+                   @if($handle) wire:click="{{ $handle }}({{ $current + 1 }})" @endif>{{ $nextLabel }}</a>
             @else
-                <span>{{ $nextLabel }}</span>
+                <span class="{{ $inactiveClass }}">{{ $nextLabel }}</span>
             @endif
         @endif
     @endif
