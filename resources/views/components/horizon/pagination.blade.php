@@ -66,33 +66,35 @@
     @endphp
 
     @if(!empty($displayValues) && $pages > 1)
-        @if($hasButtons)
-            @if($current > 1)
-                <a class="{{ $activeClass }}"
-                   @if($handle) wire:click="{{ $handle }}({{ $current - 1 }})" @endif>{{ $previousLabel }}</a>
-            @else
-                <span class="{{ $inactiveClass }}">{{ $previousLabel }}</span>
+        <div>
+            @if($hasButtons)
+                @if($current > 1)
+                    <a class="{{ $activeClass }}"
+                       @if($handle) wire:click="{{ $handle }}({{ $current - 1 }})" @endif>{{ $previousLabel }}</a>
+                @else
+                    <span class="{{ $inactiveClass }}">{{ $previousLabel }}</span>
+                @endif
             @endif
-        @endif
 
-        @foreach($displayValues as $page)
-            @if($page == $current)
-                <span class="{{ $inactiveClass }}">{{ $page }}</span>
-            @elseif($page != $separator)
-                <a class="{{ $activeClass }}"
-                   @if($handle) wire:click="{{ $handle }}({{ $page }})" @endif>{{ $page }}</a>
-            @else
-                <span>{{ $separator }}</span>
-            @endif
-        @endforeach
+            @foreach($displayValues as $page)
+                @if($page == $current)
+                    <span class="{{ $inactiveClass }}">{{ $page }}</span>
+                @elseif($page != $separator)
+                    <a class="{{ $activeClass }}"
+                       @if($handle) wire:click="{{ $handle }}({{ $page }})" @endif>{{ $page }}</a>
+                @else
+                    <span>{{ $separator }}</span>
+                @endif
+            @endforeach
 
-        @if($hasButtons)
-            @if($current < $pages)
-                <a class="{{ $activeClass }}"
-                   @if($handle) wire:click="{{ $handle }}({{ $current + 1 }})" @endif>{{ $nextLabel }}</a>
-            @else
-                <span class="{{ $inactiveClass }}">{{ $nextLabel }}</span>
+            @if($hasButtons)
+                @if($current < $pages)
+                    <a class="{{ $activeClass }}"
+                       @if($handle) wire:click="{{ $handle }}({{ $current + 1 }})" @endif>{{ $nextLabel }}</a>
+                @else
+                    <span class="{{ $inactiveClass }}">{{ $nextLabel }}</span>
+                @endif
             @endif
-        @endif
+        </div>
     @endif
 @endif
