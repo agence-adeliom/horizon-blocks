@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Console\Commands;
 
+use Adeliom\HorizonBlocks\Services\HorizonBlockService;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Services\ClassService;
 use Adeliom\HorizonTools\Services\CommandService;
@@ -16,14 +17,20 @@ class ImportBlock extends Command
 
 	public function handle(): void
 	{
-		$classes = ClassService::getAllImportableBlockClasses();
+		$availableBlocks = HorizonBlockService::getAvailableBlocks();
+		$classes = array_keys($availableBlocks);
 		$shortNames = [];
 		$fullNames = [];
 
-		foreach (ClassService::getAllImportableBlockClasses() as $path => $importableBlock) {
-			$title = null;
-			$fullNames[$importableBlock] = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', '', $importableBlock);
-			$shortNames[$importableBlock] = $importableBlock::$title;
+		foreach ($classes as $className) {
+			$blockExtraData = $availableBlocks[$className];
+
+			$fullNames[$className] = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', '', $className);
+			$shortNames[$className] = $className::$title;
+
+			if (isset($blockExtraData[HorizonBlockService::REQUIRES_LIVEWIRE])) {
+				$shortNames[$className] .= ' (Requires Livewire)';
+			}
 		}
 
 		if (empty($shortNames)) {
@@ -33,71 +40,126 @@ class ImportBlock extends Command
 
 		if ($index = $this->choice('Which block would you like to import?', array_values($shortNames), 0)) {
 			$namespaceToImport = array_search($index, $shortNames);
-			$pathToFile = array_search($namespaceToImport, $classes);
-			$index = $fullNames[$namespaceToImport];
+			$blockExtraData = $availableBlocks[$namespaceToImport];
 
-			if ($namespaceToImport && $pathToFile) {
-				$blockContent = file_get_contents($pathToFile);
+			$pathToBlockControllerFile = ClassService::getFilePathFromClassName($namespaceToImport);
 
-				$blockContent = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', 'App\\Blocks\\', $blockContent);
+			if (file_exists($pathToBlockControllerFile)) {
+				$shortName = $fullNames[$namespaceToImport];
 
-				$structure = CommandService::getFolderStructure(str_replace('\\', '/', $index));
+				$structure = CommandService::getFolderStructure(str_replace('\\', '/', $shortName));
 				$folders = $structure['folders'];
 				$className = $structure['class'];
 
-				$path = get_template_directory() . '/app/Blocks/';
-				$rootPath = '/resources/views/blocks/';
-				$templatePath = get_template_directory() . $rootPath;
-				$filepath = $path . $structure['path'];
+				$this->createBlockBladeFile(className: $className, folders: $folders);
+				$this->createBlockControllerFile(className: $className, folders: $folders, pathToBlockControllerFile: $pathToBlockControllerFile, structure: $structure);
 
-				$slug = ClassService::slugifyClassName($className);
-
-				if (str_ends_with($slug, '-block')) {
-					$slug = substr($slug, 0, -6);
-				}
-
-				$folderPath = '';
-
-				if (!file_exists($templatePath)) {
-					mkdir($templatePath);
-				}
-
-				foreach ($folders as $folder) {
-					$templatePath .= strtolower($folder) . '/';
-					$folderPath .= strtolower($folder) . '/';
-
-					if (!file_exists($templatePath)) {
-						mkdir($templatePath);
+				if (isset($blockExtraData[HorizonBlockService::LIVEWIRE_COMPONENTS])) {
+					foreach ($blockExtraData[HorizonBlockService::LIVEWIRE_COMPONENTS] as $livewireClass) {
+						$this->createLivewireTemplate(className: $livewireClass);
+						$this->createLivewireComponent(className: $livewireClass);
 					}
-				}
-
-				if (file_exists($templatePath . $slug . '.blade.php')) {
-					$this->error('Block already exists!');
-					return;
-				}
-
-				$localPath = __DIR__ . '/../../..' . $rootPath . $folderPath . $slug . '.blade.php';
-
-				if (!file_exists($localPath)) {
-					$this->error('Block template not found at ' . $localPath);
-					return;
-				}
-
-				// Create block class
-				$result = CommandService::handleClassCreation(AbstractBlock::class, $filepath, $path, $folders, $className, $blockContent);
-
-				// Create block template
-				file_put_contents($templatePath . $slug . '.blade.php', file_get_contents($localPath));
-
-				switch ($result) {
-					case 'already_exists':
-						$this->error('Block already exists!');
-						break;
-					case 'success':
-						$this->info('Block imported successfully at ' . $filepath);
-						break;
 				}
 			}
 		}
+	}
+
+	private function getViewsDirectory(): string
+	{
+		return '/resources/views/';
+	}
+
+	private function getViewsPath(): string
+	{
+		return get_template_directory() . $this->getViewsDirectory();
+	}
+
+	private function createLivewireTemplate(string $className)
+	{
+		if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
+			$livewireViewsPath = $this->getViewsPath() . 'livewire/';
+
+			$livewireHorizonViewsPath = __DIR__ . '/../../..' . $this->getViewsDirectory() . 'livewire/';
+
+			if (file_exists($livewireHorizonViewsPath)) {
+				$explode = explode('src/Livewire', $pathToLivewireClass);
+
+				if (isset($explode[1])) {
+					$name = strtolower(rtrim(ltrim($explode[1], '/'), '.php')) . '.blade.php';
+
+					if (file_exists($livewireHorizonViewsPath . $name)) {
+						file_put_contents($livewireViewsPath . $name, file_get_contents($livewireHorizonViewsPath . $name));
+					}
+				}
+			}
+		}
+	}
+
+	private function createLivewireComponent(string $className)
+	{
+		if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
+			$livewireContent = file_get_contents($pathToLivewireClass);
+			$livewireContent = str_replace('Adeliom\\HorizonBlocks\\Livewire\\', 'App\\Livewire\\', $livewireContent);
+
+			$path = get_template_directory() . '/app/Livewire/';
+			$structure = CommandService::getFolderStructure(str_replace('\\', '/', str_replace('Adeliom\\HorizonBlocks\\Livewire\\', '', $className)));
+
+			file_put_contents($path . $structure['path'], $livewireContent);
+		}
+	}
+
+	private function createBlockControllerFile(string $className, array $folders, string $pathToBlockControllerFile, array $structure)
+	{
+		$blockClassContent = file_get_contents($pathToBlockControllerFile);
+		$blockClassContent = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', 'App\\Blocks\\', $blockClassContent);
+
+		$path = get_template_directory() . '/app/Blocks/';
+		$filepath = $path . $structure['path'];
+
+		$result = CommandService::handleClassCreation(AbstractBlock::class, $filepath, $path, $folders, $className, $blockClassContent);
+	}
+
+	private function createBlockBladeFile(string $className, array $folders): void
+	{
+		$blockViewsPath = $this->getViewsPath() . 'blocks/';
+		$slug = ClassService::slugifyClassName($className);
+
+		// We remove unecessary block template suffix
+		if (str_ends_with($slug, '-block')) {
+			$slug = substr($slug, 0, -6);
+		}
+
+		$folderPath = '';
+
+		// We create the block folder if it doesn't exist
+		if (!file_exists($blockViewsPath)) {
+			mkdir($blockViewsPath);
+		}
+
+		// We create the block folder structure if it doesn't exist
+		$blockPath = $blockViewsPath;
+		foreach ($folders as $folder) {
+			$blockPath .= strtolower($folder) . '/';
+			$folderPath .= strtolower($folder) . '/';
+
+			if (!file_exists($blockPath)) {
+				mkdir($blockPath);
+			}
+		}
+
+		// We create the block template file if it doesn't exist
+		if (file_exists($blockPath . $slug . '.blade.php')) {
+			$this->error('Block already exists!');
+			return;
+		}
+
+		$blockViewPath = __DIR__ . '/../../..' . $this->getViewsDirectory() . 'blocks/' . $folderPath . $slug . '.blade.php';
+
+		if (!file_exists($blockViewPath)) {
+			$this->error('Block template not found at ' . $blockViewPath);
+			return;
+		}
+
+		file_put_contents($blockPath . $slug . '.blade.php', file_get_contents($blockViewPath));
 	}
 }
