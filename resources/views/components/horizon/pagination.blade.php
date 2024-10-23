@@ -4,7 +4,7 @@
         $previousLabel = $previousLabel ?? 'Précédent';
 
 		$activeClass = 'cursor-pointer';
-		$inactiveClass = '';
+		$inactiveClass = 'disabled';
 
         $displayAround = 5;
         $halfAround = ($displayAround - 1) / 2;
