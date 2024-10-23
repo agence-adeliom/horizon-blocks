@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Services;
 
+use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 
@@ -16,6 +17,11 @@ class HorizonBlockService
 	public static function getAvailableBlocks(): array
 	{
 		return [
+			TitleTextBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ADDITIONAL_FILES => [],
+				self::LIVEWIRE_COMPONENTS => [],
+			],
 			ListingBlock::class => [
 				self::REQUIRES_LIVEWIRE => true,
 				self::ADDITIONAL_FILES => [],
