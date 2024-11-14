@@ -6,6 +6,7 @@ namespace Adeliom\HorizonBlocks\Services;
 
 use Adeliom\HorizonBlocks\Blocks\Action\CtaBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
@@ -39,6 +40,14 @@ class HorizonBlockService
 			CardsBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
 				self::ADDITIONAL_FILES => [],
+				self::LIVEWIRE_COMPONENTS => [],
+			],
+			StepBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ADDITIONAL_FILES => [
+					'resources/scripts/blocks/logos.ts',
+					'resources/scripts/blocks/steps.ts',
+				],
 				self::LIVEWIRE_COMPONENTS => [],
 			]
 		];
