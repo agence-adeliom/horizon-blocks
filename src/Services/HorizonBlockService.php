@@ -27,7 +27,9 @@ class HorizonBlockService
 			],
 			ListingBlock::class => [
 				self::REQUIRES_LIVEWIRE => true,
-				self::ASSET_FILES => [],
+				self::ASSET_FILES => [
+					'resources/scripts/blocks/listing.ts',
+				],
 				self::LIVEWIRE_COMPONENTS => [
 					Listing::class,
 				],

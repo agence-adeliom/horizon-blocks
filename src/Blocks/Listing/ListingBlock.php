@@ -133,7 +133,9 @@ class ListingBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		wp_enqueue_script('listing-block-js', BudService::getUrl('listing.js'));
+		if ($listingJs = BudService::getUrl('listing.js')) {
+			wp_enqueue_script('listing-block', $listingJs);
+		}
 	}
 
 	private function getAvailableFilterChoices(): array

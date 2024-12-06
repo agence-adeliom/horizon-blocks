@@ -184,9 +184,10 @@ class ImportBlock extends Command
 
 						file_put_contents($budFilePath, $newBudFileContent);
 
-						$this->info(sprintf('Added bud line for %s', $budName));
+						$this->info(sprintf('Added bud line for %s : %s', $budName, $budLineSingleQuotes));
 					} else {
-						$this->info(sprintf('Bud line already exists for %s', $budName));
+						$containedLine = str_contains($budFileContent, $budLine) ? $budLine : $budLineSingleQuotes;
+						$this->error(sprintf('Bud line already exists for %s (%s)', $budName, $containedLine));
 					}
 				}
 			}
@@ -259,6 +260,9 @@ class ImportBlock extends Command
 
 	private function createLivewireTemplate(string $className): void
 	{
+		$this->newLine();
+		$this->info(sprintf('Handling Livewire template for %s...', $className));
+
 		if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
 			$livewireViewsPath = $this->getLivewireViewsDirectory();
 			$livewireHorizonViewsPath = $this->getLivewireHorizonViewsDirectory();
@@ -270,15 +274,25 @@ class ImportBlock extends Command
 					$name = strtolower(rtrim(ltrim($explode[1], '/'), '.php')) . '.blade.php';
 
 					if (file_exists($livewireHorizonViewsPath . $name)) {
-						file_put_contents($livewireViewsPath . $name, file_get_contents($livewireHorizonViewsPath . $name));
+						$finalPath = $livewireViewsPath . $name;
+
+						if (file_exists($finalPath)) {
+							$this->error(sprintf('Livewire template already exists at %s', $livewireViewsPath . $name));
+							return;
+						}
+
+						file_put_contents($finalPath, file_get_contents($livewireHorizonViewsPath . $name));
 					}
 				}
 			}
 		}
 	}
 
-	private function createLivewireComponent(string $className)
+	private function createLivewireComponent(string $className): void
 	{
+		$this->newLine();
+		$this->info(sprintf('Handling Livewire controller for %s...', $className));
+
 		if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
 			$livewireContent = file_get_contents($pathToLivewireClass);
 			$livewireContent = str_replace('Adeliom\\HorizonBlocks\\Livewire\\', 'App\\Livewire\\', $livewireContent);
@@ -286,12 +300,22 @@ class ImportBlock extends Command
 			$path = $this->getTemplatePath() . '/app/Livewire/';
 			$structure = CommandService::getFolderStructure(str_replace('\\', '/', str_replace('Adeliom\\HorizonBlocks\\Livewire\\', '', $className)));
 
-			file_put_contents($path . $structure['path'], $livewireContent);
+			$finalPath = $path . $structure['path'];
+
+			if (file_exists($finalPath)) {
+				$this->error(sprintf('Livewire controller already exists at %s', $finalPath));
+				return;
+			}
+
+			file_put_contents($finalPath, $livewireContent);
 		}
 	}
 
-	private function createBlockControllerFile(string $className, array $folders, string $pathToBlockControllerFile, array $structure)
+	private function createBlockControllerFile(string $className, array $folders, string $pathToBlockControllerFile, array $structure): void
 	{
+		$this->newLine();
+		$this->info('Handling block controller...');
+
 		$blockClassContent = file_get_contents($pathToBlockControllerFile);
 		$blockClassContent = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', 'App\\Blocks\\', $blockClassContent);
 
@@ -299,10 +323,17 @@ class ImportBlock extends Command
 		$filepath = $path . $structure['path'];
 
 		$result = CommandService::handleClassCreation(AbstractBlock::class, $filepath, $path, $folders, $className, $blockClassContent);
+
+		if ($result === 'already_exists') {
+			$this->error(sprintf('Block controller already exists at %s', $filepath));
+		}
 	}
 
 	private function createBlockBladeFile(string $className, array $folders): void
 	{
+		$this->newLine();
+		$this->info('Handling block template...');
+
 		$blockViewsPath = $this->getBlockViewsDirectory();
 		$slug = ClassService::slugifyClassName($className);
 
@@ -331,14 +362,14 @@ class ImportBlock extends Command
 
 		// We create the block template file if it doesn't exist
 		if (file_exists($blockPath . $slug . '.blade.php')) {
-			$this->error('Block already exists!');
+			$this->error(sprintf('Block template already exists at %s', $blockPath . $slug . '.blade.php'));
 			return;
 		}
 
 		$blockViewPath = __DIR__ . '/../../..' . $this->getViewsDirectory() . 'blocks/' . $folderPath . $slug . '.blade.php';
 
 		if (!file_exists($blockViewPath)) {
-			$this->error('Block template not found at ' . $blockViewPath);
+			$this->error(sprintf('Block template not found at %s', $blockViewPath));
 			return;
 		}
 
