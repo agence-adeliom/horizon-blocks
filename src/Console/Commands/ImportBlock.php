@@ -69,17 +69,40 @@ class ImportBlock extends Command
 		return '/resources/views/';
 	}
 
-	private function getViewsPath(): string
+	private function getBlockViewsDirectory(): string
 	{
-		return get_template_directory() . $this->getViewsDirectory();
+		return $this->getViewsPath() . 'blocks/';
 	}
 
-	private function createLivewireTemplate(string $className)
+	private function getLivewireViewsDirectory(): string
+	{
+		return $this->getViewsPath() . 'livewire/';
+	}
+
+	private function getLivewireHorizonViewsDirectory(): string
+	{
+		return __DIR__ . '/../../..' . $this->getViewsDirectory() . 'livewire/';
+	}
+
+	private function getViewsPath(): string
+	{
+		return $this->getTemplatePath() . $this->getViewsDirectory();
+	}
+
+	private function getTemplatePath(): ?string
+	{
+		if (function_exists('get_template_directory')) {
+			return get_template_directory();
+		}
+
+		return null;
+	}
+
+	private function createLivewireTemplate(string $className): void
 	{
 		if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
-			$livewireViewsPath = $this->getViewsPath() . 'livewire/';
-
-			$livewireHorizonViewsPath = __DIR__ . '/../../..' . $this->getViewsDirectory() . 'livewire/';
+			$livewireViewsPath = $this->getLivewireViewsDirectory();
+			$livewireHorizonViewsPath = $this->getLivewireHorizonViewsDirectory();
 
 			if (file_exists($livewireHorizonViewsPath)) {
 				$explode = explode('src/Livewire', $pathToLivewireClass);
@@ -101,7 +124,7 @@ class ImportBlock extends Command
 			$livewireContent = file_get_contents($pathToLivewireClass);
 			$livewireContent = str_replace('Adeliom\\HorizonBlocks\\Livewire\\', 'App\\Livewire\\', $livewireContent);
 
-			$path = get_template_directory() . '/app/Livewire/';
+			$path = $this->getTemplatePath() . '/app/Livewire/';
 			$structure = CommandService::getFolderStructure(str_replace('\\', '/', str_replace('Adeliom\\HorizonBlocks\\Livewire\\', '', $className)));
 
 			file_put_contents($path . $structure['path'], $livewireContent);
@@ -113,7 +136,7 @@ class ImportBlock extends Command
 		$blockClassContent = file_get_contents($pathToBlockControllerFile);
 		$blockClassContent = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', 'App\\Blocks\\', $blockClassContent);
 
-		$path = get_template_directory() . '/app/Blocks/';
+		$path = $this->getTemplatePath() . '/app/Blocks/';
 		$filepath = $path . $structure['path'];
 
 		$result = CommandService::handleClassCreation(AbstractBlock::class, $filepath, $path, $folders, $className, $blockClassContent);
@@ -121,7 +144,7 @@ class ImportBlock extends Command
 
 	private function createBlockBladeFile(string $className, array $folders): void
 	{
-		$blockViewsPath = $this->getViewsPath() . 'blocks/';
+		$blockViewsPath = $this->getBlockViewsDirectory();
 		$slug = ClassService::slugifyClassName($className);
 
 		// We remove unecessary block template suffix
