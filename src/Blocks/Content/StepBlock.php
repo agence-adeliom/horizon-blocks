@@ -55,7 +55,20 @@ class StepBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		wp_enqueue_style('logos-block-css', BudService::getUrl('logos.css'));
-		wp_enqueue_script('steps-block-js', BudService::getUrl('steps.js'));
+		if ($logosCss = BudService::getUrl('logos.css')) {
+			wp_enqueue_style('logos-block-css', $logosCss);
+		}
+
+		if ($logosJs = BudService::getUrl('logos.js')) {
+			wp_enqueue_script('logos-block-js', $logosJs);
+		}
+
+		if ($stepsCss = BudService::getUrl('steps.css')) {
+			wp_enqueue_style('steps-block-css', $stepsCss);
+		}
+
+		if ($stepsJs = BudService::getUrl('steps.js')) {
+			wp_enqueue_script('steps-block-js', $stepsJs);
+		}
 	}
 }
