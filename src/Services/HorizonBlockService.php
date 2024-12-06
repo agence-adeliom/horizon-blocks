@@ -14,7 +14,7 @@ use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 class HorizonBlockService
 {
 	public const string REQUIRES_LIVEWIRE = 'requiresLivewire';
-	public const string ADDITIONAL_FILES = 'additionalFiles';
+	public const string ASSET_FILES = 'additionalFiles';
 	public const string LIVEWIRE_COMPONENTS = 'livewireComponents';
 
 	public static function getAvailableBlocks(): array
@@ -22,29 +22,29 @@ class HorizonBlockService
 		$blocks = [
 			TitleTextBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
-				self::ADDITIONAL_FILES => [],
+				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
 			ListingBlock::class => [
 				self::REQUIRES_LIVEWIRE => true,
-				self::ADDITIONAL_FILES => [],
+				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [
 					Listing::class,
 				],
 			],
 			CtaBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
-				self::ADDITIONAL_FILES => [],
+				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
 			CardsBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
-				self::ADDITIONAL_FILES => [],
+				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
 			StepBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
-				self::ADDITIONAL_FILES => [
+				self::ASSET_FILES => [
 					'resources/scripts/blocks/logos.ts',
 					'resources/scripts/blocks/steps.ts',
 				],

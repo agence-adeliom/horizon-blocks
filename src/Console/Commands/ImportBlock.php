@@ -15,6 +15,9 @@ class ImportBlock extends Command
 	protected $signature = 'import:block';
 	protected $description = 'Import a block from Horizon Blocks';
 
+	private const TYPE_SCRIPT = 'script';
+	private const TYPE_STYLE = 'style';
+
 	public function handle(): void
 	{
 		$availableBlocks = HorizonBlockService::getAvailableBlocks();
@@ -51,6 +54,10 @@ class ImportBlock extends Command
 				$folders = $structure['folders'];
 				$className = $structure['class'];
 
+				if (isset($blockExtraData[HorizonBlockService::ASSET_FILES]) && is_array($blockExtraData[HorizonBlockService::ASSET_FILES])) {
+					$this->handleAdditionalFiles($blockExtraData[HorizonBlockService::ASSET_FILES]);
+				}
+
 				$this->createBlockBladeFile(className: $className, folders: $folders);
 				$this->createBlockControllerFile(className: $className, folders: $folders, pathToBlockControllerFile: $pathToBlockControllerFile, structure: $structure);
 
@@ -64,9 +71,146 @@ class ImportBlock extends Command
 		}
 	}
 
+	private function handleAdditionalFiles(array $filePaths): void
+	{
+		if ($filePaths) {
+			$filesToBud = [];
+
+			$this->newLine();
+			$this->info(sprintf('Handling %d additional file·s...', count($filePaths)));
+
+			foreach ($filePaths as $filePath) {
+				$type = null;
+				$sourcePath = null;
+				$relativePath = null;
+				$horizonPath = null;
+				$fileName = null;
+
+				$extension = pathinfo($filePath, PATHINFO_EXTENSION);
+				$fileName = pathinfo($filePath, PATHINFO_FILENAME);
+
+				switch ($extension) {
+					case 'ts':
+						$type = self::TYPE_SCRIPT;
+						$sourcePath = $this->getHorizonScriptsDirectory();
+						$relativePath = $this->getScriptsDirectory();
+						break;
+					case 'css':
+						$type = self::TYPE_STYLE;
+						$sourcePath = $this->getHorizonStylesDirectory();
+						$relativePath = $this->getStylesDirectory();
+						break;
+					default:
+						break;
+				}
+
+				if ($type && $sourcePath && $relativePath) {
+					$horizonFilePath = rtrim($sourcePath, ltrim($relativePath, '/')) . '/' . $filePath;
+
+					if (file_exists($horizonFilePath)) {
+						$newFilePath = $this->getTemplatePath() . '/' . $filePath;
+
+						if (!file_exists($newFilePath)) {
+							$this->info('Copying ' . $horizonFilePath . ' to ' . $newFilePath);
+							file_put_contents($newFilePath, file_get_contents($horizonFilePath));
+						} else {
+							$this->error('File already exists at ' . $newFilePath);
+						}
+
+						$budString = null;
+						$rootName = null;
+
+						switch ($type) {
+							case self::TYPE_SCRIPT:
+								$rootName = ltrim($filePath, $this->getScriptsDirectory());
+								$rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
+								$budString = sprintf('@scripts/%s', $rootName);
+								break;
+							case self::TYPE_STYLE:
+								$rootName = ltrim($filePath, $this->getStylesDirectory());
+								$rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
+								$budString = sprintf('@styles/%s', $rootName);
+								break;
+							default:
+								break;
+						}
+
+						if (!isset($filesToBud[$rootName])) {
+							$filesToBud[$rootName] = [self::TYPE_SCRIPT => [], self::TYPE_STYLE => []];
+						}
+
+						$filesToBud[$rootName][$type] = $budString;
+					}
+				}
+			}
+
+			$this->appendFilesToBud($filesToBud);
+		}
+	}
+
+	private function appendFilesToBud(array $toHandle): void
+	{
+		if ($budFilePath = $this->getBudConfigPath()) {
+			$this->newLine();
+			$this->info('Handling Bud file...');
+
+			foreach ($toHandle as $name => $assets) {
+				$paths = [];
+
+				if (isset($assets[self::TYPE_SCRIPT]) && !empty($assets[self::TYPE_SCRIPT])) {
+					$paths[] = $assets[self::TYPE_SCRIPT];
+				}
+
+				if (isset($assets[self::TYPE_STYLE]) && !empty($assets[self::TYPE_STYLE])) {
+					$paths[] = $assets[self::TYPE_STYLE];
+				}
+
+				if (!empty($paths)) {
+					$budName = last(explode('/', $name));
+					$budLine = sprintf('.entry("%s", %s)', $budName, json_encode($paths, JSON_UNESCAPED_SLASHES));
+					$budLineSingleQuotes = str_replace('"', "'", $budLine);
+
+					$budFileContent = file_get_contents($budFilePath);
+
+					if (!str_contains($budFileContent, $budLine) && !str_contains($budFileContent, $budLineSingleQuotes)) {
+						// Insert line after the last .entry taking tabs and spaces into account
+						$lastEntry = strrpos($budFileContent, '.entry(');
+						$lastEntryEnd = strpos($budFileContent, ')', $lastEntry) + 1;
+
+						$firstPart = substr($budFileContent, 0, $lastEntryEnd);
+						$secondPart = substr($budFileContent, $lastEntryEnd);
+
+						$newBudFileContent = $firstPart . PHP_EOL . '    ' . $budLineSingleQuotes . $secondPart;
+
+						file_put_contents($budFilePath, $newBudFileContent);
+
+						$this->info(sprintf('Added bud line for %s', $budName));
+					} else {
+						$this->info(sprintf('Bud line already exists for %s', $budName));
+					}
+				}
+			}
+		}
+	}
+
+	private function getBudConfigPath(): string
+	{
+		return $this->getTemplatePath() . '/bud.config.js';
+	}
+
 	private function getViewsDirectory(): string
 	{
 		return '/resources/views/';
+	}
+
+	private function getScriptsDirectory(): string
+	{
+		return '/resources/scripts/';
+	}
+
+	private function getStylesDirectory(): string
+	{
+		return '/resources/styles/';
 	}
 
 	private function getBlockViewsDirectory(): string
@@ -79,9 +223,24 @@ class ImportBlock extends Command
 		return $this->getViewsPath() . 'livewire/';
 	}
 
+	private function getHorizonRoot(): string
+	{
+		return __DIR__ . '/../../..';
+	}
+
 	private function getLivewireHorizonViewsDirectory(): string
 	{
-		return __DIR__ . '/../../..' . $this->getViewsDirectory() . 'livewire/';
+		return $this->getHorizonRoot() . $this->getViewsDirectory() . 'livewire/';
+	}
+
+	private function getHorizonScriptsDirectory(): string
+	{
+		return $this->getHorizonRoot() . $this->getScriptsDirectory();
+	}
+
+	private function getHorizonStylesDirectory(): string
+	{
+		return $this->getHorizonRoot() . $this->getStylesDirectory();
 	}
 
 	private function getViewsPath(): string
