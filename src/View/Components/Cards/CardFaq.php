@@ -8,7 +8,6 @@ use App\PostTypes\FAQ;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
-use function App\View\Components\Cards\get_field;
 
 class CardFaq extends Component
 {

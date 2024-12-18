@@ -54,6 +54,10 @@ class ImportBlock extends Command
 				$folders = $structure['folders'];
 				$className = $structure['class'];
 
+				if (isset($blockExtraData[HorizonBlockService::COMPONENTS]) && is_array($blockExtraData[HorizonBlockService::COMPONENTS])) {
+					$this->handleAdditionalComponents(componentClasses: $blockExtraData[HorizonBlockService::COMPONENTS]);
+				}
+
 				if (isset($blockExtraData[HorizonBlockService::ASSET_FILES]) && is_array($blockExtraData[HorizonBlockService::ASSET_FILES])) {
 					$this->handleAdditionalFiles($blockExtraData[HorizonBlockService::ASSET_FILES]);
 				}
@@ -65,6 +69,71 @@ class ImportBlock extends Command
 					foreach ($blockExtraData[HorizonBlockService::LIVEWIRE_COMPONENTS] as $livewireClass) {
 						$this->createLivewireTemplate(className: $livewireClass);
 						$this->createLivewireComponent(className: $livewireClass);
+					}
+				}
+			}
+		}
+	}
+
+	private function handleAdditionalComponents(array $componentClasses)
+	{
+		$this->newLine();
+		$this->info('Handling additional components...');
+
+		foreach ($componentClasses as $componentClass) {
+			if ($classFile = ClassService::getFilePathFromClassName($componentClass)) {
+				if (file_exists($classFile)) {
+					$results = explode($this->getHorizonBlockComponentClassesDirectory(), $classFile);
+
+					if (isset($results[1])) {
+						$componentFileName = $results[1];
+
+						$templateClassFileName = $this->getTemplatePath() . $this->getComponentClassesDirectory() . $componentFileName;
+
+						if (!file_exists($templateClassFileName)) {
+							$this->info('Copying ' . $classFile . ' to ' . $templateClassFileName);
+
+							$content = file_get_contents($classFile);
+
+							$namespace = implode('\\', array_slice(explode('\\', $componentClass), 0, -1));
+							$newNamespace = 'App\\View\\' . implode('\\', array_slice(explode('\\', $componentClass), 3, -1));
+
+							$content = str_replace($namespace, $newNamespace, $content);
+
+							file_put_contents($templateClassFileName, $content);
+
+							// Get line container return view
+							$lines = file($classFile);
+							$lineNumber = 0;
+							foreach ($lines as $lineNumber => $line) {
+								if (strpos($line, 'return view') !== false) {
+									if (preg_match("/return view\('?\"?([a-zA-Z.-]+)'?\"?\)/", $line, $m)) {
+										if (isset($m[1])) {
+											$folders = explode('.', $m[1]);
+
+											$fileName = end($folders) . '.blade.php';
+											unset($folders[count($folders) - 1]);
+											$filePath = implode('/', $folders) . '/' . $fileName;
+
+											$templatePath = $this->getViewsPath() . $filePath;
+											$horizonPath = $this->getHorizonViewsDirectory() . $filePath;
+
+											if (file_exists($horizonPath)) {
+												if (!file_exists($templatePath)) {
+													$this->info('Copying ' . $horizonPath . ' to ' . $templatePath);
+													file_put_contents($templatePath, file_get_contents($horizonPath));
+												} else {
+													$this->error('File already exists at ' . $templatePath);
+												}
+											}
+										}
+									}
+									break;
+								}
+							}
+						} else {
+							$this->error('File already exists at ' . $templateClassFileName);
+						}
 					}
 				}
 			}
@@ -214,6 +283,16 @@ class ImportBlock extends Command
 		return '/resources/styles/';
 	}
 
+	private function getComponentClassesDirectory(): string
+	{
+		return '/app/View/Components/';
+	}
+
+	private function getHorizonBlockComponentClassesDirectory(): string
+	{
+		return '/src/View/Components/';
+	}
+
 	private function getBlockViewsDirectory(): string
 	{
 		return $this->getViewsPath() . 'blocks/';
@@ -229,9 +308,14 @@ class ImportBlock extends Command
 		return __DIR__ . '/../../..';
 	}
 
+	private function getHorizonViewsDirectory()
+	{
+		return $this->getHorizonRoot() . $this->getViewsDirectory();
+	}
+
 	private function getLivewireHorizonViewsDirectory(): string
 	{
-		return $this->getHorizonRoot() . $this->getViewsDirectory() . 'livewire/';
+		return $this->getHorizonViewsDirectory() . 'livewire/';
 	}
 
 	private function getHorizonScriptsDirectory(): string
