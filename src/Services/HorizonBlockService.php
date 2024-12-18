@@ -6,17 +6,20 @@ namespace Adeliom\HorizonBlocks\Services;
 
 use Adeliom\HorizonBlocks\Blocks\Action\CtaBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\QuoteBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
+use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
 
 class HorizonBlockService
 {
 	public const string REQUIRES_LIVEWIRE = 'requiresLivewire';
 	public const string ASSET_FILES = 'additionalFiles';
 	public const string LIVEWIRE_COMPONENTS = 'livewireComponents';
+	public const string COMPONENTS = 'components';
 
 	public static function getAvailableBlocks(): array
 	{
@@ -58,6 +61,14 @@ class HorizonBlockService
 				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
+			FaqBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [],
+				self::LIVEWIRE_COMPONENTS => [],
+				self::COMPONENTS => [
+					CardFaq::class
+				],
+			]
 		];
 
 		// Filter blocks by putting ones requiring Livewire last
