@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Adeliom\HorizonBlocks\Services;
 
 use Adeliom\HorizonBlocks\Blocks\Action\CtaBlock;
+use Adeliom\HorizonBlocks\Blocks\Action\FormBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
@@ -72,6 +73,14 @@ class HorizonBlockService
 				],
 			],
 			HeroForm::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [],
+				self::LIVEWIRE_COMPONENTS => [],
+				self::COMPONENTS => [
+					Offer::class
+				],
+			],
+			FormBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
 				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [],
