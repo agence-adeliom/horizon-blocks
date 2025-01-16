@@ -1,98 +1,102 @@
-@if($data)
+@if ($data)
     @php
         $nextLabel = $nextLabel ?? 'Suivant';
         $previousLabel = $previousLabel ?? 'Précédent';
 
-		$activeClass = 'cursor-pointer';
-		$inactiveClass = 'disabled';
+        $baseButtonClass =
+            'cursor-pointer block w-10 h-10 rounded flex items-center justify-center transition-opacity duration-200';
+        $inactiveButtonClass = '!cursor-not-allowed opacity-30';
 
-        $displayAround = 5;
+        $baseNumberClass =
+            'block w-10 h-10 rounded-lg flex items-center justify-center cursor-pointer text-text-secondary font-semibold';
+        $activeNumberClass = 'cursor-default border border-primary rounded';
+
+        $displayAround = 3;
         $halfAround = ($displayAround - 1) / 2;
-        $separator ='...';
+        $separator = '...';
 
         $pages = $data['pages'];
         $total = $data['total'];
         $current = $data['current'];
 
         $pageNumbers = [];
+        $pageNumbers[] = 1;
 
-        for($x=1; $x<=3;$x++){
-            if($x <= $pages){
-                $pageNumbers[] = $x;
-            }
-        }
-
-        for($x = $pages; $x >= $pages-2; $x--){
-            if($x > 3){
-                $pageNumbers[] = $x;
-            }
-        }
-
-        $start = $current - $halfAround;
-        $end = $current + $halfAround;
-
-        if($start < 1){
-            $end += abs($start) + 1;
-            $start = 1;
-        }
-
-        if($end > $pages){
-            $start -= $end - $pages;
-            $end = $pages;
-        }
-
-		for($x=$start; $x<=$end;$x++){
+        // Pages proches de la page actuelle (3 pages autour)
+        for ($x = max(2, $current - 1); $x <= min($pages - 1, $current + 1); $x++) {
             $pageNumbers[] = $x;
         }
 
-        $pageNumbers = array_unique($pageNumbers);
-        sort($pageNumbers);
-
-        $last = null;
-        $displayValues = [];
-
-        foreach ($pageNumbers as $value) {
-            if($value>0){
-				if(null!==$last){
-                    if($value - $last > 1){
-                        $displayValues[] = $separator;
-                    }
-                }
-
-                $displayValues[] = $value;
-                $last = $value;
+        // Ajouter les multiples de 5
+        for ($x = 5; $x <= $pages; $x += 5) {
+            if (!in_array($x, $pageNumbers)) {
+                $pageNumbers[] = $x;
             }
+        }
+
+        // Ajouter la dernière page si elle n'est pas déjà incluse
+        if (!in_array($pages, $pageNumbers)) {
+            $pageNumbers[] = $pages;
+        }
+
+        // Trier et ajouter les séparateurs
+        sort($pageNumbers);
+        $displayValues = [];
+        $last = null;
+        foreach ($pageNumbers as $value) {
+            if ($last !== null && $value - $last > 1) {
+                $displayValues[] = $separator;
+            }
+            $displayValues[] = $value;
+            $last = $value;
         }
     @endphp
 
-    @if(!empty($displayValues) && $pages > 1)
-        <div>
-            @if($hasButtons)
-                @if($current > 1)
-                    <a class="{{ $activeClass }}"
-                       @if($handle) wire:click="{{ $handle }}({{ $current - 1 }})" @endif>{{ $previousLabel }}</a>
+    @if (!empty($displayValues) && $pages > 1)
+        <div class="flex justify-center gap-4 lg:gap-10">
+            @if ($hasButtons)
+                @if ($current > 1)
+                    <a @class([$baseButtonClass]) title="{{ $previousLabel }}"
+                        href="{{ request()->fullUrlWithQuery(['pagination' => $current - 1]) }}"
+                        @click.prevent="scrollToAnchor('listing')"
+                        @if ($handle) wire:click.prevent="{{ $handle }}({{ $current - 1 }})" @endif>
+                        <x-far-angle-left class="icon-20" />
+                    </a>
                 @else
-                    <span class="{{ $inactiveClass }}">{{ $previousLabel }}</span>
+                    <span @class([$baseButtonClass, $inactiveButtonClass])>
+                        <x-far-angle-left class="icon-20" />
+                    </span>
                 @endif
             @endif
 
-            @foreach($displayValues as $page)
-                @if($page == $current)
-                    <span class="{{ $inactiveClass }}">{{ $page }}</span>
-                @elseif($page != $separator)
-                    <a class="{{ $activeClass }}"
-                       @if($handle) wire:click="{{ $handle }}({{ $page }})" @endif>{{ $page }}</a>
-                @else
-                    <span>{{ $separator }}</span>
-                @endif
-            @endforeach
+            <div class="flex items-center">
+                @foreach ($displayValues as $page)
+                    @if ($page == $current)
+                        <span @class([$baseNumberClass, $activeNumberClass])>{{ $page }}</span>
+                    @elseif($page != $separator)
+                        <a @class([$baseNumberClass]) title="Page {{ $page }}"
+                            href="{{ request()->fullUrlWithQuery(['pagination' => $page]) }}"
+                            @click.prevent="scrollToAnchor('listing')"
+                            @if ($handle) wire:click.prevent="{{ $handle }}({{ $page }})" @endif>{{ $page }}</a>
+                    @else
+                        <span class="my-2 mx-1">{{ $separator }}</span>
+                    @endif
+                @endforeach
+            </div>
 
-            @if($hasButtons)
-                @if($current < $pages)
-                    <a class="{{ $activeClass }}"
-                       @if($handle) wire:click="{{ $handle }}({{ $current + 1 }})" @endif>{{ $nextLabel }}</a>
+
+            @if ($hasButtons)
+                @if ($current < $pages)
+                    <a @class([$baseButtonClass]) title="{{ $nextLabel }}"
+                        href="{{ request()->fullUrlWithQuery(['pagination' => $current + 1]) }}"
+                        @click.prevent="scrollToAnchor('listing')"
+                        @if ($handle) wire:click.prevent="{{ $handle }}({{ $current + 1 }})" @endif>
+                        <x-far-angle-right class="icon-20" />
+                    </a>
                 @else
-                    <span class="{{ $inactiveClass }}">{{ $nextLabel }}</span>
+                    <span @class([$baseButtonClass, $inactiveButtonClass])>
+                        <x-far-angle-right class="icon-20" />
+                    </span>
                 @endif
             @endif
         </div>

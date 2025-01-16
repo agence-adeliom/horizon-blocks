@@ -1,24 +1,26 @@
 @php
-    if(!isset($singular)) {
-	    $singular = 'résultat';
+    if (!isset($singular)) {
+        $singular = 'résultat';
     }
 
-	if(!isset($plural)) {
+    if (!isset($plural)) {
         $plural = 'résultats';
-	}
+    }
 @endphp
 
-@if(isset($value['total']))
-    <p>
-        {{ $value['total'] }}
-
+@if (isset($value['total']))
+    <p class="flex gap-2 text-text-secondary">
+        <span class="font-semibold">
+            {{ $value['total'] }}
+        </span>
         @switch(true)
-            @case($value['total'] == 1)
+            @case($value['total'] == 1 || $value['total'] == 0)
                 {{ $singular }}
-                @break;
+            @break;
+
             @default
                 {{ $plural }}
-                @break;
+            @break;
         @endswitch
     </p>
 @endif
