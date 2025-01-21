@@ -9,11 +9,11 @@
     <div class="mt-text-image-mobile lg:mt-text-image-desktop" x-data="initStepsSlider()">
         <div class="swiper w-full overflow-visible" x-ref="swiperContainer">
             <x-action.button @class(['center-top left-0 z-10']) type="primary" variant="outline" iconOnly x-ref="buttonPrev">
-                <x-typography.icon icon="angle-left" />
+                <x-fas-angle-left />
             </x-action.button>
 
             <x-action.button @class(['center-top right-0 z-10']) type="primary" variant="outline" iconOnly x-ref="buttonNext">
-                <x-typography.icon icon="angle-right" />
+                <x-fas-angle-right />
             </x-action.button>
             <div class="swiper-wrapper">
                 @if (isset($fields['steps']) && $fields['steps'])
