@@ -8,10 +8,13 @@
 
 @if ($value && isset($value['appearance'], $value['choices']))
     <div class="select-group">
-        {{ $placeholder }}
+        <label for="{{ $model }}">
+            {{ $placeholder }}
+        </label>
         @switch($value['appearance'])
             @case('select')
-                <select class="select" @if ($model) wire:model="{{ $model }}" @endif>
+                <select class="select" id="{{ $model }}" name="{{ $model }}"
+                    @if ($model) wire:model="{{ $model }}" @endif>
                     @if ($withEmpty)
                         <option value="" selected>
                             {{ $placeholder ?? 'Sélectionner' }}
