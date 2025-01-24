@@ -324,7 +324,7 @@ class ListingBlock extends AbstractBlock
 		if ($postId) {
 			$post = get_post($postId);
 
-			if ($post->post_content) {
+			if ($post && $post->post_content) {
 				preg_match('/<!-- wp:acf\/listing.*?"postType":"([^"]+)".*?-->/', $post->post_content, $matches);
 
 				if (isset($matches[1])) {
