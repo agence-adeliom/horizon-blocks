@@ -57,6 +57,24 @@
                 @endisset
                 @break
 
+            @case(ListingBlock::VALUE_FILTER_APPEARANCE_RADIO)
+                @isset($value['choices'])
+                    @foreach($value['choices'] as $key => $choice)
+                        <div>
+                            <input type="radio" id="{{ $model }}_{{ $key }}" name="{{ $model }}"
+                                   value="{{$choice['slug']}}"
+                                   @if($model) wire:model="{{ $model }}" @endif
+                                   @isset($values[$value['name']][$choice['slug']])
+                                       @if($values[$value['name']][$choice['slug']] == 'true')
+                                           checked="checked"
+                                    @endif
+                                    @endisset>
+                            <label for="{{ $model }}_{{ $key }}">{{ $choice['name'] }}</label>
+                        </div>
+                    @endforeach
+                @endisset
+                @break
+
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_TEXT)
                 <div>
                     <input type="text" id="{{ $model }}" @if($model) wire:model="{{ $model }}" @endif>

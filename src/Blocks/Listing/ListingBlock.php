@@ -50,6 +50,7 @@ class ListingBlock extends AbstractBlock
 
 	public const string VALUE_FILTER_APPEARANCE_SELECT = 'select';
 	public const string VALUE_FILTER_APPEARANCE_CHECKBOX = 'checkbox';
+	public const string VALUE_FILTER_APPEARANCE_RADIO = 'radio';
 	public const string VALUE_FILTER_APPEARANCE_TEXT = 'text';
 
 	public function getFields(): ?iterable

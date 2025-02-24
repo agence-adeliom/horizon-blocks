@@ -328,6 +328,7 @@ class Listing extends Component
 							case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
 							case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
 							case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
 								switch ($this->filters[$name]['type']) {
 									case FilterTypesEnum::TAXONOMY->value:
 										$taxonomyName = $this->filters[$name]['value'];
@@ -336,6 +337,7 @@ class Listing extends Component
 
 										switch ($this->filters[$name]['appearance']) {
 											case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+											case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
 												$taxQuery->add($taxonomyName, [$value]);
 												break;
 											case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
@@ -365,6 +367,7 @@ class Listing extends Component
 												$metaQuery->add($metaName, $value, 'LIKE');
 												break;
 											case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+											case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
 												$metaQuery->add($metaName, $value);
 												break;
 											case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
