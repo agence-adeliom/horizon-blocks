@@ -113,16 +113,18 @@ class ListingBlock extends AbstractBlock
 				]);
 			$filterFields[] = Text::make(__('Placeholder'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Il s’agit du texte affiché lorsqu’aucune option n’est sélectionnée'))->required();
 			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->helperText(__('Il s’agit du nom du filtre utilisé (notamment) dans l’URL pré-filtrée'))->required();
-			$filterFields[] = Select::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->stylized()->choices([
+			$filterFields[] = ButtonGroup::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->choices([
 				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
 				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
+				self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
 				self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
 			])
 				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
-			$filterFields[] = Select::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->stylized()->choices([
+			$filterFields[] = ButtonGroup::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->choices([
 				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
 				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
+				self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
 			])
 				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
