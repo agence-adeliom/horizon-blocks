@@ -8,12 +8,22 @@
     }
 @endphp
 
-@if ($value && isset($value['appearance'], $value['choices']))
+@if($value && isset($value['isSearch'])&& $value['isSearch'])
     <div class="select-group">
         <label for="{{ $model }}">
             {{ $placeholder }}
         </label>
-        @switch($value['appearance'])
+
+        <input type="text" @if($model) wire:model="{{ $model }}" @endif placeholder="{{ $placeholder }}">
+    </div>
+@elseif ($value && isset($value['appearance'], $value['choices']))
+    <div class="select-group">
+        <label for="{{ $model }}">
+            {{ $placeholder }}
+        </label>
+
+
+    @switch($value['appearance'])
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_SELECT)
                 <select class="select" id="{{ $model }}" name="{{ $model }}"
                         @if ($model) wire:model="{{ $model }}" @endif>

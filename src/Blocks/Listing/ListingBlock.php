@@ -20,6 +20,7 @@ use Extended\ACF\ConditionalLogic;
 use Extended\ACF\Fields\ButtonGroup;
 use Extended\ACF\Fields\Field;
 use Extended\ACF\Fields\Group;
+use Extended\ACF\Fields\Message;
 use Extended\ACF\Fields\Number;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Select;
@@ -97,11 +98,18 @@ class ListingBlock extends AbstractBlock
 			$typeChoices[FilterTypesEnum::TAXONOMY->value] = __('Taxonomie');
 		}
 
+		$typeChoices[FilterTypesEnum::SEARCH->value] = __('Recherche');
+
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
 			$filterFields = [];
 			$filterFields[] = ButtonGroup::make(__('Type'), self::FIELD_FILTERS_TYPE)
 				->required()
 				->choices($typeChoices);
+			$filterFields[] = Message::make(__('Recherche'), 'searchinfo')
+				->body(__('Actuellement, seule la recherche dans le titre et dans le contenu de l’élément sont prises en charge.'))
+				->conditionalLogic([
+					ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::SEARCH->value)
+				]);
 			$filterFields[] = Text::make(__('Placeholder'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Il s’agit du texte affiché lorsqu’aucune option n’est sélectionnée'))->required();
 			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->helperText(__('Il s’agit du nom du filtre utilisé (notamment) dans l’URL pré-filtrée'))->required();
 			$filterFields[] = Select::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->stylized()->choices([
@@ -109,13 +117,13 @@ class ListingBlock extends AbstractBlock
 				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
 				self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
 			])
-				->default('select')
+				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
 			$filterFields[] = Select::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->stylized()->choices([
 				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
 				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
 			])
-				->default('select')
+				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
 			$filterFields[] = Select::make(__('Champ'), self::FIELD_FILTERS_FIELD)
 				->stylized()

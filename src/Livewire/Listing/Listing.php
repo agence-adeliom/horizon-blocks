@@ -83,6 +83,13 @@ class Listing extends Component
 		$this->getData();
 	}
 
+	private function initSearchFilter(string $searchName, string $placeholder): void
+	{
+		$this->filters[$searchName] = [
+			'name' => $searchName, 'placeholder' => $placeholder, 'isSearch' => true,
+		];
+	}
+
 	private function initTaxonomyFilter(string $taxonomyName, string $filterName, FilterTypesEnum $filterType, string $appearance, string $placeholder): void
 	{
 		$taxQb = new QueryBuilder();
@@ -245,6 +252,9 @@ class Listing extends Component
 						case FilterTypesEnum::TAXONOMY->value:
 							$type = FilterTypesEnum::TAXONOMY;
 							break;
+						case FilterTypesEnum::SEARCH->value:
+							$type = FilterTypesEnum::SEARCH;
+							break;
 					}
 
 					switch ($type) {
@@ -253,6 +263,9 @@ class Listing extends Component
 							break;
 						case FilterTypesEnum::TAXONOMY:
 							$this->initTaxonomyFilter(taxonomyName: $value, filterName: $name, filterType: $type, appearance: $appearance, placeholder: $placeholder);
+							break;
+						case FilterTypesEnum::SEARCH:
+							$this->initSearchFilter(searchName: $name, placeholder: $placeholder);
 							break;
 						default:
 							break;
@@ -280,6 +293,9 @@ class Listing extends Component
 							$fieldClass = $filter['fieldClass'];
 							$this->initMetaFilter(metaKey: $value, filterName: $name, filterType: $type, appearance: $appearance, postType: $this->postTypeClass, fieldClass: $fieldClass, placeholder: $placeholder);
 							break;
+						case FilterTypesEnum::SEARCH:
+							$this->initSearchFilter(searchName: $name);
+							break;
 						default:
 							break;
 					}
@@ -305,72 +321,76 @@ class Listing extends Component
 		if (is_array($this->filterFields)) {
 			foreach ($this->filterFields as $name => $value) {
 				if (!empty($value) && isset($this->filters[$name])) {
-					switch ($this->filters[$name]['appearance']) {
-						case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
-						case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
-						case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
-							switch ($this->filters[$name]['type']) {
-								case FilterTypesEnum::TAXONOMY->value:
-									$taxonomyName = $this->filters[$name]['value'];
+					if ($this->filters[$name] && isset($this->filters[$name]['isSearch']) && $this->filters[$name]['isSearch']) {
+						$qb->search($value);
+					} else {
+						switch ($this->filters[$name]['appearance']) {
+							case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
+								switch ($this->filters[$name]['type']) {
+									case FilterTypesEnum::TAXONOMY->value:
+										$taxonomyName = $this->filters[$name]['value'];
 
-									$taxQuery = new TaxQuery();
+										$taxQuery = new TaxQuery();
 
-									switch ($this->filters[$name]['appearance']) {
-										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
-											$taxQuery->add($taxonomyName, [$value]);
-											break;
-										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
-											$taxQuery->setRelation('OR');
+										switch ($this->filters[$name]['appearance']) {
+											case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+												$taxQuery->add($taxonomyName, [$value]);
+												break;
+											case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+												$taxQuery->setRelation('OR');
 
-											foreach ($value as $slug => $enabled) {
-												if ($enabled == 'true') {
-													$subTaxQuery = new TaxQuery();
-													$subTaxQuery->add($taxonomyName, [$slug]);
-													$taxQuery->add($subTaxQuery);
+												foreach ($value as $slug => $enabled) {
+													if ($enabled == 'true') {
+														$subTaxQuery = new TaxQuery();
+														$subTaxQuery->add($taxonomyName, [$slug]);
+														$taxQuery->add($subTaxQuery);
+													}
 												}
-											}
-											break;
-										default:
-											break;
-									}
+												break;
+											default:
+												break;
+										}
 
-									$qb->addTaxQuery($taxQuery);
-									break;
-								case FilterTypesEnum::META->value:
-									$metaName = $this->filters[$name]['value'];
+										$qb->addTaxQuery($taxQuery);
+										break;
+									case FilterTypesEnum::META->value:
+										$metaName = $this->filters[$name]['value'];
 
-									$metaQuery = new MetaQuery();
+										$metaQuery = new MetaQuery();
 
-									switch ($this->filters[$name]['appearance']) {
-										case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
-											$metaQuery->add($metaName, $value, 'LIKE');
-											break;
-										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
-											$metaQuery->add($metaName, $value);
-											break;
-										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
-											$metaQuery->setRelation('OR');
+										switch ($this->filters[$name]['appearance']) {
+											case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
+												$metaQuery->add($metaName, $value, 'LIKE');
+												break;
+											case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+												$metaQuery->add($metaName, $value);
+												break;
+											case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+												$metaQuery->setRelation('OR');
 
-											foreach ($value as $slug => $enabled) {
-												if ($enabled == 'true') {
-													$subMetaQuery = new MetaQuery();
-													$subMetaQuery->add($metaName, $slug);
-													$metaQuery->add($subMetaQuery);
+												foreach ($value as $slug => $enabled) {
+													if ($enabled == 'true') {
+														$subMetaQuery = new MetaQuery();
+														$subMetaQuery->add($metaName, $slug);
+														$metaQuery->add($subMetaQuery);
+													}
 												}
-											}
-											break;
-										default:
-											break;
-									}
+												break;
+											default:
+												break;
+										}
 
-									$qb->addMetaQuery($metaQuery);
-									break;
-								default:
-									break;
-							}
-							break;
-						default:
-							break;
+										$qb->addMetaQuery($metaQuery);
+										break;
+									default:
+										break;
+								}
+								break;
+							default:
+								break;
+						}
 					}
 				}
 			}
