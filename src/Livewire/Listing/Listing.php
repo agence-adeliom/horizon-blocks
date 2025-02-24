@@ -191,7 +191,12 @@ class Listing extends Component
 			if ($this->baseFilters) {
 				foreach ($this->baseFilters as $filter) {
 					$type = $filter[ListingBlock::FIELD_FILTERS_TYPE];
-					$appearance = $filter[ListingBlock::FIELD_FILTERS_APPEARANCE];
+					$appearance = match ($type) {
+						FilterTypesEnum::META->value => $filter[ListingBlock::FIELD_FILTERS_META_APPEARANCE],
+						FilterTypesEnum::TAXONOMY->value => $filter[ListingBlock::FIELD_FILTERS_TAX_APPEARANCE],
+						default => null,
+					};
+
 					$name = sanitize_title($filter[ListingBlock::FIELD_FILTERS_NAME]);
 					$placeholder = $filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER];
 					$fieldClass = null;
@@ -303,6 +308,7 @@ class Listing extends Component
 					switch ($this->filters[$name]['appearance']) {
 						case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
 						case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+						case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
 							switch ($this->filters[$name]['type']) {
 								case FilterTypesEnum::TAXONOMY->value:
 									$taxonomyName = $this->filters[$name]['value'];
@@ -336,6 +342,9 @@ class Listing extends Component
 									$metaQuery = new MetaQuery();
 
 									switch ($this->filters[$name]['appearance']) {
+										case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
+											$metaQuery->add($metaName, $value, 'LIKE');
+											break;
 										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
 											$metaQuery->add($metaName, $value);
 											break;

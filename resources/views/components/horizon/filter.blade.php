@@ -35,11 +35,17 @@
                     @foreach($value['choices'] as $key => $choice)
                         <div>
                             <input type="checkbox" value="{{ $choice['slug'] }}" id="{{ $model }}_{{ $key }}"
-                                   wire:model="{{ $model }}.{{ $choice['slug'] }}">
+                                   @if($model) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif>
                             <label for="{{ $model }}_{{ $key }}">{{ $choice['name'] }}</label>
                         </div>
                     @endforeach
                 @endisset
+                @break
+
+            @case(ListingBlock::VALUE_FILTER_APPEARANCE_TEXT)
+                <div>
+                    <input type="text" id="{{ $model }}" @if($model) wire:model="{{ $model }}" @endif>
+                </div>
                 @break
 
             @default

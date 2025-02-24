@@ -43,10 +43,13 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_FILTERS_FIELD = 'field';
 	public const string FIELD_FILTERS_TAXONOMY = 'taxonomy';
 	public const string FIELD_FILTERS_APPEARANCE = 'appearance';
+	public const string FIELD_FILTERS_META_APPEARANCE = self::FIELD_FILTERS_APPEARANCE . 'Meta';
+	public const string FIELD_FILTERS_TAX_APPEARANCE = self::FIELD_FILTERS_APPEARANCE . 'Tax';
 	public const string FIELD_FILTERS_PLACEHOLDER = 'placeholder';
 
 	public const string VALUE_FILTER_APPEARANCE_SELECT = 'select';
 	public const string VALUE_FILTER_APPEARANCE_CHECKBOX = 'checkbox';
+	public const string VALUE_FILTER_APPEARANCE_TEXT = 'text';
 
 	public function getFields(): ?iterable
 	{
@@ -101,11 +104,19 @@ class ListingBlock extends AbstractBlock
 				->choices($typeChoices);
 			$filterFields[] = Text::make(__('Placeholder'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Il s’agit du texte affiché lorsqu’aucune option n’est sélectionnée'))->required();
 			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->helperText(__('Il s’agit du nom du filtre utilisé (notamment) dans l’URL pré-filtrée'))->required();
-			$filterFields[] = Select::make(__('Apparence du filtre'), self::FIELD_FILTERS_APPEARANCE)->stylized()->choices([
+			$filterFields[] = Select::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->stylized()->choices([
 				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
-				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher'
+				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
+				self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
 			])
-				->default('select');
+				->default('select')
+				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
+			$filterFields[] = Select::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->stylized()->choices([
+				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
+				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
+			])
+				->default('select')
+				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
 			$filterFields[] = Select::make(__('Champ'), self::FIELD_FILTERS_FIELD)
 				->stylized()
 				->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.'))
