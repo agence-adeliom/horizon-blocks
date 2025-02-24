@@ -49,7 +49,8 @@ class Listing extends Component
 	];
 
 	private const array MANUAL_POST_TYPES = [
-		'post', 'page',
+		'post',
+		'page',
 	];
 
 	public function mount(): void
@@ -75,7 +76,7 @@ class Listing extends Component
 
 		if ($page = Request::get('pagination')) {
 			if (is_numeric($page)) {
-				$this->page = $page;
+				$this->page = (int)$page;
 			}
 		}
 
@@ -229,7 +230,7 @@ class Listing extends Component
 					}
 
 					if (empty($appearance)) {
-						$appearance = 'select';
+						$appearance = ListingBlock::VALUE_FILTER_APPEARANCE_SELECT;
 					}
 
 					switch ($type) {
@@ -299,22 +300,65 @@ class Listing extends Component
 		if (is_array($this->filterFields)) {
 			foreach ($this->filterFields as $name => $value) {
 				if (!empty($value) && isset($this->filters[$name])) {
-					switch ($this->filters[$name]['type']) {
-						case FilterTypesEnum::TAXONOMY->value:
-							$taxonomyName = $this->filters[$name]['value'];
+					switch ($this->filters[$name]['appearance']) {
+						case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+						case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+							switch ($this->filters[$name]['type']) {
+								case FilterTypesEnum::TAXONOMY->value:
+									$taxonomyName = $this->filters[$name]['value'];
 
-							$taxQuery = new TaxQuery();
-							$taxQuery->add($taxonomyName, [$value]);
+									$taxQuery = new TaxQuery();
 
-							$qb->addTaxQuery($taxQuery);
-							break;
-						case FilterTypesEnum::META->value:
-							$metaName = $this->filters[$name]['value'];
+									switch ($this->filters[$name]['appearance']) {
+										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+											$taxQuery->add($taxonomyName, [$value]);
+											break;
+										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+											$taxQuery->setRelation('OR');
 
-							$metaQuery = new MetaQuery();
-							$metaQuery->add($metaName, $value);
+											foreach ($value as $slug => $enabled) {
+												if ($enabled == 'true') {
+													$subTaxQuery = new TaxQuery();
+													$subTaxQuery->add($taxonomyName, [$slug]);
+													$taxQuery->add($subTaxQuery);
+												}
+											}
+											break;
+										default:
+											break;
+									}
 
-							$qb->addMetaQuery($metaQuery);
+									$qb->addTaxQuery($taxQuery);
+									break;
+								case FilterTypesEnum::META->value:
+									$metaName = $this->filters[$name]['value'];
+
+									$metaQuery = new MetaQuery();
+
+									switch ($this->filters[$name]['appearance']) {
+										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+											$metaQuery->add($metaName, $value);
+											break;
+										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+											$metaQuery->setRelation('OR');
+
+											foreach ($value as $slug => $enabled) {
+												if ($enabled == 'true') {
+													$subMetaQuery = new MetaQuery();
+													$subMetaQuery->add($metaName, $slug);
+													$metaQuery->add($subMetaQuery);
+												}
+											}
+											break;
+										default:
+											break;
+									}
+
+									$qb->addMetaQuery($metaQuery);
+									break;
+								default:
+									break;
+							}
 							break;
 						default:
 							break;

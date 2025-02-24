@@ -45,6 +45,9 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_FILTERS_APPEARANCE = 'appearance';
 	public const string FIELD_FILTERS_PLACEHOLDER = 'placeholder';
 
+	public const string VALUE_FILTER_APPEARANCE_SELECT = 'select';
+	public const string VALUE_FILTER_APPEARANCE_CHECKBOX = 'checkbox';
+
 	public function getFields(): ?iterable
 	{
 		$postTypeField = PostTypeSelectField::make(callback: function ($postType): bool {
@@ -99,7 +102,8 @@ class ListingBlock extends AbstractBlock
 			$filterFields[] = Text::make(__('Placeholder'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Il s’agit du texte affiché lorsqu’aucune option n’est sélectionnée'))->required();
 			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->helperText(__('Il s’agit du nom du filtre utilisé (notamment) dans l’URL pré-filtrée'))->required();
 			$filterFields[] = Select::make(__('Apparence du filtre'), self::FIELD_FILTERS_APPEARANCE)->stylized()->choices([
-				'select' => 'Sélection',
+				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
+				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher'
 			])
 				->default('select');
 			$filterFields[] = Select::make(__('Champ'), self::FIELD_FILTERS_FIELD)
