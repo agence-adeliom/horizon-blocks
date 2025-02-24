@@ -3,7 +3,8 @@
         @if($filters)
             <div>
                 @foreach($filters as $type=>$filter)
-                    <x-horizon.filter :value="$filter" :model="'filterFields.'.$filter['name']"/>
+                    <x-horizon.filter :values="$filterFields" :value="$filter"
+                                      :model="'filterFields.'.$filter['name']"/>
                 @endforeach
             </div>
         @endif

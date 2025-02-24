@@ -23,7 +23,7 @@
         </label>
 
 
-    @switch($value['appearance'])
+        @switch($value['appearance'])
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_SELECT)
                 <select class="select" id="{{ $model }}" name="{{ $model }}"
                         @if ($model) wire:model="{{ $model }}" @endif>
@@ -44,8 +44,13 @@
                 @isset($value['choices'])
                     @foreach($value['choices'] as $key => $choice)
                         <div>
-                            <input type="checkbox" value="{{ $choice['slug'] }}" id="{{ $model }}_{{ $key }}"
-                                   @if($model) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif>
+                            <input type="checkbox" id="{{ $model }}_{{ $key }}" name="{{ $model }}.{{$choice['slug']}}"
+                                   @if($model) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif
+                                   @isset($values[$value['name']][$choice['slug']])
+                                       @if($values[$value['name']][$choice['slug']] == 'true')
+                                           checked="checked"
+                                    @endif
+                                    @endisset>
                             <label for="{{ $model }}_{{ $key }}">{{ $choice['name'] }}</label>
                         </div>
                     @endforeach
