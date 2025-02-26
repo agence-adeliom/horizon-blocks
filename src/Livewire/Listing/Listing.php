@@ -43,6 +43,7 @@ class Listing extends Component
 	public null|false|array $filters = [];
 	public null|false|array $secondaryFilters = [];
 	public ?string $secondaryFiltersButtonLabel = null;
+	public ?string $secondaryFiltersTitle = null;
 	private null|false|array $baseFilters = [];
 	private null|false|array $baseSecondaryFilters = [];
 	public ?string $postTypeClass = null;
@@ -511,6 +512,10 @@ class Listing extends Component
 
 		foreach ($this->filterFields as $key => $filterField) {
 			$this->filterFields[$key] = null;
+		}
+
+		foreach ($this->secondaryFilterFields as $key => $secondaryFilterField) {
+			$this->secondaryFilterFields[$key] = null;
 		}
 
 		$this->dispatch('filters-reset');

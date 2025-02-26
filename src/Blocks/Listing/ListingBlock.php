@@ -43,6 +43,7 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_FILTERS = 'filters';
 	public const string FIELD_SECONDARY_FILTERS = 'secondaryFilters';
 	public const string FIELD_SECONDARY_FILTERS_BUTTON_LABEL = 'secondaryFiltersButtonLabel';
+	public const string FIELD_SECONDARY_FILTERS_TITLE = 'secondaryFiltersTitle';
 	public const string FIELD_WITH_SECONDARY_FILTERS = 'withSecondaryFilters';
 
 	public const string FIELD_FILTERS_TYPE = 'type';
@@ -167,6 +168,8 @@ class ListingBlock extends AbstractBlock
 				Text::make(__('Label du bouton'), self::FIELD_SECONDARY_FILTERS_BUTTON_LABEL)
 					->helperText(__('Texte affiché sur le bouton pour afficher les filtres secondaires'))
 					->placeholder('Filtres avancés'),
+				Text::make(__('Titre des filtres secondaires'), self::FIELD_SECONDARY_FILTERS_TITLE)
+					->helperText(__('Titre affiché au-dessus des filtres secondaires'))->placeholder('Filtres avancés'),
 				Repeater::make(__('Filtres secondaires'), self::FIELD_SECONDARY_FILTERS)
 					->button(__('Ajouter un filtre secondaire'))
 					->layout('block')

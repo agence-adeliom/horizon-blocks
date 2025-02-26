@@ -5,6 +5,7 @@
     $secondaryFilters = $fields['secondaryFilters']??[];
     $secondaryFiltersLabel = $fields['secondaryFiltersButtonLabel'] ?? 'Filtres avancés';
     $hasSecondaryFilters= !empty($secondaryFilters) && $fields['withSecondaryFilters'];
+    $secondaryFiltersTitle = $fields['secondaryFiltersTitle']??null;
 
     if (isset($fields['postType'])) {
         $postType = $fields['postType'];
@@ -26,5 +27,6 @@
 
         <livewire:listing.listing :post-type="$postType" :per-page="$perPage" :filters="$filters"
                                   :secondary-filters="$hasSecondaryFilters ? $secondaryFilters : null"
-                                  :secondary-filters-button-label="$secondaryFiltersLabel"/>
+                                  :secondary-filters-button-label="$secondaryFiltersLabel"
+                                  :secondary-filters-title="$secondaryFiltersTitle"/>
 </x-block>

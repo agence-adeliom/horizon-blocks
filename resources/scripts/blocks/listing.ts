@@ -11,6 +11,16 @@ Listing.getAllInstances = () => {
   return Array.from(document.querySelectorAll(Listing.selector));
 };
 
+Listing.closeSecondaryFilters = (instance: HTMLElement) => {
+  instance.classList.add('hidden');
+  instance.classList.remove('active');
+}
+
+Listing.openSecondaryFilters = (instance: HTMLElement) => {
+  instance.classList.remove('hidden');
+  instance.classList.add('active');
+}
+
 Listing.initInstanceSecondaryFilters = (instance) => {
   instance.querySelector('.secondary-filters-btn')?.addEventListener('click', (e) => {
     e.preventDefault();
@@ -19,8 +29,7 @@ Listing.initInstanceSecondaryFilters = (instance) => {
       const target = instance.querySelector(`[data-id="${e.target.dataset.for}"]`);
 
       if (target) {
-        target.classList.remove('hidden');
-        target.classList.add('active');
+        Listing.openSecondaryFilters(target);
       }
     }
   });
@@ -32,11 +41,34 @@ Listing.initInstanceSecondaryFilters = (instance) => {
       const target = instance.querySelector(`[data-id="${e.target.dataset.close}"]`);
 
       if (target) {
-        target.classList.add('hidden');
-        target.classList.remove('active');
+        Listing.closeSecondaryFilters(target);
       }
     }
   })
+
+  instance.querySelector('[data-reset]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    if (e.target.dataset.reset) {
+      const target = instance.querySelector(`[data-id="${e.target.dataset.reset}"]`);
+
+      if (target) {
+        Listing.closeSecondaryFilters(target);
+      }
+    }
+  })
+
+  instance.querySelector('[data-apply]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    if (e.target.dataset.apply) {
+      const target = instance.querySelector(`[data-id="${e.target.dataset.apply}"]`);
+
+      if (target) {
+        Listing.closeSecondaryFilters(target);
+      }
+    }
+  });
 }
 
 Listing.initInstance = (instance) => {

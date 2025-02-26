@@ -17,12 +17,32 @@
                         </button>
 
                         <div class="secondary-filters hidden" wire:ignore data-id="{{$secondaryFiltersUniqId}}">
-                            <button data-close="{{ $secondaryFiltersUniqId }}">Fermer les filtres avancés</button>
+                            <div class="secondary-filters--container">
+                                <div class="secondary-filters--header">
+                                    @if($secondaryFiltersTitle)
+                                        <p class="secondary-filters--title">{{ $secondaryFiltersTitle }}</p>
+                                    @endif
+                                    <button class="secondary-filters--close" data-close="{{ $secondaryFiltersUniqId }}">
+                                        Fermer les filtres avancés
+                                    </button>
+                                </div>
 
-                            @foreach($secondaryFilters as $type => $secondaryFilter)
-                                <x-horizon.filter :values="$secondaryFilterFields" :value="$secondaryFilter"
-                                                  :model="'secondaryFilterFields.'.$secondaryFilter['name']"/>
-                            @endforeach
+                                <div class="secondary-filters--filters">
+                                    @foreach($secondaryFilters as $type => $secondaryFilter)
+                                        <x-horizon.filter :values="$secondaryFilterFields" :value="$secondaryFilter"
+                                                          :model="'secondaryFilterFields.'.$secondaryFilter['name']"/>
+                                    @endforeach
+                                </div>
+
+                                <div class="secondary-filters--btns">
+                                    <button class="secondary-filters--reset" wire:click="resetFilters"
+                                            data-reset="{{ $secondaryFiltersUniqId }}">Tout effacer
+                                    </button>
+                                    <button class="secondary-filters--apply" data-apply="{{ $secondaryFiltersUniqId }}">
+                                        Afficher les résultats
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     @endif
 
