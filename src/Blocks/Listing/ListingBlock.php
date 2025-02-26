@@ -25,6 +25,7 @@ use Extended\ACF\Fields\Number;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Select;
 use Extended\ACF\Fields\Text;
+use Extended\ACF\Fields\TrueFalse;
 use Extended\ACF\Location;
 
 class ListingBlock extends AbstractBlock
@@ -33,11 +34,16 @@ class ListingBlock extends AbstractBlock
 	public static ?string $title = 'Liste d’éléments';
 	public static ?string $mode = 'preview';
 
+	private array $treatedFields = [];
+
 	public const bool USE_FIELDS_TO_DEFINE_FILTERS = true;
 	public const bool ALWAYS_DISPLAY_FILTERS = true;
 
 	public const string FIELD_PER_PAGE = 'perPage';
 	public const string FIELD_FILTERS = 'filters';
+	public const string FIELD_SECONDARY_FILTERS = 'secondaryFilters';
+	public const string FIELD_SECONDARY_FILTERS_BUTTON_LABEL = 'secondaryFiltersButtonLabel';
+	public const string FIELD_WITH_SECONDARY_FILTERS = 'withSecondaryFilters';
 
 	public const string FIELD_FILTERS_TYPE = 'type';
 	public const string FIELD_FILTERS_NAME = 'name';
@@ -85,10 +91,12 @@ class ListingBlock extends AbstractBlock
 		}
 	}
 
-	private function filterFields(): iterable
+	private function getFilterRepeaterFields(int $level = 1): array
 	{
-		$availableFields = $this->getAvailableFilterChoices();
-		$availableTaxonomies = $this->getAvailableTaxonomies();
+		$filterFields = [];
+
+		$availableFields = $this->getAvailableFilterChoices(level: $level);
+		$availableTaxonomies = $this->getAvailableTaxonomies(level: $level);
 
 		$typeChoices = [];
 		if (!empty($availableFields) || self::ALWAYS_DISPLAY_FILTERS) {
@@ -102,7 +110,6 @@ class ListingBlock extends AbstractBlock
 		$typeChoices[FilterTypesEnum::SEARCH->value] = __('Recherche');
 
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
-			$filterFields = [];
 			$filterFields[] = ButtonGroup::make(__('Type'), self::FIELD_FILTERS_TYPE)
 				->required()
 				->choices($typeChoices);
@@ -140,14 +147,31 @@ class ListingBlock extends AbstractBlock
 				->choices($availableTaxonomies)
 				->lazyLoad()
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
+		}
 
+		return $filterFields;
+	}
+
+	private function filterFields(): iterable
+	{
+		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
 			yield from SettingsTab::make()->fields([
-				Repeater::make(__('Filtres'), self::FIELD_FILTERS)
+				Repeater::make(__('Filtres primaires'), self::FIELD_FILTERS)
 					->button(__('Ajouter un filtre'))
 					->layout('block')
 					->minRows(0)
 					->maxRows(3)
-					->fields($filterFields)
+					->fields($this->getFilterRepeaterFields()),
+				TrueFalse::make(__('Activer les filtres secondaires'), self::FIELD_WITH_SECONDARY_FILTERS)
+					->stylized(),
+				Text::make(__('Label du bouton'), self::FIELD_SECONDARY_FILTERS_BUTTON_LABEL)
+					->helperText(__('Texte affiché sur le bouton pour afficher les filtres secondaires'))
+					->placeholder('Filtres avancés'),
+				Repeater::make(__('Filtres secondaires'), self::FIELD_SECONDARY_FILTERS)
+					->button(__('Ajouter un filtre secondaire'))
+					->layout('block')
+					->fields($this->getFilterRepeaterFields(level: 2))
+					->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
 			]);
 		}
 	}
@@ -164,13 +188,13 @@ class ListingBlock extends AbstractBlock
 		}
 	}
 
-	private function getAvailableFilterChoices(): array
+	private function getAvailableFilterChoices(int $level = 1): array
 	{
 		$postType = $this->getFilteredPostType();
 		$fieldChoices = [];
 
 		if ($postType) {
-			$fields = $this->getPostTypeFields(postTypeSlug: $postType);
+			$fields = $this->getPostTypeFields(postTypeSlug: $postType, level: $level);
 
 			foreach ($fields as $field) {
 				$fieldChoices[sprintf('%s_%s', $field['type'], $field['name'])] = $field['label'];
@@ -180,7 +204,7 @@ class ListingBlock extends AbstractBlock
 		return $fieldChoices;
 	}
 
-	private function getAvailableTaxonomies(): array
+	private function getAvailableTaxonomies(int $level = 1): array
 	{
 		$postType = $this->getFilteredPostType();
 		$taxonomyChoices = [];
@@ -225,7 +249,7 @@ class ListingBlock extends AbstractBlock
 		return $taxonomyChoices;
 	}
 
-	private function getPostTypeFields(string $postTypeSlug): array
+	private function getPostTypeFields(string $postTypeSlug, int $level = 1): array
 	{
 		$fields = [];
 
@@ -233,7 +257,6 @@ class ListingBlock extends AbstractBlock
 			foreach (FileService::getCustomAdminFiles() as $customAdminFile) {
 				require_once $customAdminFile;
 			}
-
 			foreach (ClassService::getAllCustomAdminClasses() as $adminClass) {
 				if (method_exists($adminClass, 'getLocation') && method_exists($adminClass, 'getFields')) {
 					$class = new $adminClass();
@@ -249,7 +272,7 @@ class ListingBlock extends AbstractBlock
 								if (isset($rule['param'], $rule['operator'], $rule['value'])) {
 									if ($rule['param'] === 'post_type') {
 										if (($rule['operator'] === '==' && $rule['value'] === $postTypeSlug) || $rule['operator'] === '!=' && $rule['value'] !== $postTypeSlug) {
-											$this->handleFieldClass(classInstance: $class, fields: $fields);
+											$this->handleFieldClass(classInstance: $class, fields: $fields, level: $level);
 										}
 									}
 								}
@@ -262,17 +285,17 @@ class ListingBlock extends AbstractBlock
 			$class = ClassService::getPostTypeClassBySlug(slug: $postTypeSlug);
 			$classInstance = new $class();
 
-			$this->handleFieldClass(classInstance: $classInstance, fields: $fields);
+			$this->handleFieldClass(classInstance: $classInstance, fields: $fields, level: $level);
 		}
 
 		return $fields;
 	}
 
-	private function handleFieldClass($classInstance, array &$fields): void
+	private function handleFieldClass($classInstance, array &$fields, int $level = 1): void
 	{
 		if (method_exists($classInstance, 'getFields')) {
 			if ($classFields = iterator_to_array($classInstance->getFields(), preserve_keys: false)) {
-				$this->handleFields(fields: $classFields, array: $fields);
+				$this->handleFields(fields: $classFields, array: $fields, level: $level);
 			}
 		}
 	}
@@ -280,64 +303,74 @@ class ListingBlock extends AbstractBlock
 	/**
 	 * @param Field[] $fields
 	 */
-	private function handleFields(array $fields, array &$array = []): void
+	private function handleFields(array $fields, array &$array = [], int $level = 1): void
 	{
-		foreach ($fields as $field) {
-			$key = null;
+		if ($level === 1) {
+			foreach ($fields as $field) {
+				$key = null;
 
-			$fieldData = $field->get();
-
-			if ($field instanceof Group) {
-				if (isset($fieldData['sub_fields']) && is_array($fieldData['sub_fields'])) {
-					if (isset($fieldData['name'])) {
-						$key = sprintf('%s_', $fieldData['name']);
-					}
-
-
-					foreach ($fieldData['sub_fields'] as $subField) {
-						$toAdd = [];
-
-						if (isset($subField['type'])) {
-							$toAdd['type'] = $subField['type'];
-						}
-
-						if (isset($subField['name'])) {
-							$toAdd['name'] = sprintf('%s%s', $key, $subField['name']);
-						}
-
-						if (isset($subField['key'])) {
-							$toAdd['key'] = $subField['key'];
-						}
-
-						if (isset($subField['label'])) {
-							$toAdd['label'] = $subField['label'];
-						}
-
-						$array[] = $toAdd;
-					}
-				}
-			} else {
 				$fieldData = $field->get();
 
-				$toAdd = [];
-				if (isset($fieldData['type'])) {
-					$toAdd['type'] = $fieldData['type'];
-				}
+				if ($field instanceof Group) {
+					if (isset($fieldData['sub_fields']) && is_array($fieldData['sub_fields'])) {
+						if (isset($fieldData['name'])) {
+							$key = sprintf('%s_', $fieldData['name']);
+						}
 
-				if (isset($fieldData['name'])) {
-					$toAdd['name'] = $fieldData['name'];
-				}
 
-				if (isset($fieldData['key'])) {
-					$toAdd['key'] = $fieldData['key'];
-				}
+						foreach ($fieldData['sub_fields'] as $subField) {
+							$toAdd = [];
 
-				if (isset($fieldData['label'])) {
-					$toAdd['label'] = $fieldData['label'];
-				}
+							if (isset($subField['type'])) {
+								$toAdd['type'] = $subField['type'];
+							}
 
-				$array[] = $toAdd;
+							if (isset($subField['name'])) {
+								$toAdd['name'] = sprintf('%s%s', $key, $subField['name']);
+							}
+
+							if (isset($subField['key'])) {
+								$toAdd['key'] = $subField['key'];
+							}
+
+							if (isset($subField['label'])) {
+								$toAdd['label'] = $subField['label'];
+							}
+
+							$this->treatedFields[$toAdd['name']] = $toAdd;
+
+							$array[] = $toAdd;
+						}
+					}
+				} else {
+					if ($level === 1) {
+						$fieldData = $field->get();
+					}
+
+					$toAdd = [];
+					if (isset($fieldData['type'])) {
+						$toAdd['type'] = $fieldData['type'];
+					}
+
+					if (isset($fieldData['name'])) {
+						$toAdd['name'] = $fieldData['name'];
+					}
+
+					if (isset($fieldData['key'])) {
+						$toAdd['key'] = $fieldData['key'];
+					}
+
+					if (isset($fieldData['label'])) {
+						$toAdd['label'] = $fieldData['label'];
+					}
+
+					$this->treatedFields[$toAdd['name']] = $toAdd;
+
+					$array[] = $toAdd;
+				}
 			}
+		} else {
+			$array = array_values($this->treatedFields);
 		}
 	}
 

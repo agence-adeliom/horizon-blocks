@@ -2,6 +2,9 @@
     $postType = null;
     $perPage = 12;
     $filters = $fields['filters']??[];
+    $secondaryFilters = $fields['secondaryFilters']??[];
+    $secondaryFiltersLabel = $fields['secondaryFiltersButtonLabel'] ?? 'Filtres avancés';
+    $hasSecondaryFilters= !empty($secondaryFilters) && $fields['withSecondaryFilters'];
 
     if (isset($fields['postType'])) {
         $postType = $fields['postType'];
@@ -12,7 +15,7 @@
     }
 @endphp
 
-<x-block :fields="$fields">
+<x-block :fields="$fields" class="listing-block">
     @isset($fields['uptitle'])
         <x-typography.uptitle :content="$fields['uptitle']"/>
     @endisset
@@ -21,5 +24,7 @@
         <x-typography.heading :fields="$fields['title']"/>
     @endisset
 
-    <livewire:listing.listing :post-type="$postType" :per-page="$perPage" :filters="$filters"/>
+        <livewire:listing.listing :post-type="$postType" :per-page="$perPage" :filters="$filters"
+                                  :secondary-filters="$hasSecondaryFilters ? $secondaryFilters : null"
+                                  :secondary-filters-button-label="$secondaryFiltersLabel"/>
 </x-block>

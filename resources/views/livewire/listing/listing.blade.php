@@ -6,6 +6,26 @@
                     <x-horizon.filter :values="$filterFields" :value="$filter"
                                       :model="'filterFields.'.$filter['name']"/>
                 @endforeach
+
+                    @if(!empty($secondaryFilters))
+                        @php
+                            $secondaryFiltersUniqId = uniqid();
+                        @endphp
+
+                        <button class="secondary-filters-btn" data-for="{{ $secondaryFiltersUniqId }}" wire:ignore>
+                            {{ !empty($secondaryFiltersButtonLabel) ? $secondaryFiltersButtonLabel : 'Filtres avancés' }}
+                        </button>
+
+                        <div class="secondary-filters hidden" wire:ignore data-id="{{$secondaryFiltersUniqId}}">
+                            <button data-close="{{ $secondaryFiltersUniqId }}">Fermer les filtres avancés</button>
+
+                            @foreach($secondaryFilters as $type => $secondaryFilter)
+                                <x-horizon.filter :values="$secondaryFilterFields" :value="$secondaryFilter"
+                                                  :model="'secondaryFilterFields.'.$secondaryFilter['name']"/>
+                            @endforeach
+                        </div>
+                    @endif
+
             </div>
         @endif
 
