@@ -47,18 +47,19 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_WITH_SECONDARY_FILTERS = 'withSecondaryFilters';
 
 	public const string FIELD_FILTERS_TYPE = 'type';
-	public const string FIELD_FILTERS_NAME = 'name';
 	public const string FIELD_FILTERS_FIELD = 'field';
 	public const string FIELD_FILTERS_TAXONOMY = 'taxonomy';
 	public const string FIELD_FILTERS_APPEARANCE = 'appearance';
 	public const string FIELD_FILTERS_META_APPEARANCE = self::FIELD_FILTERS_APPEARANCE . 'Meta';
 	public const string FIELD_FILTERS_TAX_APPEARANCE = self::FIELD_FILTERS_APPEARANCE . 'Tax';
+	public const string FIELD_FILTERS_NAME = 'name';
 	public const string FIELD_FILTERS_PLACEHOLDER = 'placeholder';
 
 	public const string VALUE_FILTER_APPEARANCE_SELECT = 'select';
 	public const string VALUE_FILTER_APPEARANCE_CHECKBOX = 'checkbox';
 	public const string VALUE_FILTER_APPEARANCE_RADIO = 'radio';
 	public const string VALUE_FILTER_APPEARANCE_TEXT = 'text';
+	public const string VALUE_FILTER_APPEARANCE_MULTISELECT = 'multiselect';
 
 	public function getFields(): ?iterable
 	{
@@ -119,13 +120,14 @@ class ListingBlock extends AbstractBlock
 				->conditionalLogic([
 					ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::SEARCH->value)
 				]);
-			$filterFields[] = Text::make(__('Placeholder'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Il s’agit du texte affiché lorsqu’aucune option n’est sélectionnée'))->required();
-			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->helperText(__('Il s’agit du nom du filtre utilisé (notamment) dans l’URL pré-filtrée'))->required();
+			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->required();
+			$filterFields[] = Text::make(__('Texte par défaut du filtre'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Si non renseigné, le nom sera utilisé'));
 			$filterFields[] = ButtonGroup::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->choices([
 				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
 				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
 				self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
 				self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
+				self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
 			])
 				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
@@ -133,6 +135,7 @@ class ListingBlock extends AbstractBlock
 				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
 				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
 				self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
+				self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
 			])
 				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);

@@ -9,14 +9,14 @@
 
                     @if(!empty($secondaryFilters))
                         @php
-                            $secondaryFiltersUniqId = uniqid();
+                            $secondaryFiltersUniqId = 'secondary-filters-drawer';
                         @endphp
 
-                        <button class="secondary-filters-btn" data-for="{{ $secondaryFiltersUniqId }}" wire:ignore>
+                        <button class="secondary-filters-btn" data-for="{{ $secondaryFiltersUniqId }}">
                             {{ !empty($secondaryFiltersButtonLabel) ? $secondaryFiltersButtonLabel : 'Filtres avancés' }}
                         </button>
 
-                        <div class="secondary-filters hidden" wire:ignore data-id="{{$secondaryFiltersUniqId}}">
+                        <div class="secondary-filters hidden" wire:ignore.self data-id="{{$secondaryFiltersUniqId}}">
                             <div class="secondary-filters--container">
                                 <div class="secondary-filters--header">
                                     @if($secondaryFiltersTitle)

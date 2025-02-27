@@ -89,7 +89,7 @@ class Listing extends Component
 		$this->getData();
 	}
 
-	private function initSearchFilter(string $searchName, string $placeholder, int $level = 1): void
+	private function initSearchFilter(string $searchName, string $label, string $placeholder, int $level = 1): void
 	{
 		$workingFilters = match ($level) {
 			1 => $this->filters,
@@ -97,7 +97,7 @@ class Listing extends Component
 		};
 
 		$workingFilters[$searchName] = [
-			'name' => $searchName, 'placeholder' => $placeholder, 'isSearch' => true,
+			'name' => $searchName, 'label' => $label, 'placeholder' => $placeholder, 'isSearch' => true,
 		];
 
 		switch ($level) {
@@ -112,7 +112,7 @@ class Listing extends Component
 		}
 	}
 
-	private function initTaxonomyFilter(string $taxonomyName, string $filterName, FilterTypesEnum $filterType, string $appearance, string $placeholder, int $level = 1): void
+	private function initTaxonomyFilter(string $taxonomyName, string $filterName, FilterTypesEnum $filterType, string $appearance, string $label, string $placeholder, int $level = 1): void
 	{
 		$workingFilters = match ($level) {
 			1 => $this->filters,
@@ -131,6 +131,7 @@ class Listing extends Component
 						'name' => $filterName,
 						'appearance' => $appearance,
 						'value' => $taxonomyName,
+						'label' => $label,
 						'placeholder' => $placeholder,
 						'choices' => [],
 					];
@@ -155,7 +156,7 @@ class Listing extends Component
 		}
 	}
 
-	private function initMetaFilter(string $metaKey, string $filterName, FilterTypesEnum $filterType, string $appearance, string $postType, ?string $fieldClass, string $placeholder, int $level = 1): void
+	private function initMetaFilter(string $metaKey, string $filterName, FilterTypesEnum $filterType, string $appearance, string $postType, ?string $fieldClass, string $label, string $placeholder, int $level = 1): void
 	{
 		$workingFilters = match ($level) {
 			1 => $this->filters,
@@ -191,14 +192,15 @@ class Listing extends Component
 								'name' => $filterName,
 								'appearance' => $appearance,
 								'value' => $metaKey,
+								'label' => $label,
 								'placeholder' => $placeholder,
 								'choices' => [],
 							];
 						}
-						foreach ($choices as $value => $label) {
+						foreach ($choices as $choiceValue => $choiceLabel) {
 							$workingFilters[$filterName]['choices'][] = [
-								'slug' => $value,
-								'name' => $label,
+								'slug' => $choiceValue,
+								'name' => $choiceLabel,
 							];
 						}
 					}
@@ -212,6 +214,7 @@ class Listing extends Component
 									'name' => $filterName,
 									'appearance' => $appearance,
 									'value' => $metaKey,
+									'label' => $label,
 									'placeholder' => $placeholder,
 									'choices' => [],
 								];
@@ -250,8 +253,9 @@ class Listing extends Component
 					default => null,
 				};
 
-				$name = sanitize_title($filter[ListingBlock::FIELD_FILTERS_NAME]);
-				$placeholder = $filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER];
+				$label = $filter[ListingBlock::FIELD_FILTERS_NAME];
+				$name = sanitize_title($label);
+				$placeholder = !empty($filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER]) ? $filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER] : $label;
 				$fieldClass = null;
 
 				$value = match ($type) {
@@ -264,7 +268,6 @@ class Listing extends Component
 					preg_match('/([a-zA-Z]+)_(.+)/', $value, $matches);
 
 					if (isset($matches[1], $matches[2])) {
-						//dd($matches);
 						$value = $matches[2];
 						$fieldType = $matches[1];
 
@@ -305,13 +308,13 @@ class Listing extends Component
 
 				switch ($type) {
 					case FilterTypesEnum::META:
-						$this->initMetaFilter(metaKey: $value, filterName: $name, filterType: $type, appearance: $appearance, postType: $this->postTypeClass ?? $this->postType, fieldClass: $fieldClass, placeholder: $placeholder, level: $level);
+						$this->initMetaFilter(metaKey: $value, filterName: $name, filterType: $type, appearance: $appearance, postType: $this->postTypeClass ?? $this->postType, fieldClass: $fieldClass, label: $label, placeholder: $placeholder, level: $level);
 						break;
 					case FilterTypesEnum::TAXONOMY:
-						$this->initTaxonomyFilter(taxonomyName: $value, filterName: $name, filterType: $type, appearance: $appearance, placeholder: $placeholder, level: $level);
+						$this->initTaxonomyFilter(taxonomyName: $value, filterName: $name, filterType: $type, appearance: $appearance, label: $label, placeholder: $placeholder, level: $level);
 						break;
 					case FilterTypesEnum::SEARCH:
-						$this->initSearchFilter(searchName: $name, placeholder: $placeholder, level: $level);
+						$this->initSearchFilter(searchName: $name, label: $label, placeholder: $placeholder, level: $level);
 						break;
 					default:
 						break;
@@ -351,11 +354,11 @@ class Listing extends Component
 
 					switch ($type) {
 						case FilterTypesEnum::TAXONOMY:
-							$this->initTaxonomyFilter(taxonomyName: $value, filterName: $name, filterType: $type, appearance: $appearance, placeholder: $placeholder);
+							$this->initTaxonomyFilter(taxonomyName: $value, filterName: $name, filterType: $type, appearance: $appearance, label: $placeholder);
 							break;
 						case FilterTypesEnum::META:
 							$fieldClass = $filter['fieldClass'];
-							$this->initMetaFilter(metaKey: $value, filterName: $name, filterType: $type, appearance: $appearance, postType: $this->postTypeClass, fieldClass: $fieldClass, placeholder: $placeholder);
+							$this->initMetaFilter(metaKey: $value, filterName: $name, filterType: $type, appearance: $appearance, postType: $this->postTypeClass, fieldClass: $fieldClass, label: $name, placeholder: $placeholder);
 							break;
 						case FilterTypesEnum::SEARCH:
 							$this->initSearchFilter(searchName: $name);
@@ -390,6 +393,7 @@ class Listing extends Component
 						case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
 						case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
 						case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
+						case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
 							switch ($workingFilters[$name]['type']) {
 								case FilterTypesEnum::TAXONOMY->value:
 									$taxonomyName = $workingFilters[$name]['value'];
@@ -402,13 +406,16 @@ class Listing extends Component
 											$taxQuery->add($taxonomyName, [$value]);
 											break;
 										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+										case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
 											$taxQuery->setRelation('OR');
 
-											foreach ($value as $slug => $enabled) {
-												if ($enabled == 'true') {
-													$subTaxQuery = new TaxQuery();
-													$subTaxQuery->add($taxonomyName, [$slug]);
-													$taxQuery->add($subTaxQuery);
+											if (is_array($value)) {
+												foreach ($value as $slug => $enabled) {
+													if ($enabled == 'true') {
+														$subTaxQuery = new TaxQuery();
+														$subTaxQuery->add($taxonomyName, [$slug]);
+														$taxQuery->add($subTaxQuery);
+													}
 												}
 											}
 											break;
@@ -432,6 +439,7 @@ class Listing extends Component
 											$metaQuery->add($metaName, $value);
 											break;
 										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+										case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
 											$metaQuery->setRelation('OR');
 
 											foreach ($value as $slug => $enabled) {
@@ -521,6 +529,77 @@ class Listing extends Component
 		$this->dispatch('filters-reset');
 
 		$this->getData();
+	}
+
+	private function getValuesFromModelName(string $modelName): mixed
+	{
+		$values = null;
+
+		$exploded = explode('.', $modelName, 2);
+
+		if (isset($exploded[0], $exploded[1])) {
+			switch ($exploded[0]) {
+				case 'filterFields':
+					if (isset($this->filterFields[$exploded[1]])) {
+						$values = $this->filterFields[$exploded[1]];
+					}
+					break;
+				case 'secondaryFilterFields':
+					if (isset($this->secondaryFilterFields[$exploded[1]])) {
+						$values = $this->secondaryFilterFields[$exploded[1]];
+					}
+					break;
+				default:
+					break;
+			}
+		}
+
+		return $values;
+	}
+
+	public function resetFilter(string $modelName): void
+	{
+		$this->resetByModelName(modelName: $modelName);
+	}
+
+	private function resetByModelName(string $modelName): void
+	{
+		$explode = explode('.', $modelName, 2);
+
+		if (isset($explode[0], $explode[1])) {
+			switch ($explode[0]) {
+				case 'filterFields':
+					if (isset($this->filterFields[$explode[1]])) {
+						unset($this->filterFields[$explode[1]]);
+					}
+					break;
+				case 'secondaryFilterFields':
+					if (isset($this->secondaryFilterFields[$explode[1]])) {
+						unset($this->secondaryFilterFields[$explode[1]]);
+					}
+					break;
+				default:
+					break;
+			}
+		}
+
+		$this->getData();
+	}
+
+	public function howManyOptionsSelected(string $modelName): int
+	{
+		$totalSelected = 0;
+		$values = $this->getValuesFromModelName($modelName);
+
+		if (!empty($values) && is_array($values)) {
+			foreach ($values as $state) {
+				if ($state == 'true') {
+					$totalSelected++;
+				}
+			}
+		}
+
+		return $totalSelected;
 	}
 
 	public function render()
