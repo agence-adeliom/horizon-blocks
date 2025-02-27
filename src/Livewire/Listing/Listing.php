@@ -221,7 +221,7 @@ class Listing extends Component
 							}
 
 							$workingFilters[$filterName]['choices'][] = [
-								'slug' => $value,
+								'slug' => sanitize_title($value),
 								'name' => $value,
 							];
 						}
@@ -428,7 +428,26 @@ class Listing extends Component
 								case FilterTypesEnum::META->value:
 									$metaName = $workingFilters[$name]['value'];
 
+									$metaSlugs = array_column($workingFilters[$name]['choices'], 'slug');
+									$metaNames = array_column($workingFilters[$name]['choices'], 'name');
+
+									// Merge $metaSlugs and $metaNames by using metaSlugs as keys
+									$metaSlugs = array_combine($metaSlugs, $metaNames);
+
 									$metaQuery = new MetaQuery();
+
+									if (is_array($value)) {
+										foreach ($value as $valueKey => $valueValue) {
+											if (isset($metaSlugs[$valueKey])) {
+												$value[$metaSlugs[$valueKey]] = $valueValue;
+												unset($value[$valueKey]);
+											}
+										}
+									} else {
+										if (isset($metaSlugs[$value])) {
+											$value = $metaSlugs[$value];
+										}
+									}
 
 									switch ($workingFilters[$name]['appearance']) {
 										case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
@@ -442,11 +461,13 @@ class Listing extends Component
 										case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
 											$metaQuery->setRelation('OR');
 
+										if (is_array($value)) {
 											foreach ($value as $slug => $enabled) {
 												if ($enabled == 'true') {
 													$subMetaQuery = new MetaQuery();
 													$subMetaQuery->add($metaName, $slug);
 													$metaQuery->add($subMetaQuery);
+												}
 												}
 											}
 											break;
