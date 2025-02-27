@@ -394,6 +394,7 @@ class Listing extends Component
 						case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
 						case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
 						case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
+						case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
 							switch ($workingFilters[$name]['type']) {
 								case FilterTypesEnum::TAXONOMY->value:
 									$taxonomyName = $workingFilters[$name]['value'];
@@ -403,6 +404,7 @@ class Listing extends Component
 									switch ($workingFilters[$name]['appearance']) {
 										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
 										case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
+										case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
 											$taxQuery->add($taxonomyName, [$value]);
 											break;
 										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
@@ -455,6 +457,7 @@ class Listing extends Component
 											break;
 										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
 										case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
+										case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
 											$metaQuery->add($metaName, $value);
 											break;
 										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:

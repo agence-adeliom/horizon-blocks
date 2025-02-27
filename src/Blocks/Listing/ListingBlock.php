@@ -22,6 +22,7 @@ use Extended\ACF\Fields\Field;
 use Extended\ACF\Fields\Group;
 use Extended\ACF\Fields\Message;
 use Extended\ACF\Fields\Number;
+use Extended\ACF\Fields\RadioButton;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Select;
 use Extended\ACF\Fields\Text;
@@ -60,6 +61,7 @@ class ListingBlock extends AbstractBlock
 	public const string VALUE_FILTER_APPEARANCE_RADIO = 'radio';
 	public const string VALUE_FILTER_APPEARANCE_TEXT = 'text';
 	public const string VALUE_FILTER_APPEARANCE_MULTISELECT = 'multiselect';
+	public const string VALUE_FILTER_APPEARANCE_SINGLESELECT = 'singleselect';
 
 	public function getFields(): ?iterable
 	{
@@ -122,20 +124,22 @@ class ListingBlock extends AbstractBlock
 				]);
 			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->required();
 			$filterFields[] = Text::make(__('Texte par défaut du filtre'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Si non renseigné, le nom sera utilisé'));
-			$filterFields[] = ButtonGroup::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->choices([
+			$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->choices([
 				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
 				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
 				self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
 				self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
 				self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
+				self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
 			])
 				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
-			$filterFields[] = ButtonGroup::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->choices([
+			$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->choices([
 				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
 				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
 				self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
 				self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
+				self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
 			])
 				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);

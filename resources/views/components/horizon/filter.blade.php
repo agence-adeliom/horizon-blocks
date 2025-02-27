@@ -81,10 +81,53 @@
                 </div>
                 @break
 
+            @case(ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT)
+                <div>
+                    <div>
+                        <p class="indicator">
+                            @if(isset($values[$value['name']])&& $values[$value['name']])
+                                @foreach($value['choices'] as $choiceKey => $choice)
+                                    @if(isset($choice['slug'])&&$choice['slug'] === $values[$value['name']])
+                                        <span class="label">{{ $choice['name'] }}</span>
+                                        @break
+                                    @endif
+                                @endforeach
+                            @else
+                                <span class="placeholder">{{$value['placeholder']}}</span>
+                            @endif
+                        </p>
+
+                        <div class="dropdown">
+                            <div class="values">
+                                @isset($value['choices'])
+                                    @foreach($value['choices'] as $key => $choice)
+                                        <div wire:key="{{ $key }}">
+                                            <input type="radio" id="{{ $model }}_{{ $key }}" name="{{ $model }}"
+                                                   value="{{ $choice['slug'] }}"
+                                                   @if($model) wire:model="{{ $model }}" @endif
+                                                   @isset($values[$value['name']][$choice['slug']])
+                                                       @if($values[$value['name']][$choice['slug']] == 'true')
+                                                           checked="checked"
+                                                    @endif
+                                                    @endisset>
+                                            <label for="{{ $model }}_{{$key}}">{{ $choice['name'] }}</label>
+                                        </div>
+                                    @endforeach
+                                @endisset
+                            </div>
+                            <div class="bottom">
+                                <p wire:click="resetFilter('{{ $model }}')">Réinitialiser</p>
+                                <p>Afficher</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @break
+
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT)
                 <div>
                     <div>
-                        <p>
+                        <p class="indicator">
                             @if($selected = $this->howManyOptionsSelected($model))
                                 <span class="label">{{ $value['label'] }}</span>
                                 <span class="counter">{{ $selected }}</span>
@@ -97,7 +140,7 @@
                             <div class="values">
                                 @isset($value['choices'])
                                     @foreach($value['choices'] as $key => $choice)
-                                        <div>
+                                        <div wire:key="{{$key}}">
                                             <input type="checkbox" id="{{ $model }}_{{$key}}"
                                                    name="{{$model}}.{{$choice['slug']}}"
                                                    @if($model) wire:model="{{$model}}.{{$choice['slug']}}" @endif
