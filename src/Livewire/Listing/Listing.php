@@ -49,6 +49,8 @@ class Listing extends Component
 	public ?string $postTypeClass = null;
 	public ?string $card = null;
 
+	private const QUICK_ACCESS_TAXONOMY_PREFIX = 'qat-';
+
 	public array $sortOptions = [
 		'date.DESC' => 'Plus récent',
 		'date.ASC' => 'Plus ancien',
@@ -242,6 +244,11 @@ class Listing extends Component
 		}
 	}
 
+	private function getFilterFieldName(array $filter): string
+	{
+		return sanitize_title($filter[ListingBlock::FIELD_FILTERS_NAME]);
+	}
+
 	private function initFiltersByLevel(?array $filtersData = null, int $level = 1): void
 	{
 		if (null !== $filtersData) {
@@ -254,7 +261,7 @@ class Listing extends Component
 				};
 
 				$label = $filter[ListingBlock::FIELD_FILTERS_NAME];
-				$name = sanitize_title($label);
+				$name = $this->getFilterFieldName($filter);
 				$placeholder = !empty($filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER]) ? $filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER] : $label;
 				$fieldClass = null;
 
@@ -323,6 +330,117 @@ class Listing extends Component
 		}
 	}
 
+	private function handleQuickAccessFilterByLevel(mixed $value, string $taxonomyName, int $level = 1): bool
+	{
+		$hasChangedSomething = false;
+
+		$baseFilters = match ($level) {
+			default => $this->baseFilters,
+			2 => $this->baseSecondaryFilters,
+		};
+
+		foreach ($baseFilters as $baseFilterValue) {
+			if (isset($baseFilterValue[ListingBlock::FIELD_FILTERS_TYPE]) && $baseFilterValue[ListingBlock::FIELD_FILTERS_TYPE] === ListingBlock::FIELD_FILTERS_TAXONOMY) {
+				if (isset($baseFilterValue[ListingBlock::FIELD_FILTERS_TAXONOMY]) && $baseFilterValue[ListingBlock::FIELD_FILTERS_TAXONOMY] === $taxonomyName) {
+					$fieldName = $this->getFilterFieldName($baseFilterValue);
+
+					if (isset($baseFilterValue[ListingBlock::FIELD_FILTERS_TAX_APPEARANCE])) {
+						switch ($baseFilterValue[ListingBlock::FIELD_FILTERS_TAX_APPEARANCE]) {
+							case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+								if (is_string($value)) {
+									switch ($level) {
+										case 2:
+											$this->secondaryFilterFields[$fieldName] = $value;
+											break;
+										case 1:
+										default:
+											$this->filterFields[$fieldName] = $value;
+											break;
+									}
+								}
+								break;
+							case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+								if (is_string($value)) {
+									$value = [$value];
+								}
+
+								if (is_array($value)) {
+									$toPush = [];
+
+									foreach ($value as $item) {
+										$toPush[$item] = 'true';
+									}
+
+									switch ($level) {
+										case 2:
+											$this->secondaryFilterFields[$fieldName] = array_merge($this->secondaryFilterFields[$fieldName] ?? [], $toPush);
+											break;
+										case 1:
+										default:
+											$this->filterFields[$fieldName] = array_merge($this->filterField[$fieldName] ?? [], $toPush);
+											break;
+									}
+
+									$hasChangedSomething = true;
+								}
+								break;
+							default:
+								break;
+						}
+					}
+
+					break;
+				}
+			}
+		}
+
+		return $hasChangedSomething;
+	}
+
+	/**
+	 * @param string|string[] $value
+	 */
+	public static function generateQuickAccessQueryParam(string $taxonomy, string|array $value): ?string
+	{
+		$queryString = null;
+
+		switch (true) {
+			case is_array($value):
+				for ($x = 0; $x < count($value); $x++) {
+					if (null === $queryString) {
+						$queryString = '';
+					} else {
+						$queryString .= '&';
+					}
+
+					$queryString .= self::QUICK_ACCESS_TAXONOMY_PREFIX . $taxonomy . '[' . $x . ']=' . $value[$x];
+				}
+				break;
+			default:
+				$queryString = self::QUICK_ACCESS_TAXONOMY_PREFIX . $taxonomy . '=' . $value;
+				break;
+		}
+
+		return $queryString;
+	}
+
+	private function initQuickAccessFilters(): void
+	{
+		foreach (Request::all() as $key => $value) {
+			// QAT stands for Quick Access Taxonomy
+			if (str_starts_with($key, self::QUICK_ACCESS_TAXONOMY_PREFIX)) {
+				$taxonomyName = str_replace(self::QUICK_ACCESS_TAXONOMY_PREFIX, '', $key);
+
+				if (!$this->handleQuickAccessFilterByLevel(value: $value, taxonomyName: $taxonomyName, level: 1)) {
+					$this->handleQuickAccessFilterByLevel(value: $value, taxonomyName: $taxonomyName, level: 2);
+				}
+			}
+		}
+	}
+
 	private function initFilters(): void
 	{
 		if (ListingBlock::USE_FIELDS_TO_DEFINE_FILTERS) {
@@ -331,6 +449,8 @@ class Listing extends Component
 			$this->filters = [];
 			$this->secondaryFilters = [];
 		}
+
+		$this->initQuickAccessFilters();
 
 		$classInstance = null !== $this->postTypeClass ? new $this->postTypeClass() : null;
 
