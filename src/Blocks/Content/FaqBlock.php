@@ -21,6 +21,7 @@ class FaqBlock extends AbstractBlock
 	public static ?string $slug = 'faq';
 	public static ?string $title = 'FAQ';
 	public static ?string $description = "Présente des questions souvent posées par les utilisateurices, ainsi que des réponses rapides.";
+    public static ?string $icon = 'editor-help';
 
 	public const string FIELDS_IMG = 'img';
 	public const string FIELDS_QUESTIONS = 'questions';

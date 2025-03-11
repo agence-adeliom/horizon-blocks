@@ -22,6 +22,7 @@ class HeroForm extends AbstractBlock
 	public static ?string $title = 'Haut de page avec formulaire';
 	public static ?string $mode = 'preview';
 	public static string $category = 'hero';
+    public static ?string $icon = 'star-filled';
 
 	public function getFields(): ?iterable
 	{

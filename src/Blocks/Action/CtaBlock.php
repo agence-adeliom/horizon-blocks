@@ -18,6 +18,7 @@ class CtaBlock extends AbstractBlock
 	public static ?string $slug = 'cta';
 	public static ?string $title = "Section call-to-action";
 	public static ?string $description = "Incite l'utilisateur à effectuer une action spécifique dans un objectif de conversion.";
+    public static ?string $icon = 'megaphone';
 
 	public const string FIELD_APPARENCE = "appearance";
 	public const string FIELD_APPARENCE_DEFAULT = "default";

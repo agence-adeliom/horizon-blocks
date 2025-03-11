@@ -34,6 +34,7 @@ class ListingBlock extends AbstractBlock
 	public static ?string $slug = 'listing';
 	public static ?string $title = 'Liste d’éléments';
 	public static ?string $mode = 'preview';
+    public static ?string $icon = 'list-view';
 
 	private array $treatedFields = [];
 

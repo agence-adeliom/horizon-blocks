@@ -17,6 +17,7 @@ class FormConfirmationBlock extends AbstractBlock
 {
 	public static ?string $slug = 'form-confirmation';
 	public static ?string $title = 'Validation de formulaire';
+    public static ?string $icon = 'yes';
 
 	public function getFields(): ?iterable
 	{

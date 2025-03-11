@@ -15,6 +15,8 @@ class QuoteBlock extends AbstractBlock
 	public static ?string $description = "Mise en avant d'une citation, un témoignage ou un extrait de texte.";
 	public static ?string $mode = 'preview';
 	public static string $category = 'reassurance';
+    public static ?string $icon = 'format-quote';
+
 
 	public function getFields(): ?iterable
 	{

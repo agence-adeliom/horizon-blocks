@@ -17,6 +17,7 @@ class TitleTextBlock extends AbstractBlock
 {
 	public static ?string $slug = 'title-text';
 	public static ?string $title = 'Titre texte';
+    public static ?string $icon = 'editor-textcolor';
 
 	public function getFields(): ?iterable
 	{
