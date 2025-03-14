@@ -58,12 +58,12 @@ class CustomerReviewBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        if ($argumentsCss = BudService::getUrl('customer-review.css')) {
-            wp_enqueue_style('customer-review-block-css', $argumentsCss);
+        if ($customerReviewCss = BudService::getUrl('customer-review.css')) {
+            wp_enqueue_style('customer-review-block-css', $customerReviewCss);
         }
 
-        if ($argumentsJs = BudService::getUrl('customer-review.js')) {
-            wp_enqueue_script('customer-review-block-js', $argumentsJs);
+        if ($customerReviewJs = BudService::getUrl('customer-review.js')) {
+            wp_enqueue_script('customer-review-block-js', $customerReviewJs);
         }
     }
 }

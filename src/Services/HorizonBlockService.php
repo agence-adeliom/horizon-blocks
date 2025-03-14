@@ -17,6 +17,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroForm;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\CustomerReviewBlock;
+use Adeliom\HorizonBlocks\Blocks\Reassurance\KeyFigureBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\LogosBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\QuoteBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
@@ -103,6 +104,11 @@ class HorizonBlockService
 				self::COMPONENTS => [
 					CardCustomerReview::class
 				],
+			],
+			KeyFigureBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [],
+				self::LIVEWIRE_COMPONENTS => [],
 			],
 			LogosBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,

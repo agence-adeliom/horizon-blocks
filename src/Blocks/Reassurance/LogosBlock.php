@@ -55,7 +55,12 @@ class LogosBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        wp_enqueue_style('logos-block-css', BudService::getUrl('logos.css'));
-        wp_enqueue_script('logos-block-js', BudService::getUrl('logos.js'));
+        if ($logosCss = BudService::getUrl('logos.css')) {
+            wp_enqueue_style('logos-block-css', $logosCss);
+        }
+
+        if ($logosJs = BudService::getUrl('logos.js')) {
+            wp_enqueue_script('logos-block-js', $logosJs);
+        }
     }
 }
