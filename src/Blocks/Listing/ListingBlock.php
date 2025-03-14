@@ -34,7 +34,7 @@ class ListingBlock extends AbstractBlock
 	public static ?string $slug = 'listing';
 	public static ?string $title = 'Liste d’éléments';
 	public static ?string $mode = 'preview';
-    public static ?string $icon = 'list-view';
+	public static ?string $icon = 'list-view';
 
 	private array $treatedFields = [];
 
@@ -80,7 +80,7 @@ class ListingBlock extends AbstractBlock
 
 		yield from ContentTab::make()->fields([
 			UptitleField::make(),
-			HeadingField::make()->required(),
+			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h1')->required(),
 			$postTypeField
 		]);
 

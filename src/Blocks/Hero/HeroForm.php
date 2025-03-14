@@ -22,12 +22,12 @@ class HeroForm extends AbstractBlock
 	public static ?string $title = 'Haut de page avec formulaire';
 	public static ?string $mode = 'preview';
 	public static string $category = 'hero';
-    public static ?string $icon = 'star-filled';
+	public static ?string $icon = 'star-filled';
 
 	public function getFields(): ?iterable
 	{
 		yield from ContentTab::make()->fields([
-			HeadingField::make()->required(),
+			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h1')->required(),
 			WysiwygField::make(),
 			OfferField::make(),
 			HeadingField::make("Titre au dessus du formulaire", self::FORM_TITLE)->required(),

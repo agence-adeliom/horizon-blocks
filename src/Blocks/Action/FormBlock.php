@@ -21,7 +21,7 @@ class FormBlock extends AbstractBlock
 	public static ?string $slug = 'form';
 	public static ?string $title = 'Formulaire';
 	public static ?string $description = "Peut servir de formulaire de contact, d'inscription, demande de devis ou encore d'information.";
-    public static ?string $icon = 'feedback';
+	public static ?string $icon = 'feedback';
 
 	public const string FIELD_DESC = "desc";
 	public const string FIELD_POSITION = "position";
@@ -35,7 +35,7 @@ class FormBlock extends AbstractBlock
 	public function getFields(): ?iterable
 	{
 		yield from ContentTab::make()->fields([
-			HeadingField::make()->required(),
+			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			Text::make('Description', self::FIELD_DESC),
 			OfferField::make(),
 			FormField::selectGravityForm(),

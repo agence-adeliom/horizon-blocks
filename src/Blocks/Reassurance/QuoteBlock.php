@@ -15,13 +15,12 @@ class QuoteBlock extends AbstractBlock
 	public static ?string $description = "Mise en avant d'une citation, un témoignage ou un extrait de texte.";
 	public static ?string $mode = 'preview';
 	public static string $category = 'reassurance';
-    public static ?string $icon = 'format-quote';
-
+	public static ?string $icon = 'format-quote';
 
 	public function getFields(): ?iterable
 	{
 		yield from ContentTab::make()->fields([
-			HeadingField::make()->required(),
+			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 		]);
 	}
 }

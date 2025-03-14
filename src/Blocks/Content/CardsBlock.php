@@ -21,7 +21,7 @@ class CardsBlock extends AbstractBlock
 	public static ?string $title = 'Remontée de cartes';
 	public static ?string $description = 'Affiche deux cartes cliquables, menant chacune vers une page spécifique.';
 	public static string $category = 'content';
-    public static ?string $icon = 'grid-view';
+	public static ?string $icon = 'grid-view';
 
 	public const string FIELD_CARDS = 'cards';
 
@@ -29,7 +29,7 @@ class CardsBlock extends AbstractBlock
 	{
 		yield from ContentTab::make()->fields([
 			UptitleField::make(),
-			HeadingField::make(),
+			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2'),
 			WysiwygField::minimal(),
 			Repeater::make("Cartouches", self::FIELD_CARDS)
 				->fields([

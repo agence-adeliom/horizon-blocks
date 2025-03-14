@@ -21,7 +21,7 @@ class FaqBlock extends AbstractBlock
 	public static ?string $slug = 'faq';
 	public static ?string $title = 'FAQ';
 	public static ?string $description = "Présente des questions souvent posées par les utilisateurices, ainsi que des réponses rapides.";
-    public static ?string $icon = 'editor-help';
+	public static ?string $icon = 'editor-help';
 
 	public const string FIELDS_IMG = 'img';
 	public const string FIELDS_QUESTIONS = 'questions';
@@ -31,7 +31,7 @@ class FaqBlock extends AbstractBlock
 		yield from ContentTab::make()->fields([
 			Image::make(__('Petite image'), self::FIELDS_IMG),
 			UptitleField::make(),
-			HeadingField::make()->required(),
+			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			WysiwygField::minimal(),
 			ButtonField::group(),
 			Relationship::make(__('Liste de questions'), self::FIELDS_QUESTIONS)

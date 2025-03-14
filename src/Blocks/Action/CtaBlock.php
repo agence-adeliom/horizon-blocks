@@ -18,7 +18,7 @@ class CtaBlock extends AbstractBlock
 	public static ?string $slug = 'cta';
 	public static ?string $title = "Section call-to-action";
 	public static ?string $description = "Incite l'utilisateur à effectuer une action spécifique dans un objectif de conversion.";
-    public static ?string $icon = 'megaphone';
+	public static ?string $icon = 'megaphone';
 
 	public const string FIELD_APPARENCE = "appearance";
 	public const string FIELD_APPARENCE_DEFAULT = "default";
@@ -27,7 +27,7 @@ class CtaBlock extends AbstractBlock
 	public function getFields(): ?iterable
 	{
 		yield from ContentTab::make()->fields([
-			HeadingField::make()->required(),
+			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			WysiwygField::minimal()->helperText("1 ou 2 phrases maximum recommandées."),
 			ButtonField::types(),
 		]);
