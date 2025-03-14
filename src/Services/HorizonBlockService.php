@@ -7,6 +7,7 @@ namespace Adeliom\HorizonBlocks\Services;
 use Adeliom\HorizonBlocks\Blocks\Action\CtaBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormConfirmationBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\ArgumentBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
@@ -49,6 +50,13 @@ class HorizonBlockService
 			CtaBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
 				self::ASSET_FILES => [],
+				self::LIVEWIRE_COMPONENTS => [],
+			],
+			ArgumentBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [
+					'resources/scripts/blocks/arguments.ts',
+				],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
 			CardsBlock::class => [
