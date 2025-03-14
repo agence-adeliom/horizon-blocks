@@ -9,6 +9,7 @@ use Adeliom\HorizonBlocks\Blocks\Action\FormBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormConfirmationBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\ArgumentBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\Catchphrase;
 use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
@@ -66,6 +67,11 @@ class HorizonBlockService
 				self::COMPONENTS => [
 					CardBasic::class
 				],
+			],
+			Catchphrase::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [],
+				self::LIVEWIRE_COMPONENTS => [],
 			],
 			DocumentsBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
