@@ -14,9 +14,11 @@
             @endif
         </div>
         <div class="col-span-full grid-12">
-            @foreach ($fields['cards'] as $card)
-                <x-cards.card-basic :card="$card" />
-            @endforeach
+            @if (@isset($fields['cards']) && $fields['cards'])
+                @foreach ($fields['cards'] as $card)
+                    <x-cards.card-basic :card="$card" />
+                @endforeach
+            @endif
         </div>
     </div>
 </x-block>

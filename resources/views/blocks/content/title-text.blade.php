@@ -17,7 +17,6 @@
             @isset($fields['buttons'])
                 <x-action.buttons :buttons="$fields['buttons']" class="mt-button-text-mobile lg:mt-button-text-desktop" />
             @endisset
-
         </div>
     </div>
 </x-block>

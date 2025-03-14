@@ -29,6 +29,6 @@
     <div class="mt-text-image-mobile flex justify-center lg:mt-text-image-desktop">
         @if (isset($fields['button']) && $fields['button']['link'])
             <x-action.button :fields="$fields['button']" class="max-md:w-full" />
-        @endisset
-</div>
+        @endif
+    </div>
 </x-block>

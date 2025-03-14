@@ -17,6 +17,7 @@ use Adeliom\HorizonBlocks\Blocks\Reassurance\QuoteBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
+use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 
 class HorizonBlockService
@@ -52,6 +53,9 @@ class HorizonBlockService
 				self::REQUIRES_LIVEWIRE => false,
 				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [],
+				self::COMPONENTS => [
+					CardBasic::class
+				],
 			],
 			StepBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
