@@ -10,7 +10,9 @@
     @endphp
 
     <div @class([
+        'card-document',
         'relative p-4 flex items-center gap-4 rounded-card bg-white border-card shadow-sm hover:border-primary transition-colors',
+        $attributes['class'],
     ])>
         <div class="flex items-start md:items-center flex-1 gap-4">
             <x-far-file-lines class="icon-24 text-primary" />

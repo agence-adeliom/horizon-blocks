@@ -1,4 +1,8 @@
-<div class="col-span-6 flex bg-full min-h-80 relative rounded-card overflow-hidden group awc-theme-dark">
+<div @class([
+    'card-basic',
+    'col-span-6 flex bg-full min-h-80 relative rounded-card overflow-hidden group awc-theme-dark',
+    $attributes['class'],
+])>
     <x-media.img :image="$card['img']" class="cover-full group-hover:scale-110 transition-transform duration-300 ease-in-out"
         size="medium_large" container-class="absolute-full" />
     <div class="absolute-full bg-linear rounded-card"></div>

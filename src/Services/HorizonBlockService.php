@@ -16,11 +16,13 @@ use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroForm;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
+use Adeliom\HorizonBlocks\Blocks\Reassurance\CustomerReviewBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\QuoteBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
+use Adeliom\HorizonBlocks\View\Components\Cards\CardCustomerReview;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardDocument;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 
@@ -89,6 +91,16 @@ class HorizonBlockService
 				self::LIVEWIRE_COMPONENTS => [],
 				self::COMPONENTS => [
 					CardStep::class
+				],
+			],
+			CustomerReviewBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [
+					'resources/scripts/blocks/customer-review.ts',
+				],
+				self::LIVEWIRE_COMPONENTS => [],
+				self::COMPONENTS => [
+					CardCustomerReview::class
 				],
 			],
 			QuoteBlock::class => [

@@ -1,5 +1,9 @@
 @if (isset($question) && $question)
-    <div x-data="{ open: false }" class="faq-item rounded-card bg-color-03-50 p-medium">
+    <div x-data="{ open: false }" @class([
+        'faq-item',
+        'rounded-card bg-color-03-50 p-medium',
+        $attributes['class'],
+    ])>
         <div @click="open = !open" class="flex justify-between items-center cursor-pointer">
             @if (isset($question['question']) || isset($title))
                 <x-typography.text :content="$question['question'] ?? $title" class="font-semibold transition-all "
