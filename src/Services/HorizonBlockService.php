@@ -8,6 +8,7 @@ use Adeliom\HorizonBlocks\Blocks\Action\CtaBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormConfirmationBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
@@ -18,6 +19,7 @@ use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
+use Adeliom\HorizonBlocks\View\Components\Cards\CardDocument;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 
 class HorizonBlockService
@@ -55,6 +57,14 @@ class HorizonBlockService
 				self::LIVEWIRE_COMPONENTS => [],
 				self::COMPONENTS => [
 					CardBasic::class
+				],
+			],
+			DocumentsBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [],
+				self::LIVEWIRE_COMPONENTS => [],
+				self::COMPONENTS => [
+					CardDocument::class
 				],
 			],
 			StepBlock::class => [
