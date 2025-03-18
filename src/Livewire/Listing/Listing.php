@@ -672,7 +672,14 @@ class Listing extends Component
 
 		$this->dispatch('filters-reset');
 
+		$this->resetAllQAT();
+
 		$this->getData();
+	}
+
+	public function resetAllQAT(): void
+	{
+		$this->dispatch('qat-reset');
 	}
 
 	private function getValuesFromModelName(string $modelName): mixed

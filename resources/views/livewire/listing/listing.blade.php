@@ -83,6 +83,19 @@
             // Ré-écriture de l'URL
             window.history.pushState({}, '', '');
         });
+
+        $wire.on('qat-reset', () => {
+            // Remove all parameters starting with 'qat-' from the URL
+            const url = new URL(window.location.href);
+            const params = url.searchParams;
+            const keys = Array.from(params.keys());
+            keys.forEach(key => {
+                if (key.startsWith('qat-')) {
+                    params.delete(key);
+                }
+            });
+            window.history.pushState({}, '', url.toString());
+        });
     </script>
     @endscript
 </div>
