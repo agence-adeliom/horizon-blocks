@@ -35,7 +35,7 @@
                                 </div>
 
                                 <div class="secondary-filters--btns">
-                                    <button class="secondary-filters--reset" wire:click="resetFilters"
+                                    <button class="secondary-filters--reset" wire:click="resetSecondaryFilters"
                                             data-reset="{{ $secondaryFiltersUniqId }}">Tout effacer
                                     </button>
                                     <button class="secondary-filters--apply" data-apply="{{ $secondaryFiltersUniqId }}">

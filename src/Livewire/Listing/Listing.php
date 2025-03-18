@@ -657,6 +657,26 @@ class Listing extends Component
 		$this->getData();
 	}
 
+	public function resetSecondaryFilters(bool $withEvents = true, bool $fetchData = true): void
+	{
+		if ($this->page !== 1) {
+			$this->page = 1;
+		}
+
+		foreach ($this->secondaryFilterFields as $key => $secondaryFilterField) {
+			$this->secondaryFilterFields[$key] = null;
+		}
+
+		if ($withEvents) {
+			$this->dispatch('filters-reset');
+			$this->resetAllQAT();
+		}
+
+		if ($fetchData) {
+			$this->getData();
+		}
+	}
+
 	public function resetFilters(): void
 	{
 		$this->page = 1;
@@ -666,12 +686,9 @@ class Listing extends Component
 			$this->filterFields[$key] = null;
 		}
 
-		foreach ($this->secondaryFilterFields as $key => $secondaryFilterField) {
-			$this->secondaryFilterFields[$key] = null;
-		}
+		$this->resetSecondaryFilters(withEvents: false, fetchData: false);
 
 		$this->dispatch('filters-reset');
-
 		$this->resetAllQAT();
 
 		$this->getData();
