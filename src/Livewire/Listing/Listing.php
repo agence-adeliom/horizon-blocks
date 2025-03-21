@@ -91,6 +91,11 @@ class Listing extends Component
 		$this->getData();
 	}
 
+	public function updated(): void
+	{
+		$this->resetAllQAT();
+	}
+
 	private function initSearchFilter(string $searchName, string $label, string $placeholder, int $level = 1): void
 	{
 		$workingFilters = match ($level) {
