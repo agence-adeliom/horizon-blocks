@@ -71,7 +71,7 @@ class Listing extends Component
 			} else {
 				throw new \Exception(sprintf('You have to set a card for the post-type "%s" in the "posts.php" config file (posts.listing.cards.%s)', $this->postType, $this->postType));
 			}
-		} else {
+		} elseif (null !== $this->postType) {
 			$this->postTypeClass = ClassService::getPostTypeClassBySlug($this->postType);
 			$this->card = $this->postTypeClass::$card;
 
@@ -278,22 +278,13 @@ class Listing extends Component
 						$value = $matches[2];
 						$fieldType = $matches[1];
 
-						switch ($fieldType) {
-							case 'number':
-								$fieldClass = Number::class;
-								break;
-							case 'text':
-								$fieldClass = Text::class;
-								break;
-							case 'image':
-								$fieldClass = Image::class;
-								break;
-							case 'wysiwyg':
-								$fieldClass = WYSIWYGEditor::class;
-								break;
-							default:
-								throw new \Exception(sprintf('Field type "%s" not handled', $fieldType));
-						}
+						$fieldClass = match ($fieldType) {
+							'number' => Number::class,
+							'text' => Text::class,
+							'image' => Image::class,
+							'wysiwyg' => WYSIWYGEditor::class,
+							default => throw new \Exception(sprintf('Field type "%s" not handled', $fieldType)),
+						};
 					}
 				}
 
@@ -614,40 +605,42 @@ class Listing extends Component
 
 	public function getData(): void
 	{
-		$qb = new QueryBuilder();
+		if (null !== $this->postType) {
+			$qb = new QueryBuilder();
 
-		$qb->postType($this->postType)
-			->page($this->page)
-			->perPage($this->perPage)
-			->as(BasePostViewModel::class);
+			$qb->postType($this->postType)
+				->page($this->page)
+				->perPage($this->perPage)
+				->as(BasePostViewModel::class);
 
-		if (is_array($this->filterFields)) {
-			$this->applyFilters(filtersToApply: $this->filterFields, qb: $qb);
-		}
-
-		if (is_array($this->secondaryFilterFields)) {
-			$this->applyFilters(filtersToApply: $this->secondaryFilterFields, qb: $qb, level: 2);
-		}
-
-		if ($this->order) {
-			[$orderBy, $order] = explode('.', $this->order);
-
-			switch ($orderBy) {
-				case 'date':
-					$qb->orderBy($order, $orderBy);
-					break;
-				default:
-					// TODO Handle meta fields
-					break;
+			if (is_array($this->filterFields)) {
+				$this->applyFilters(filtersToApply: $this->filterFields, qb: $qb);
 			}
-		}
 
-		$this->data = $qb->getPaginatedData(callback: function (BasePostViewModel $post) {
-			return $post->toStdClass();
-		});
+			if (is_array($this->secondaryFilterFields)) {
+				$this->applyFilters(filtersToApply: $this->secondaryFilterFields, qb: $qb, level: 2);
+			}
 
-		if ($this->data['current'] > $this->data['pages'] || null === $this->data['pages']) {
-			$this->page = 1;
+			if ($this->order) {
+				[$orderBy, $order] = explode('.', $this->order);
+
+				switch ($orderBy) {
+					case 'date':
+						$qb->orderBy($order, $orderBy);
+						break;
+					default:
+						// TODO Handle meta fields
+						break;
+				}
+			}
+
+			$this->data = $qb->getPaginatedData(callback: function (BasePostViewModel $post) {
+				return $post->toStdClass();
+			});
+
+			if ($this->data['current'] > $this->data['pages'] || null === $this->data['pages']) {
+				$this->page = 1;
+			}
 		}
 	}
 
