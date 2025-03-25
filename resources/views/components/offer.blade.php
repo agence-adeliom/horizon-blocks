@@ -1,6 +1,5 @@
 @if ($fields && $fields['enable'])
     <div class="{{ $fullClass }}">
-        <x-typography.icon icon="clock" class="flex-none" />
         <x-far-clock class="flex-none icon-20" />
         <div class="flex-1">
             @if ($fields['uptitle'])
