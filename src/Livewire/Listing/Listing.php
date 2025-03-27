@@ -138,7 +138,7 @@ class Listing extends Component
 		string $appearance,
 		string $label,
 		string $placeholder,
-		int    $level = 1
+		int $level = 1
 	): void
 	{
 		$workingFilters = match ($level) {
@@ -183,15 +183,15 @@ class Listing extends Component
 	}
 
 	private function initMetaFilter(
-		string  $metaKey,
-		string  $filterName,
+		string $metaKey,
+		string $filterName,
 		FilterTypesEnum $filterType,
-		string  $appearance,
-		string  $postType,
+		string $appearance,
+		string $postType,
 		?string $fieldClass,
-		string  $label,
-		string  $placeholder,
-		int     $level = 1
+		string $label,
+		string $placeholder,
+		int    $level = 1
 	): void
 	{
 		$workingFilters = match ($level) {
@@ -771,8 +771,12 @@ EOF;
 				}
 			);
 
-			if ($this->data['current'] > $this->data['pages'] || null === $this->data['pages']) {
+			if (
+				$this->page > 1 &&
+				($this->data['current'] > $this->data['pages'] || null === $this->data['pages'] || 0 === $this->data['pages'])
+			) {
 				$this->page = 1;
+				$this->getData();
 			}
 		}
 	}
