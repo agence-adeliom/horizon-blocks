@@ -15,6 +15,7 @@ use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
 use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\Number;
 use Extended\ACF\Fields\Select;
+use Extended\ACF\Fields\Taxonomy;
 use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\WYSIWYGEditor;
 use Illuminate\Support\Facades\Config;
@@ -30,13 +31,13 @@ class Listing extends Component
 
 	public array $data = [];
 
-	#[Url(as: "pagination")]
+	#[Url(as: 'pagination')]
 	public int $page = 1;
-	#[Url(as: "filtres")]
+	#[Url(as: 'filtres')]
 	public array $filterFields = [];
-	#[Url(as: "filtres-secondaires")]
+	#[Url(as: 'filtres-secondaires')]
 	public array $secondaryFilterFields = [];
-	#[Url(as: "tri")]
+	#[Url(as: 'tri')]
 	public string $order = self::DEFAULT_ORDER;
 	public int $perPage = 12;
 
@@ -56,10 +57,7 @@ class Listing extends Component
 		'date.ASC' => 'Plus ancien',
 	];
 
-	private const array MANUAL_POST_TYPES = [
-		'post',
-		'page',
-	];
+	private const MANUAL_POST_TYPES = ['post', 'page'];
 
 	public function mount(): void
 	{
@@ -69,14 +67,25 @@ class Listing extends Component
 			if ($card) {
 				$this->card = $card;
 			} else {
-				throw new \Exception(sprintf('You have to set a card for the post-type "%s" in the "posts.php" config file (posts.listing.cards.%s)', $this->postType, $this->postType));
+				throw new \Exception(
+					sprintf(
+						'You have to set a card for the post-type "%s" in the "posts.php" config file (posts.listing.cards.%s)',
+						$this->postType,
+						$this->postType
+					)
+				);
 			}
 		} elseif (null !== $this->postType) {
 			$this->postTypeClass = ClassService::getPostTypeClassBySlug($this->postType);
 			$this->card = $this->postTypeClass::$card;
 
 			if (null === $this->card) {
-				throw new \Exception(sprintf('You have to set a card for the post-type in the class "%s". It should be a static var $card', $this->postTypeClass));
+				throw new \Exception(
+					sprintf(
+						'You have to set a card for the post-type in the class "%s". It should be a static var $card',
+						$this->postTypeClass
+					)
+				);
 			}
 		}
 
@@ -104,7 +113,10 @@ class Listing extends Component
 		};
 
 		$workingFilters[$searchName] = [
-			'name' => $searchName, 'label' => $label, 'placeholder' => $placeholder, 'isSearch' => true,
+			'name' => $searchName,
+			'label' => $label,
+			'placeholder' => $placeholder,
+			'isSearch' => true,
 		];
 
 		switch ($level) {
@@ -119,7 +131,15 @@ class Listing extends Component
 		}
 	}
 
-	private function initTaxonomyFilter(string $taxonomyName, string $filterName, FilterTypesEnum $filterType, string $appearance, string $label, string $placeholder, int $level = 1): void
+	private function initTaxonomyFilter(
+		string          $taxonomyName,
+		string          $filterName,
+		FilterTypesEnum $filterType,
+		string          $appearance,
+		string          $label,
+		string          $placeholder,
+		int             $level = 1
+	): void
 	{
 		$workingFilters = match ($level) {
 			1 => $this->filters,
@@ -127,8 +147,7 @@ class Listing extends Component
 		};
 
 		$taxQb = new QueryBuilder();
-		$taxQb->taxonomy($taxonomyName)
-			->fetchEmptyTaxonomies(false);
+		$taxQb->taxonomy($taxonomyName)->fetchEmptyTaxonomies(false);
 
 		foreach ($taxQb->get() as $term) {
 			if ($term instanceof \WP_Term) {
@@ -163,7 +182,17 @@ class Listing extends Component
 		}
 	}
 
-	private function initMetaFilter(string $metaKey, string $filterName, FilterTypesEnum $filterType, string $appearance, string $postType, ?string $fieldClass, string $label, string $placeholder, int $level = 1): void
+	private function initMetaFilter(
+		string          $metaKey,
+		string          $filterName,
+		FilterTypesEnum $filterType,
+		string          $appearance,
+		string          $postType,
+		?string         $fieldClass,
+		string          $label,
+		string          $placeholder,
+		int             $level = 1
+	): void
 	{
 		$workingFilters = match ($level) {
 			1 => $this->filters,
@@ -174,11 +203,11 @@ class Listing extends Component
 			global $wpdb;
 
 			$query = <<<EOF
-        SELECT DISTINCT meta_value AS value
-        FROM {$wpdb->postmeta}
-        JOIN {$wpdb->posts} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id
-        WHERE meta_key = %s AND post_type = %s AND post_status = 'publish'
-        EOF;
+SELECT DISTINCT meta_value AS value
+FROM {$wpdb->postmeta}
+JOIN {$wpdb->posts} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id
+WHERE meta_key = %s AND post_type = %s AND post_status = 'publish'
+EOF;
 
 			$query = $wpdb->prepare($query, $metaKey, $this->postTypeClass ? $postType::$slug : $postType);
 
@@ -190,12 +219,54 @@ class Listing extends Component
 			}, $results);
 
 			switch ($fieldClass) {
+				case Taxonomy::class:
+					global $wpdb;
+
+					$workingFilters[$filterName] = [
+						'type' => $filterType->value,
+						'metaType' => $fieldClass,
+						'name' => $filterName,
+						'appearance' => $appearance,
+						'value' => $metaKey,
+						'label' => $label,
+						'placeholder' => $placeholder,
+						'choices' => [],
+					];
+
+					$ids = implode(',', $values);
+
+					$query = <<<EOF
+SELECT {$wpdb->terms}.name, {$wpdb->terms}.term_id AS 'id'
+FROM {$wpdb->terms}
+WHERE {$wpdb->terms}.term_id IN ({$ids})
+EOF;
+
+					$results = $wpdb->get_results($query);
+
+					$nameById = [];
+
+					if (is_array($results)) {
+						foreach ($results as $result) {
+							if (property_exists($result, 'name') && property_exists($result, 'id')) {
+								$nameById[$result->id] = $result->name;
+							}
+						}
+					}
+
+					foreach ($values as $value) {
+						$workingFilters[$filterName]['choices'][] = [
+							'slug' => $value,
+							'name' => $nameById[$value] ?? $value,
+						];
+					}
+					break;
 				case Select::class:
 					$postTypeInstance = new $postType();
 					if ($choices = AcfService::getChoices($postTypeInstance->getFields(), $metaKey)) {
 						if (!isset($workingFilters[$filterName])) {
 							$workingFilters[$filterName] = [
 								'type' => $filterType->value,
+								'metaType' => $fieldClass,
 								'name' => $filterName,
 								'appearance' => $appearance,
 								'value' => $metaKey,
@@ -218,6 +289,7 @@ class Listing extends Component
 							if (!isset($workingFilters[$filterName])) {
 								$workingFilters[$filterName] = [
 									'type' => $filterType->value,
+									'metaType' => $fieldClass,
 									'name' => $filterName,
 									'appearance' => $appearance,
 									'value' => $metaKey,
@@ -267,7 +339,9 @@ class Listing extends Component
 
 				$label = $filter[ListingBlock::FIELD_FILTERS_NAME];
 				$name = $this->getFilterFieldName($filter);
-				$placeholder = !empty($filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER]) ? $filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER] : $label;
+				$placeholder = !empty($filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER])
+					? $filter[ListingBlock::FIELD_FILTERS_PLACEHOLDER]
+					: $label;
 				$fieldClass = null;
 
 				$value = match ($type) {
@@ -288,6 +362,7 @@ class Listing extends Component
 							'text' => Text::class,
 							'image' => Image::class,
 							'wysiwyg' => WYSIWYGEditor::class,
+							'taxonomy' => Taxonomy::class,
 							default => throw new \Exception(sprintf('Field type "%s" not handled', $fieldType)),
 						};
 					}
@@ -311,10 +386,28 @@ class Listing extends Component
 
 				switch ($type) {
 					case FilterTypesEnum::META:
-						$this->initMetaFilter(metaKey: $value, filterName: $name, filterType: $type, appearance: $appearance, postType: $this->postTypeClass ?? $this->postType, fieldClass: $fieldClass, label: $label, placeholder: $placeholder, level: $level);
+						$this->initMetaFilter(
+							metaKey: $value,
+							filterName: $name,
+							filterType: $type,
+							appearance: $appearance,
+							postType: $this->postTypeClass ?? $this->postType,
+							fieldClass: $fieldClass,
+							label: $label,
+							placeholder: $placeholder,
+							level: $level
+						);
 						break;
 					case FilterTypesEnum::TAXONOMY:
-						$this->initTaxonomyFilter(taxonomyName: $value, filterName: $name, filterType: $type, appearance: $appearance, label: $label, placeholder: $placeholder, level: $level);
+						$this->initTaxonomyFilter(
+							taxonomyName: $value,
+							filterName: $name,
+							filterType: $type,
+							appearance: $appearance,
+							label: $label,
+							placeholder: $placeholder,
+							level: $level
+						);
 						break;
 					case FilterTypesEnum::SEARCH:
 						$this->initSearchFilter(searchName: $name, label: $label, placeholder: $placeholder, level: $level);
@@ -336,8 +429,14 @@ class Listing extends Component
 		};
 
 		foreach ($baseFilters as $baseFilterValue) {
-			if (isset($baseFilterValue[ListingBlock::FIELD_FILTERS_TYPE]) && $baseFilterValue[ListingBlock::FIELD_FILTERS_TYPE] === ListingBlock::FIELD_FILTERS_TAXONOMY) {
-				if (isset($baseFilterValue[ListingBlock::FIELD_FILTERS_TAXONOMY]) && $baseFilterValue[ListingBlock::FIELD_FILTERS_TAXONOMY] === $taxonomyName) {
+			if (
+				isset($baseFilterValue[ListingBlock::FIELD_FILTERS_TYPE]) &&
+				$baseFilterValue[ListingBlock::FIELD_FILTERS_TYPE] === ListingBlock::FIELD_FILTERS_TAXONOMY
+			) {
+				if (
+					isset($baseFilterValue[ListingBlock::FIELD_FILTERS_TAXONOMY]) &&
+					$baseFilterValue[ListingBlock::FIELD_FILTERS_TAXONOMY] === $taxonomyName
+				) {
 					$fieldName = $this->getFilterFieldName($baseFilterValue);
 
 					if (isset($baseFilterValue[ListingBlock::FIELD_FILTERS_TAX_APPEARANCE])) {
@@ -372,7 +471,10 @@ class Listing extends Component
 
 									switch ($level) {
 										case 2:
-											$this->secondaryFilterFields[$fieldName] = array_merge($this->secondaryFilterFields[$fieldName] ?? [], $toPush);
+											$this->secondaryFilterFields[$fieldName] = array_merge(
+												$this->secondaryFilterFields[$fieldName] ?? [],
+												$toPush
+											);
 											break;
 										case 1:
 										default:
@@ -459,7 +561,7 @@ class Listing extends Component
 			if (method_exists($classInstance, 'getFilters')) {
 				foreach ($classInstance->getFilters() as $filter) {
 					if (!isset($filter['type'], $filter['appearance'], $filter['value'])) {
-						throw new \Exception("Filter must have a type, appearance and value");
+						throw new \Exception('Filter must have a type, appearance and value');
 					}
 
 					$type = $filter['type'];
@@ -470,11 +572,26 @@ class Listing extends Component
 
 					switch ($type) {
 						case FilterTypesEnum::TAXONOMY:
-							$this->initTaxonomyFilter(taxonomyName: $value, filterName: $name, filterType: $type, appearance: $appearance, label: $placeholder);
+							$this->initTaxonomyFilter(
+								taxonomyName: $value,
+								filterName: $name,
+								filterType: $type,
+								appearance: $appearance,
+								label: $placeholder
+							);
 							break;
 						case FilterTypesEnum::META:
 							$fieldClass = $filter['fieldClass'];
-							$this->initMetaFilter(metaKey: $value, filterName: $name, filterType: $type, appearance: $appearance, postType: $this->postTypeClass, fieldClass: $fieldClass, label: $name, placeholder: $placeholder);
+							$this->initMetaFilter(
+								metaKey: $value,
+								filterName: $name,
+								filterType: $type,
+								appearance: $appearance,
+								postType: $this->postTypeClass,
+								fieldClass: $fieldClass,
+								label: $name,
+								placeholder: $placeholder
+							);
 							break;
 						case FilterTypesEnum::SEARCH:
 							$this->initSearchFilter(searchName: $name);
@@ -563,7 +680,13 @@ class Listing extends Component
 										}
 									} else {
 										if (isset($metaSlugs[$value])) {
-											$value = $metaSlugs[$value];
+											switch ($workingFilters[$name]['metaType']) {
+												case Taxonomy::class:
+													break;
+												default:
+													$value = $metaSlugs[$value];
+													break;
+											}
 										}
 									}
 
@@ -613,10 +736,7 @@ class Listing extends Component
 		if (null !== $this->postType) {
 			$qb = new QueryBuilder();
 
-			$qb->postType($this->postType)
-				->page($this->page)
-				->perPage($this->perPage)
-				->as(BasePostViewModel::class);
+			$qb->postType($this->postType)->page($this->page)->perPage($this->perPage)->as(BasePostViewModel::class);
 
 			if (is_array($this->filterFields)) {
 				$this->applyFilters(filtersToApply: $this->filterFields, qb: $qb);
@@ -639,9 +759,11 @@ class Listing extends Component
 				}
 			}
 
-			$this->data = $qb->getPaginatedData(callback: function (BasePostViewModel $post) {
-				return $post->toStdClass();
-			});
+			$this->data = $qb->getPaginatedData(
+				callback: function (BasePostViewModel $post) {
+					return $post->toStdClass();
+				}
+			);
 
 			if ($this->data['current'] > $this->data['pages'] || null === $this->data['pages']) {
 				$this->page = 1;
