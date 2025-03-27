@@ -132,13 +132,13 @@ class Listing extends Component
 	}
 
 	private function initTaxonomyFilter(
-		string          $taxonomyName,
-		string          $filterName,
+		string $taxonomyName,
+		string $filterName,
 		FilterTypesEnum $filterType,
-		string          $appearance,
-		string          $label,
-		string          $placeholder,
-		int             $level = 1
+		string $appearance,
+		string $label,
+		string $placeholder,
+		int    $level = 1
 	): void
 	{
 		$workingFilters = match ($level) {
@@ -183,15 +183,15 @@ class Listing extends Component
 	}
 
 	private function initMetaFilter(
-		string          $metaKey,
-		string          $filterName,
+		string  $metaKey,
+		string  $filterName,
 		FilterTypesEnum $filterType,
-		string          $appearance,
-		string          $postType,
-		?string         $fieldClass,
-		string          $label,
-		string          $placeholder,
-		int             $level = 1
+		string  $appearance,
+		string  $postType,
+		?string $fieldClass,
+		string  $label,
+		string  $placeholder,
+		int     $level = 1
 	): void
 	{
 		$workingFilters = match ($level) {
@@ -674,8 +674,14 @@ EOF;
 									if (is_array($value)) {
 										foreach ($value as $valueKey => $valueValue) {
 											if (isset($metaSlugs[$valueKey])) {
-												$value[$metaSlugs[$valueKey]] = $valueValue;
-												unset($value[$valueKey]);
+												switch ($workingFilters[$name]['metaType']) {
+													case Taxonomy::class:
+														break;
+													default:
+														$value[$metaSlugs[$valueKey]] = $valueValue;
+														unset($value[$valueKey]);
+														break;
+												}
 											}
 										}
 									} else {
