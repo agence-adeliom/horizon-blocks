@@ -12,6 +12,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\Catchphrase;
 use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\PostSummaryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroForm;
@@ -152,6 +153,14 @@ class HorizonBlockService
 				self::LIVEWIRE_COMPONENTS => [],
 				self::COMPONENTS => [],
 			],
+			PostSummaryBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [
+					'resources/scripts/blocks/post-summary.ts',
+				],
+				self::LIVEWIRE_COMPONENTS => [],
+				self::COMPONENTS => [],
+			]
 		];
 
 		// Filter blocks by putting ones requiring Livewire last
