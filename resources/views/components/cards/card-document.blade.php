@@ -21,7 +21,7 @@
                 <x-typography.text class="font-semibold text-text-primary" :content="$document['title'] ?? $document['file']['name']" />
                 <x-typography.text class="text-sm" content="(.{{ $extension . ', ' . $filesize }})" />            </div>
         </div>
-        <x-action.button download fullLink :url="$document['file']['url']"
+        <x-action.button fullLink :url="$document['file']['url']"
             aria-label="Télécharger le document {{ $item['title'] ?? '' }}" type="secondary" iconOnly>
             <x-far-arrow-down-to-line class="icon-16" />
         </x-action.button>
