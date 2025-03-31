@@ -54,6 +54,10 @@ class ImportBlock extends Command
 				$folders = $structure['folders'];
 				$className = $structure['class'];
 
+				if (isset($blockExtraData[HorizonBlockService::ADMINS]) && is_array($blockExtraData[HorizonBlockService::ADMINS])) {
+					$this->handleAssociatedAdmins(adminClasses: $blockExtraData[HorizonBlockService::ADMINS]);
+				}
+
 				if (isset($blockExtraData[HorizonBlockService::COMPONENTS]) && is_array($blockExtraData[HorizonBlockService::COMPONENTS])) {
 					$this->handleAdditionalComponents(componentClasses: $blockExtraData[HorizonBlockService::COMPONENTS]);
 				}
@@ -69,6 +73,47 @@ class ImportBlock extends Command
 					foreach ($blockExtraData[HorizonBlockService::LIVEWIRE_COMPONENTS] as $livewireClass) {
 						$this->createLivewireTemplate(className: $livewireClass);
 						$this->createLivewireComponent(className: $livewireClass);
+					}
+				}
+			}
+		}
+	}
+
+	private function handleAssociatedAdmins(array $adminClasses): void
+	{
+		$this->newLine();
+		$this->info('Handling additional admin classes...');
+
+		foreach ($adminClasses as $adminClass) {
+			if ($classFile = ClassService::getFilePathFromClassName($adminClass)) {
+				if (file_exists($classFile)) {
+					$adminClassContent = file_get_contents($classFile);
+					$adminClassContent = str_replace('Adeliom\\HorizonBlocks\\Admin\\', 'App\\Admin\\', $adminClassContent);
+
+					$path = $this->getTemplatePath() . '/app/Admin/';
+
+					$folderStructure = explode('horizon-blocks/src/Admin/', $classFile);
+
+					if ($folderStructure[1]) {
+						$folders = array_filter(array_map(function ($folder) {
+							return str_ends_with($folder, '.php') ? null : $folder;
+						}, explode('/', $folderStructure[1])));
+
+						if (!empty($folders)) {
+							$folderPath = $path;
+
+							foreach ($folders as $folder) {
+								$folderPath = rtrim($folderPath, '/') . '/' . $folder;
+
+								// Create folder if it doesn't exist
+								if (!file_exists($folderPath)) {
+									mkdir($folderPath, 0755, true);
+								}
+							}
+
+							$adminFullPath = rtrim($path, '/') . '/' . $folderStructure[1];
+							file_put_contents($adminFullPath, $adminClassContent);
+						}
 					}
 				}
 			}
@@ -291,6 +336,11 @@ class ImportBlock extends Command
 	private function getHorizonBlockComponentClassesDirectory(): string
 	{
 		return '/src/View/Components/';
+	}
+
+	private function getHorizonBlockAdminClassesDirectory(): string
+	{
+		return '/src/Admin/';
 	}
 
 	private function getBlockViewsDirectory(): string
