@@ -22,10 +22,10 @@ class PostSummaryAdmin extends AbstractAdmin
 	{
 		$fields = [];
 
-		$currentPostId = is_admin() ? ($_GET['post'] ?? $_POST['post_id'] ?? null) : get_the_ID();
+		$currentPostId = is_admin() ? $_GET['post'] ?? ($_POST['post_id'] ?? null) : get_the_ID();
 
 		if (is_numeric($currentPostId)) {
-			$titles = BlogPostService::getPostTitles(blocks: parse_blocks(get_post($currentPostId)?->post_content));
+			$titles = BlogPostService::getPostTitles();
 
 			foreach ($titles as $title) {
 				$fields[] = Text::make(__('Surcharge de :') . ' ' . $title, sanitize_title($title))
