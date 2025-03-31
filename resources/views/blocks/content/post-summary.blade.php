@@ -7,6 +7,10 @@
     @if($fields[PostSummaryBlock::FIELD_IS_TOP] && BlogPostService::hasClosingTag())
         @php($titles = BlogPostService::getPostTitles())
 
+        @if(is_admin())
+            <p>Ouverture du sommaire</p>
+        @endif
+
         <div class="post-content grid grid-cols-12">
             <div class="summary col-span-4">
                 <div class="summary-container sticky top-20">
@@ -21,7 +25,11 @@
                             <li class="summary-elt group" data-title="{{$title}}">
                                 <p class="group-[.summary-active]:text-red-500 group-[.summary-before-active]:text-green-500">
                 <span>
-                  {{$title}}
+                  @if(!empty($context['titlesOverride'][$title]))
+                        {{$context['titlesOverride'][$title]}}
+                    @else
+                        {{$title}}
+                    @endif
                 </span>
                                 </p>
                             </li>
@@ -34,5 +42,9 @@
                 @else
             </div>
         </div>
+
+        @if(is_admin())
+            <p>Fermeture du sommaire</p>
+        @endif
     @endif
 @endif

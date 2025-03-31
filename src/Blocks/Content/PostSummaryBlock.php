@@ -6,7 +6,9 @@ namespace Adeliom\HorizonBlocks\Blocks\Content;
 
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Choices\TrueFalseField;
+use Adeliom\HorizonTools\Services\BlogPostService;
 use Adeliom\HorizonTools\Services\BudService;
+use App\Admin\Post\PostSummaryAdmin;
 use Extended\ACF\ConditionalLogic;
 use Extended\ACF\Fields\Text;
 
@@ -35,7 +37,39 @@ class PostSummaryBlock extends AbstractBlock
 
 	public function addToContext(): array
 	{
-		return [];
+		global $wpdb;
+
+		$titlesOverride = null;
+
+		$currentPostId = is_admin() ? ($_GET['post'] ?? $_POST['post_id'] ?? null) : get_the_ID();
+
+		if ($currentPostId) {
+			$query = <<<EOF
+SELECT {$wpdb->postmeta}.meta_key, {$wpdb->postmeta}.meta_value
+FROM {$wpdb->postmeta}
+WHERE {$wpdb->postmeta}.post_id = %d AND {$wpdb->postmeta}.meta_key LIKE %s
+EOF;
+
+			$request = $wpdb->prepare($query, $currentPostId, sprintf('%s_%%', PostSummaryAdmin::FIELD_TITLES));
+
+			if ($values = $wpdb->get_results($request)) {
+				foreach (BlogPostService::getPostTitles() as $blockTitle) {
+					foreach ($values as $key => $value) {
+						if (is_object($value) && property_exists($value, 'meta_key')) {
+							if ($value->meta_key === PostSummaryAdmin::FIELD_TITLES . '_' . sanitize_title($blockTitle)) {
+								if (property_exists($value, 'meta_value')) {
+									$titlesOverride[$blockTitle] = $value->meta_value;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return [
+			'titlesOverride' => $titlesOverride,
+		];
 	}
 
 	public function renderBlockCallback(): void
@@ -43,5 +77,10 @@ class PostSummaryBlock extends AbstractBlock
 		if ($postSummaryJs = BudService::getUrl('post-summary.js')) {
 			wp_enqueue_script('post-summary-block', $postSummaryJs);
 		}
+	}
+
+	public function getPostTypes(): ?array
+	{
+		return ['post'];
 	}
 }

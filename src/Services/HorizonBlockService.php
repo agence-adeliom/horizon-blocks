@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Services;
 
+use Adeliom\HorizonBlocks\Admin\Post\PostSummaryAdmin;
 use Adeliom\HorizonBlocks\Blocks\Action\CtaBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormConfirmationBlock;
@@ -35,6 +36,7 @@ class HorizonBlockService
 	public const string ASSET_FILES = 'additionalFiles';
 	public const string LIVEWIRE_COMPONENTS = 'livewireComponents';
 	public const string COMPONENTS = 'components';
+	public const ADMINS = 'admins';
 
 	public static function getAvailableBlocks(): array
 	{
@@ -160,6 +162,7 @@ class HorizonBlockService
 				],
 				self::LIVEWIRE_COMPONENTS => [],
 				self::COMPONENTS => [],
+				self::ADMINS => [PostSummaryAdmin::class],
 			]
 		];
 
