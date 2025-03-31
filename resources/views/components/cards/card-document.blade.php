@@ -7,6 +7,7 @@
         } else {
             $filesize = round($filesizeInBytes / 1024, 0) . 'Ko';
         }
+         $extension = strtolower(pathinfo($document['file']['url'], PATHINFO_EXTENSION));
     @endphp
 
     <div @class([
@@ -18,8 +19,7 @@
             <x-far-file-lines class="icon-24 text-primary" />
             <div class="flex flex-col gap-1 md:flex-row md:items-center">
                 <x-typography.text class="font-semibold text-text-primary" :content="$document['title'] ?? $document['file']['name']" />
-                <x-typography.text class="text-sm" content="(.{{ $document['file']['subtype'] . ', ' . $filesize }})" />
-            </div>
+                <x-typography.text class="text-sm" content="(.{{ $extension . ', ' . $filesize }})" />            </div>
         </div>
         <x-action.button download fullLink :url="$document['file']['url']"
             aria-label="Télécharger le document {{ $item['title'] ?? '' }}" type="secondary" iconOnly>
