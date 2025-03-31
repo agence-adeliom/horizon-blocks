@@ -20,6 +20,9 @@ class PostSummaryBlock extends AbstractBlock
 	public const FIELD_IS_TOP = 'top';
 	public const FIELD_TITLE = 'title';
 
+	// Value used to scroll the page to the top of the block corresponding to title in the summary
+	public const SCROLL_OFFSET = 100;
+
 	public function getFields(): ?iterable
 	{
 		yield TrueFalseField::make(__('Est-ce la borne supérieure ?'), self::FIELD_IS_TOP)
