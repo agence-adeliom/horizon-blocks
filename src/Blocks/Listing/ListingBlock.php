@@ -40,6 +40,7 @@ class ListingBlock extends AbstractBlock
 
 	public const bool USE_FIELDS_TO_DEFINE_FILTERS = true;
 	public const bool ALWAYS_DISPLAY_FILTERS = true;
+	public const bool ENABLE_SECONDARY_FILTERS = false;
 
 	public const string FIELD_PER_PAGE = 'perPage';
 	public const string FIELD_FILTERS = 'filters';
@@ -164,29 +165,37 @@ class ListingBlock extends AbstractBlock
 	private function filterFields(): iterable
 	{
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
-			yield from SettingsTab::make()->fields([
+			$fields = [
 				Repeater::make(__('Filtres primaires'), self::FIELD_FILTERS)
 					->button(__('Ajouter un filtre'))
-                    ->collapsed(self::FIELD_FILTERS_NAME)
+					->collapsed(self::FIELD_FILTERS_NAME)
 					->layout('block')
 					->minRows(0)
-					->maxRows(3)
+					->maxRows(self::ENABLE_SECONDARY_FILTERS ? 3 : 4)
 					->fields($this->getFilterRepeaterFields()),
-				TrueFalse::make(__('Activer les filtres secondaires'), self::FIELD_WITH_SECONDARY_FILTERS)
-					->stylized(),
-				Text::make(__('Label du bouton'), self::FIELD_SECONDARY_FILTERS_BUTTON_LABEL)
-					->helperText(__('Texte affiché sur le bouton pour afficher les filtres secondaires'))
-					->placeholder('Filtres avancés')
-					->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
-				Text::make(__('Titre des filtres secondaires'), self::FIELD_SECONDARY_FILTERS_TITLE)
-					->helperText(__('Titre affiché au-dessus des filtres secondaires'))->placeholder('Filtres avancés')
-					->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
-				Repeater::make(__('Filtres secondaires'), self::FIELD_SECONDARY_FILTERS)
-					->button(__('Ajouter un filtre secondaire'))
-					->layout('block')
-					->fields($this->getFilterRepeaterFields(level: 2))
-					->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
-			]);
+			];
+
+			if (self::ENABLE_SECONDARY_FILTERS) {
+				$fields = array_merge($fields, [
+					TrueFalse::make(__('Activer les filtres secondaires'), self::FIELD_WITH_SECONDARY_FILTERS)
+						->stylized(),
+					Text::make(__('Label du bouton'), self::FIELD_SECONDARY_FILTERS_BUTTON_LABEL)
+						->helperText(__('Texte affiché sur le bouton pour afficher les filtres secondaires'))
+						->placeholder('Filtres avancés')
+						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
+					Text::make(__('Titre des filtres secondaires'), self::FIELD_SECONDARY_FILTERS_TITLE)
+						->helperText(__('Titre affiché au-dessus des filtres secondaires'))
+						->placeholder('Filtres avancés')
+						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
+					Repeater::make(__('Filtres secondaires'), self::FIELD_SECONDARY_FILTERS)
+						->button(__('Ajouter un filtre secondaire'))
+						->layout('block')
+						->fields($this->getFilterRepeaterFields(level: 2))
+						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
+				]);
+			}
+
+			yield from SettingsTab::make()->fields($fields);
 		}
 	}
 
