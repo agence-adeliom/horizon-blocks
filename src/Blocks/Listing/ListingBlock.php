@@ -167,6 +167,7 @@ class ListingBlock extends AbstractBlock
 			yield from SettingsTab::make()->fields([
 				Repeater::make(__('Filtres primaires'), self::FIELD_FILTERS)
 					->button(__('Ajouter un filtre'))
+                    ->collapsed(self::FIELD_FILTERS_NAME)
 					->layout('block')
 					->minRows(0)
 					->maxRows(3)
