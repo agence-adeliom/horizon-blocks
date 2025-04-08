@@ -21,9 +21,10 @@
                     <ul class="summary-list" scroll-offset="{{PostSummaryBlock::SCROLL_OFFSET}}"
                         active-class="summary-active"
                         before-active-class="summary-before-active">
-                        @foreach($titles as $title)
-                            <li class="summary-elt group" data-title="{{$title}}">
-                                <p class="group-[.summary-active]:text-red-500 group-[.summary-before-active]:text-green-500">
+                        @if(is_array($titles))
+                            @foreach($titles as $title)
+                                <li class="summary-elt group" data-title="{{$title}}">
+                                    <p class="group-[.summary-active]:text-red-500 group-[.summary-before-active]:text-green-500">
                 <span>
                   @if(!empty($context['titlesOverride'][$title]))
                         {{$context['titlesOverride'][$title]}}
@@ -31,9 +32,10 @@
                         {{$title}}
                     @endif
                 </span>
-                                </p>
-                            </li>
-                        @endforeach
+                                    </p>
+                                </li>
+                            @endforeach
+                        @endif
                     </ul>
                 </div>
             </div>

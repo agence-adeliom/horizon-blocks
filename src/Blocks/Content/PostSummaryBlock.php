@@ -53,12 +53,16 @@ EOF;
 			$request = $wpdb->prepare($query, $currentPostId, sprintf('%s_%%', PostSummaryAdmin::FIELD_TITLES));
 
 			if ($values = $wpdb->get_results($request)) {
-				foreach (BlogPostService::getPostTitles() as $blockTitle) {
-					foreach ($values as $key => $value) {
-						if (is_object($value) && property_exists($value, 'meta_key')) {
-							if ($value->meta_key === PostSummaryAdmin::FIELD_TITLES . '_' . sanitize_title($blockTitle)) {
-								if (property_exists($value, 'meta_value')) {
-									$titlesOverride[$blockTitle] = $value->meta_value;
+				$titles = BlogPostService::getPostTitles();
+
+				if (is_array($titles)) {
+					foreach ($titles as $blockTitle) {
+						foreach ($values as $key => $value) {
+							if (is_object($value) && property_exists($value, 'meta_key')) {
+								if ($value->meta_key === PostSummaryAdmin::FIELD_TITLES . '_' . sanitize_title($blockTitle)) {
+									if (property_exists($value, 'meta_value')) {
+										$titlesOverride[$blockTitle] = $value->meta_value;
+									}
 								}
 							}
 						}
