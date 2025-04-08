@@ -25,12 +25,15 @@ class PostSummaryAdmin extends AbstractAdmin
 		$currentPostId = is_admin() ? $_GET['post'] ?? ($_POST['post_id'] ?? null) : get_the_ID();
 
 		if (is_numeric($currentPostId)) {
-			$titles = BlogPostService::getPostTitles();
+			$postType = get_post_type($currentPostId);
 
-			if (is_array($titles)) {
-				foreach ($titles as $title) {
-					$fields[] = Text::make(__('Surcharge de :') . ' ' . $title, sanitize_title($title))
-						->placeholder($title);
+			if ('post' === $postType) {
+				$titles = BlogPostService::getPostTitles();
+
+				if (is_array($titles)) {
+					foreach ($titles as $title) {
+						$fields[] = Text::make(__('Surcharge de :') . ' ' . $title, sanitize_title($title))->placeholder($title);
+					}
 				}
 			}
 		}
