@@ -753,14 +753,39 @@ EOF;
 			}
 
 			if ($this->order) {
-				[$orderBy, $order] = explode('.', $this->order);
+				$orderData = explode('.', $this->order);
+				$type = null;
 
-				switch ($orderBy) {
-					case 'date':
-						$qb->orderBy($order, $orderBy);
+				switch (count($orderData)) {
+					case 2:
+						$type = 'default';
+						$orderBy = $orderData[0];
+						$order = $orderData[1];
+						break;
+					case 3:
+						$type = $orderData[0];
+						$orderBy = $orderData[1];
+						$order = $orderData[2];
 						break;
 					default:
-						// TODO Handle meta fields
+						break;
+				}
+
+				switch ($type) {
+					case 'default':
+						switch ($orderBy) {
+							case 'date':
+								$qb->orderBy($order, $orderBy);
+								break;
+							default:
+								// TODO Handle meta fields
+								break;
+						}
+						break;
+					case 'taxonomy':
+						$qb->orderByTaxonomy($orderBy, $order);
+						break;
+					default:
 						break;
 				}
 			}
