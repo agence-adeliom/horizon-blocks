@@ -27,9 +27,9 @@
                                     <p class="group-[.summary-active]:text-red-500 group-[.summary-before-active]:text-green-500">
                 <span>
                   @if(!empty($context['titlesOverride'][$title]))
-                        {{$context['titlesOverride'][$title]}}
+                        {{trim($context['titlesOverride'][$title])}}
                     @else
-                        {{$title}}
+                        {{trim($title)}}
                     @endif
                 </span>
                                     </p>

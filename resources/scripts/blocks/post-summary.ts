@@ -8,7 +8,7 @@ const PostSummary = {
     scrollOffset: 100,
     eltActiveClass: 'summary-active',
     eltBeforeActiveClass: 'summary-before-active',
-    handleScroll: undefined
+    handleScroll: undefined,
 };
 
 let instance: HTMLElement = null;
@@ -50,7 +50,7 @@ PostSummary.getPostSummary = () => {
     }
 
     return instance;
-}
+};
 
 PostSummary.initElt = (elt: HTMLElement) => {
     const listElts: Element[] = Array.from(elt.querySelectorAll(PostSummary.eltSelector));
@@ -59,7 +59,7 @@ PostSummary.initElt = (elt: HTMLElement) => {
         let title: string = null;
 
         if (listElt.hasAttribute('data-title')) {
-            title = listElt.getAttribute('data-title');
+            title = listElt.getAttribute('data-title').trim();
         } else {
             title = listElt.textContent.trim();
         }
@@ -81,17 +81,17 @@ PostSummary.initElt = (elt: HTMLElement) => {
             PostSummary.associations.push({
                 content: contentTitle,
                 summary: listElt,
-            })
+            });
             listElt.addEventListener('click', () => {
                 // Scroll to contentTitle
                 window.scrollTo({
                     top: contentTitle.getBoundingClientRect().top + window.scrollY - PostSummary.scrollOffset,
-                    behavior: 'smooth'
+                    behavior: 'smooth',
                 });
             });
         }
-    })
-}
+    });
+};
 
 const setSummaryEltAsBeforeActive = (elt: HTMLElement) => {
     if (elt.classList.contains(PostSummary.eltActiveClass)) {
@@ -101,7 +101,7 @@ const setSummaryEltAsBeforeActive = (elt: HTMLElement) => {
     if (!elt.classList.contains(PostSummary.eltBeforeActiveClass)) {
         elt.classList.add(PostSummary.eltBeforeActiveClass);
     }
-}
+};
 
 const setSummaryEltAsActive = (elt: HTMLElement) => {
     if (elt.classList.contains(PostSummary.eltBeforeActiveClass)) {
@@ -111,7 +111,7 @@ const setSummaryEltAsActive = (elt: HTMLElement) => {
     if (!elt.classList.contains(PostSummary.eltActiveClass)) {
         elt.classList.add(PostSummary.eltActiveClass);
     }
-}
+};
 
 const setSummaryEltAsInactive = (elt: HTMLElement) => {
     if (elt.classList.contains(PostSummary.eltActiveClass)) {
@@ -121,7 +121,7 @@ const setSummaryEltAsInactive = (elt: HTMLElement) => {
     if (elt.classList.contains(PostSummary.eltBeforeActiveClass)) {
         elt.classList.remove(PostSummary.eltBeforeActiveClass);
     }
-}
+};
 
 PostSummary.handleScroll = () => {
     const associationsBefore = [];
@@ -159,7 +159,7 @@ PostSummary.handleScroll = () => {
             setSummaryEltAsInactive(summary);
         }
     });
-}
+};
 
 PostSummary.init = () => {
     document.addEventListener('DOMContentLoaded', () => {
@@ -169,12 +169,12 @@ PostSummary.init = () => {
             if (PostSummary.associations) {
                 window.addEventListener('scroll', () => {
                     PostSummary.handleScroll();
-                })
+                });
 
                 PostSummary.handleScroll();
             }
         }
-    })
+    });
 };
 
 PostSummary.init();
