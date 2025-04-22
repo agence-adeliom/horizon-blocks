@@ -23,7 +23,7 @@
                         before-active-class="summary-before-active">
                         @if(is_array($titles))
                             @foreach($titles as $title)
-                                <li class="summary-elt group" data-title="{{$title}}">
+                                <li class="summary-elt group" data-title="{{trim($title)}}">
                                     <p class="group-[.summary-active]:text-red-500 group-[.summary-before-active]:text-green-500">
                 <span>
                   @if(!empty($context['titlesOverride'][$title]))
