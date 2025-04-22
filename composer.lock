@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f02e161722fcb3d818d727636ccde1c",
+    "content-hash": "208dd1d4d28e867ecdc195c0355c5f8b",
     "packages": [
         {
             "name": "agence-adeliom/horizon-tools",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/agence-adeliom/horizon-tools.git",
-                "reference": "dae2f19d8770847400bef92720f9f9006c80d5a0"
+                "reference": "52e0db674b9077cc32d89c8fcae3d652897fdac4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/dae2f19d8770847400bef92720f9f9006c80d5a0",
-                "reference": "dae2f19d8770847400bef92720f9f9006c80d5a0",
+                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/52e0db674b9077cc32d89c8fcae3d652897fdac4",
+                "reference": "52e0db674b9077cc32d89c8fcae3d652897fdac4",
                 "shasum": ""
             },
             "require": {
@@ -48,7 +48,7 @@
                 "source": "https://github.com/agence-adeliom/horizon-tools/tree/main",
                 "issues": "https://github.com/agence-adeliom/horizon-tools/issues"
             },
-            "time": "2025-04-16T09:43:40+00:00"
+            "time": "2025-04-22T14:49:27+00:00"
         },
         {
             "name": "brick/math",
@@ -5934,7 +5934,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.3"
+        "php": ">=8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"

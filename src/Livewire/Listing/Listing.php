@@ -52,6 +52,12 @@ class Listing extends Component
 
 	private const QUICK_ACCESS_TAXONOMY_PREFIX = 'qat-';
 
+	public const DISPLAY_VALUES_IN_MULTISELECT_LABEL = false;
+	public const MULTISELECT_LABEL_MAXLENGTH = 30;
+
+	public const KEY_NAME = 'name';
+	public const KEY_SLUG = 'slug';
+
 	public array $sortOptions = [
 		'date.DESC' => 'Plus récent',
 		'date.ASC' => 'Plus ancien',
@@ -164,8 +170,8 @@ class Listing extends Component
 				}
 
 				$workingFilters[$filterName]['choices'][] = [
-					'slug' => $term->slug,
-					'name' => $term->name,
+					self::KEY_SLUG => $term->slug,
+					self::KEY_NAME => $term->name,
 				];
 			}
 		}
@@ -255,8 +261,8 @@ EOF;
 
 					foreach ($values as $value) {
 						$workingFilters[$filterName]['choices'][] = [
-							'slug' => $value,
-							'name' => $nameById[$value] ?? $value,
+							self::KEY_SLUG => $value,
+							self::KEY_NAME => $nameById[$value] ?? $value,
 						];
 					}
 					break;
@@ -277,8 +283,8 @@ EOF;
 						}
 						foreach ($choices as $choiceValue => $choiceLabel) {
 							$workingFilters[$filterName]['choices'][] = [
-								'slug' => $choiceValue,
-								'name' => $choiceLabel,
+								self::KEY_SLUG => $choiceValue,
+								self::KEY_NAME => $choiceLabel,
 							];
 						}
 					}
@@ -300,8 +306,8 @@ EOF;
 							}
 
 							$workingFilters[$filterName]['choices'][] = [
-								'slug' => sanitize_title($value),
-								'name' => $value,
+								self::KEY_SLUG => sanitize_title($value),
+								self::KEY_NAME => $value,
 							];
 						}
 					}
@@ -663,8 +669,8 @@ EOF;
 								case FilterTypesEnum::META->value:
 									$metaName = $workingFilters[$name]['value'];
 
-									$metaSlugs = array_column($workingFilters[$name]['choices'], 'slug');
-									$metaNames = array_column($workingFilters[$name]['choices'], 'name');
+									$metaSlugs = array_column($workingFilters[$name]['choices'], self::KEY_SLUG);
+									$metaNames = array_column($workingFilters[$name]['choices'], self::KEY_NAME);
 
 									// Merge $metaSlugs and $metaNames by using metaSlugs as keys
 									$metaSlugs = array_combine($metaSlugs, $metaNames);

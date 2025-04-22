@@ -1,5 +1,6 @@
 @php
     use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
+	use App\Livewire\Listing\Listing;
 
     $name = $value['label'] ?? null;
 
@@ -125,11 +126,39 @@
                 @break
 
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT)
+                @php
+                    $baseName = explode(".", $model)[1];
+					$labelPlaceholder = $value['label'];
+
+					$selectedOptions = [];
+
+					if($baseName && isset($values[$baseName])) {
+						foreach ($values[$baseName] as $fieldName => $fieldValue) {
+                            if ((is_bool($fieldValue) && $fieldValue)||is_string($fieldValue)&&$fieldValue==='true') {
+                                if (
+                                    $associatedOption = array_find($value['choices'], function ($option) use ($fieldName) {
+                                        return isset($option[Listing::KEY_SLUG], $option[Listing::KEY_NAME]) && $option["slug"] === $fieldName;
+                                    })
+                                ) {
+                                    $selectedOptions[] = $associatedOption;
+                                }
+                            }
+                        }
+					}
+
+					if (!empty($selectedOptions) && Listing::DISPLAY_VALUES_IN_MULTISELECT_LABEL) {
+						$labelPlaceholder = implode(", ", array_column($selectedOptions, Listing::KEY_NAME));
+
+                        if (strlen($labelPlaceholder) > Listing::MULTISELECT_LABEL_MAXLENGTH) {
+                            $labelPlaceholder = substr($labelPlaceholder, 0, Listing::MULTISELECT_LABEL_MAXLENGTH - 3) . "...";
+                        }
+					}
+                @endphp
                 <div>
                     <div>
                         <p class="indicator">
                             @if($selected = $this->howManyOptionsSelected($model))
-                                <span class="label">{{ $value['label'] }}</span>
+                                <span class="label">{{ $labelPlaceholder }}</span>
                                 <span class="counter">{{ $selected }}</span>
                             @else
                                 <span class="placeholder">{{ $value['placeholder'] }}</span>
