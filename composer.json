@@ -20,6 +20,6 @@
     ],
     "require": {
         "php": ">=8.4",
-        "agence-adeliom/horizon-tools": "dev-main"
+        "agence-adeliom/horizon-tools": "dev-sage-11"
     }
 }
