@@ -258,7 +258,52 @@ class ImportBlock extends Command
 				}
 			}
 
-			$this->appendFilesToBud($filesToBud);
+			$this->appendFilesToVite($filesToBud);
+		}
+	}
+
+	private function appendFilesToVite(array $toHandle): void
+	{
+		if ($viteFilePath = $this->getViteConfigPath()) {
+			$this->newLine();
+			$this->info('Handling Vite file...');
+
+			foreach ($toHandle as $name => $assets) {
+				$paths = [];
+
+				if (!empty($assets[self::TYPE_SCRIPT])) {
+					$paths[] = $assets[self::TYPE_SCRIPT];
+				}
+
+				if (!empty($assets[self::TYPE_STYLE])) {
+					$paths[] = $assets[self::TYPE_STYLE];
+				}
+
+				if (!empty($paths)) {
+					$viteFileContent = file_get_contents($viteFilePath);
+
+					// Search first line with "input: [" in file content to insert content after
+					$inputLine = strpos($viteFileContent, 'input: [');
+					if ($inputLine !== false) {
+						$inputLineEnd = strpos($viteFileContent, ']', $inputLine);
+						$firstPart = substr($viteFileContent, 0, $inputLineEnd);
+						$secondPart = substr($viteFileContent, $inputLineEnd);
+						$file = $firstPart;
+
+						foreach ($paths as $path) {
+							$file .= "'" . $path . "'," . PHP_EOL;
+						}
+
+						$file .= $secondPart;
+
+						file_put_contents($viteFilePath, $file);
+
+						$this->info(sprintf('Added vite line for %s : %s', $name, implode(',', $paths)));
+					} else {
+						$this->error(sprintf('Could not find input line in Vite file'));
+					}
+				}
+			}
 		}
 	}
 
@@ -311,6 +356,11 @@ class ImportBlock extends Command
 	private function getBudConfigPath(): string
 	{
 		return $this->getTemplatePath() . '/bud.config.js';
+	}
+
+	private function getViteConfigPath(): string
+	{
+		return $this->getTemplatePath() . '/vite.config.js';
 	}
 
 	private function getViewsDirectory(): string
