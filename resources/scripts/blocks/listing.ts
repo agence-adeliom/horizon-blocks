@@ -90,7 +90,6 @@ Listing.initInstance = (instance) => {
 };
 
 Listing.init = () => {
-  console.log(Listing.getAllInstances());
   Listing.getAllInstances().forEach((instance) => {
     Listing.initInstance(instance);
   });
