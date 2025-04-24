@@ -290,15 +290,27 @@ class ImportBlock extends Command
 						$secondPart = substr($viteFileContent, $inputLineEnd);
 						$file = $firstPart;
 
+						$atLeastOneChange = false;
+
 						foreach ($paths as $path) {
-							$file .= "'" . $path . "'," . PHP_EOL;
+							$filePath = "'" . $path . "',";
+							if (!str_contains($viteFileContent, $filePath)) {
+								$atLeastOneChange = true;
+								$file .= $filePath . PHP_EOL;
+							} else {
+								$this->error('File already exists at ' . $filePath);
+							}
 						}
 
 						$file .= $secondPart;
 
-						file_put_contents($viteFilePath, $file);
+						if ($atLeastOneChange) {
+							file_put_contents($viteFilePath, $file);
 
-						$this->info(sprintf('Added vite line for %s : %s', $name, implode(',', $paths)));
+							$this->info(sprintf('Added vite line for %s : %s', $name, implode(',', $paths)));
+						} else {
+							$this->error('No changes made to Vite file');
+						}
 					} else {
 						$this->error(sprintf('Could not find input line in Vite file'));
 					}

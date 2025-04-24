@@ -28,6 +28,7 @@ use Extended\ACF\Fields\Select;
 use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\TrueFalse;
 use Extended\ACF\Location;
+use Illuminate\Support\Facades\Vite;
 
 class ListingBlock extends AbstractBlock
 {
@@ -206,7 +207,7 @@ class ListingBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		if ($listingJs = BudService::getUrl('listing.js')) {
+		if ($listingJs = Vite::asset('resources/scripts/blocks/listing.ts')) {
 			wp_enqueue_script('listing-block', $listingJs);
 		}
 	}

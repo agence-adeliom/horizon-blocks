@@ -16,6 +16,7 @@ use Adeliom\HorizonTools\Services\BudService;
 use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Text;
+use Illuminate\Support\Facades\Vite;
 
 class StepBlock extends AbstractBlock
 {
@@ -56,11 +57,11 @@ class StepBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		if ($stepsCss = BudService::getUrl('steps.css')) {
+		if ($stepsCss = Vite::asset('resources/styles/blocks/steps.css')) {
 			wp_enqueue_style('steps-block-css', $stepsCss);
 		}
 
-		if ($stepsJs = BudService::getUrl('steps.js')) {
+		if ($stepsJs = Vite::asset('resources/scripts/blocks/steps.ts')) {
 			wp_enqueue_script('steps-block-js', $stepsJs);
 		}
 	}

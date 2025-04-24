@@ -11,6 +11,7 @@ use Adeliom\HorizonTools\Services\BudService;
 use App\Admin\Post\PostSummaryAdmin;
 use Extended\ACF\ConditionalLogic;
 use Extended\ACF\Fields\Text;
+use Illuminate\Support\Facades\Vite;
 
 class PostSummaryBlock extends AbstractBlock
 {
@@ -78,7 +79,7 @@ EOF;
 
 	public function renderBlockCallback(): void
 	{
-		if ($postSummaryJs = BudService::getUrl('post-summary.js')) {
+		if ($postSummaryJs = Vite::asset('resources/scripts/blocks/post-summary.ts')) {
 			wp_enqueue_script('post-summary-block', $postSummaryJs);
 		}
 	}

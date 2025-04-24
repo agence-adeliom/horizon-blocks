@@ -15,6 +15,7 @@ use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\Link;
 use Extended\ACF\Fields\Repeater;
 use Adeliom\HorizonTools\Services\BudService;
+use Illuminate\Support\Facades\Vite;
 
 class LogosBlock extends AbstractBlock
 {
@@ -55,11 +56,11 @@ class LogosBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        if ($logosCss = BudService::getUrl('logos.css')) {
+		if ($logosCss = Vite::asset('resources/styles/blocks/logos.css')) {
             wp_enqueue_style('logos-block-css', $logosCss);
         }
 
-        if ($logosJs = BudService::getUrl('logos.js')) {
+		if ($logosJs = Vite::asset('resources/scripts/blocks/logos.ts')) {
             wp_enqueue_script('logos-block-js', $logosJs);
         }
     }

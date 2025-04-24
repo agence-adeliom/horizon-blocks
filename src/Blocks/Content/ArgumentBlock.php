@@ -17,6 +17,7 @@ use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\Textarea;
+use Illuminate\Support\Facades\Vite;
 
 class ArgumentBlock extends AbstractBlock
 {
@@ -57,11 +58,11 @@ class ArgumentBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        if ($argumentsCss = BudService::getUrl('arguments.css')) {
+		if ($argumentsCss = Vite::asset('resources/styles/blocks/arguments.css')) {
             wp_enqueue_style('arguments-block-css', $argumentsCss);
         }
 
-        if ($argumentsJs = BudService::getUrl('arguments.js')) {
+		if ($argumentsJs = Vite::asset('resources/scripts/blocks/arguments.ts')) {
             wp_enqueue_script('arguments-block-js', $argumentsJs);
         }
     }

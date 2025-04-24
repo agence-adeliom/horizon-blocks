@@ -16,6 +16,7 @@ use App\Admin\OptionPageAdmin;
 use App\PostTypes\CustomerReview;
 use Extended\ACF\Fields\Message;
 use Extended\ACF\Fields\Relationship;
+use Illuminate\Support\Facades\Vite;
 
 class CustomerReviewBlock extends AbstractBlock
 {
@@ -58,11 +59,11 @@ class CustomerReviewBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        if ($customerReviewCss = BudService::getUrl('customer-review.css')) {
+		if ($customerReviewCss = Vite::asset('resources/styles/blocks/customer-review.css')) {
             wp_enqueue_style('customer-review-block-css', $customerReviewCss);
         }
 
-        if ($customerReviewJs = BudService::getUrl('customer-review.js')) {
+		if ($customerReviewJs = Vite::asset('resources/scripts/blocks/customer-review.js')) {
             wp_enqueue_script('customer-review-block-js', $customerReviewJs);
         }
     }
