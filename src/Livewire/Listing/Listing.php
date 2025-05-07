@@ -44,6 +44,7 @@ class Listing extends Component
 
 	public null|false|array $filters = [];
 	public null|false|array $secondaryFilters = [];
+	public null|false|array $forcedFilters = [];
 	public ?string $secondaryFiltersButtonLabel = null;
 	public ?string $secondaryFiltersTitle = null;
 	private null|false|array $baseFilters = [];
@@ -748,6 +749,40 @@ EOF;
 		}
 	}
 
+	private function applyForcedFilters(QueryBuilder $qb): void
+	{
+		$hasAtLeastOne = false;
+		$taxQuery = new TaxQuery();
+
+		if (is_array($this->forcedFilters)) {
+			foreach ($this->forcedFilters as $forcedFilter) {
+				if (is_array($forcedFilter) && !empty($forcedFilter[ListingBlock::FIELD_FILTERS_TYPE]) && !empty($forcedFilter[ListingBlock::FIELD_FILTERS_TAXONOMY]) && !empty($forcedFilter[ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE])) {
+					switch ($forcedFilter[ListingBlock::FIELD_FILTERS_TYPE]) {
+						case FilterTypesEnum::TAXONOMY->value:
+							$taxonomySlug = $forcedFilter[ListingBlock::FIELD_FILTERS_TAXONOMY];
+							$termIds = $forcedFilter[ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE];
+
+							if (is_array($termIds)) {
+								$hasAtLeastOne = true;
+
+								$subTaxQuery = new TaxQuery();
+								$subTaxQuery->add($taxonomySlug, $termIds, 'term_id');
+
+								$taxQuery->add($subTaxQuery);
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			}
+		}
+
+		if ($hasAtLeastOne) {
+			$qb->addTaxQuery($taxQuery);
+		}
+	}
+
 	public function getData(): void
 	{
 		if (null !== $this->postType) {
@@ -761,6 +796,10 @@ EOF;
 
 			if (is_array($this->secondaryFilterFields)) {
 				$this->applyFilters(filtersToApply: $this->secondaryFilterFields, qb: $qb, level: 2);
+			}
+
+			if (is_array($this->forcedFilters)) {
+				$this->applyForcedFilters(qb: $qb);
 			}
 
 			if ($this->order) {

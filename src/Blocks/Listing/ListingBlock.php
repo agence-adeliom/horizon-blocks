@@ -25,6 +25,7 @@ use Extended\ACF\Fields\Number;
 use Extended\ACF\Fields\RadioButton;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Select;
+use Extended\ACF\Fields\Taxonomy;
 use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\TrueFalse;
 use Extended\ACF\Location;
@@ -40,7 +41,8 @@ class ListingBlock extends AbstractBlock
 
 	public const bool USE_FIELDS_TO_DEFINE_FILTERS = true;
 	public const bool ALWAYS_DISPLAY_FILTERS = true;
-	public const bool ENABLE_SECONDARY_FILTERS = false;
+	public const bool ENABLE_SECONDARY_FILTERS = true;
+	public const bool ENABLED_FORCED_FILTERS = true;
 
 	public const string FIELD_PER_PAGE = 'perPage';
 	public const string FIELD_FILTERS = 'filters';
@@ -48,10 +50,13 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_SECONDARY_FILTERS_BUTTON_LABEL = 'secondaryFiltersButtonLabel';
 	public const string FIELD_SECONDARY_FILTERS_TITLE = 'secondaryFiltersTitle';
 	public const string FIELD_WITH_SECONDARY_FILTERS = 'withSecondaryFilters';
+	public const string FIELD_WITH_FORCED_FILTERS = 'withForcedFilters';
+	public const string FIELD_FORCED_FILTERS = 'forcedFilters';
 
 	public const string FIELD_FILTERS_TYPE = 'type';
 	public const string FIELD_FILTERS_FIELD = 'field';
 	public const string FIELD_FILTERS_TAXONOMY = 'taxonomy';
+	public const string FIELD_FILTERS_TAXONOMY_VALUE = 'taxonomyValue';
 	public const string FIELD_FILTERS_APPEARANCE = 'appearance';
 	public const string FIELD_FILTERS_META_APPEARANCE = self::FIELD_FILTERS_APPEARANCE . 'Meta';
 	public const string FIELD_FILTERS_TAX_APPEARANCE = self::FIELD_FILTERS_APPEARANCE . 'Tax';
@@ -97,66 +102,110 @@ class ListingBlock extends AbstractBlock
 		}
 	}
 
-	private function getFilterRepeaterFields(int $level = 1): array
+	private function getFilterRepeaterFields(int $level = 1, array $excludedTypes = [], bool $withFilterName = true, bool $withDefaultText = true, bool $withAppearance = true, bool $withTaxonomyValue = false): array
 	{
 		$filterFields = [];
 
 		$availableFields = $this->getAvailableFilterChoices(level: $level);
 		$availableTaxonomies = $this->getAvailableTaxonomies(level: $level);
 
+		$hasTaxonomy = !in_array(FilterTypesEnum::TAXONOMY, $excludedTypes);
+		$hasMeta = !in_array(FilterTypesEnum::META, $excludedTypes);
+		$hasSearch = !in_array(FilterTypesEnum::SEARCH, $excludedTypes);
+
 		$typeChoices = [];
-		if (!empty($availableFields) || self::ALWAYS_DISPLAY_FILTERS) {
-			$typeChoices[FilterTypesEnum::META->value] = __('Méta');
+
+		if ($hasMeta) {
+			if (!empty($availableFields) || self::ALWAYS_DISPLAY_FILTERS) {
+				$typeChoices[FilterTypesEnum::META->value] = __('Méta');
+			}
 		}
 
-		if (!empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
-			$typeChoices[FilterTypesEnum::TAXONOMY->value] = __('Taxonomie');
+		if ($hasTaxonomy) {
+			if (!empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
+				$typeChoices[FilterTypesEnum::TAXONOMY->value] = __('Taxonomie');
+			}
 		}
 
-		$typeChoices[FilterTypesEnum::SEARCH->value] = __('Recherche');
+		if ($hasSearch) {
+			$typeChoices[FilterTypesEnum::SEARCH->value] = __('Recherche');
+		}
 
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
 			$filterFields[] = ButtonGroup::make(__('Type'), self::FIELD_FILTERS_TYPE)
 				->required()
 				->choices($typeChoices);
-			$filterFields[] = Message::make(__('Recherche'), 'searchinfo')
-				->body(__('Actuellement, seule la recherche dans le titre et dans le contenu de l’élément sont prises en charge.'))
-				->conditionalLogic([
-					ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::SEARCH->value)
-				]);
-			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->required();
-			$filterFields[] = Text::make(__('Texte par défaut du filtre'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Si non renseigné, le nom sera utilisé'));
-			$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->choices([
-				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
-				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
-				self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
-				self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
-				self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
-				self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
-			])
-				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
-				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
-			$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->choices([
-				self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
-				self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
-				self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
-				self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
-				self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
-			])
-				->default(self::VALUE_FILTER_APPEARANCE_SELECT)
-				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
-			$filterFields[] = Select::make(__('Champ'), self::FIELD_FILTERS_FIELD)
-				->stylized()
-				->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.'))
-				->choices($availableFields)
-				->lazyLoad()
-				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
-			$filterFields[] = Select::make(__('Taxonomie'), self::FIELD_FILTERS_TAXONOMY)
-				->stylized()
-				->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.'))
-				->choices($availableTaxonomies)
-				->lazyLoad()
-				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
+
+			if ($hasSearch) {
+				$filterFields[] = Message::make(__('Recherche'), 'searchinfo')
+					->body(__('Actuellement, seule la recherche dans le titre et dans le contenu de l’élément sont prises en charge.'))
+					->conditionalLogic([
+						ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::SEARCH->value)
+					]);
+			}
+
+			if ($withFilterName) {
+				$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->required();
+			}
+
+			if ($withDefaultText) {
+				$filterFields[] = Text::make(__('Texte par défaut du filtre'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Si non renseigné, le nom sera utilisé'));
+			}
+
+			if ($hasMeta) {
+				if ($withAppearance) {
+					$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->choices([
+						self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
+						self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
+						self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
+						self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
+						self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
+						self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
+					])
+						->default(self::VALUE_FILTER_APPEARANCE_SELECT)
+						->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
+				}
+
+				$filterFields[] = Select::make(__('Champ'), self::FIELD_FILTERS_FIELD)
+					->stylized()
+					->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.'))
+					->choices($availableFields)
+					->lazyLoad()
+					->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
+			}
+
+			if ($hasTaxonomy) {
+				if ($withAppearance) {
+					$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->choices([
+						self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
+						self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
+						self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
+						self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
+						self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
+					])
+						->default(self::VALUE_FILTER_APPEARANCE_SELECT)
+						->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
+				}
+
+				$filterFields[] = Select::make(__('Taxonomie'), self::FIELD_FILTERS_TAXONOMY)
+					->stylized()
+					->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.'))
+					->choices($availableTaxonomies)
+					->lazyLoad()
+					->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
+
+				if ($withTaxonomyValue) {
+					foreach ($availableTaxonomies as $taxonomySlug => $taxonomyName) {
+						$filterFields[] = Taxonomy::make($taxonomyName, self::FIELD_FILTERS_TAXONOMY_VALUE)
+							->required()
+							->taxonomy($taxonomySlug)
+							->appearance('multi_select')
+							->load(false)
+							->save(false)
+							->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TAXONOMY, '==', $taxonomySlug)]);
+					}
+				}
+			}
 		}
 
 		return $filterFields;
@@ -167,6 +216,7 @@ class ListingBlock extends AbstractBlock
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
 			$fields = [
 				Repeater::make(__('Filtres primaires'), self::FIELD_FILTERS)
+					->helperText(__('Les filtres primaires sont les filtres affichés par défaut au-dessus du listing'))
 					->button(__('Ajouter un filtre'))
 					->collapsed(self::FIELD_FILTERS_NAME)
 					->layout('block')
@@ -178,6 +228,7 @@ class ListingBlock extends AbstractBlock
 			if (self::ENABLE_SECONDARY_FILTERS) {
 				$fields = array_merge($fields, [
 					TrueFalse::make(__('Activer les filtres secondaires'), self::FIELD_WITH_SECONDARY_FILTERS)
+						->helperText(__('Les filtres secondaires sont des filtres que l’on peut afficher au clic sur un bouton'))
 						->stylized(),
 					Text::make(__('Label du bouton'), self::FIELD_SECONDARY_FILTERS_BUTTON_LABEL)
 						->helperText(__('Texte affiché sur le bouton pour afficher les filtres secondaires'))
@@ -192,6 +243,19 @@ class ListingBlock extends AbstractBlock
 						->layout('block')
 						->fields($this->getFilterRepeaterFields(level: 2))
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
+				]);
+			}
+
+			if (self::ENABLED_FORCED_FILTERS) {
+				$fields = array_merge($fields, [
+					TrueFalse::make(__('Activer les filtres forcés'), self::FIELD_WITH_FORCED_FILTERS)
+						->helperText(__('Les filtres forcés sont des filtres qui seront toujours appliqués et qu’il n’est pas possible de désélectionner'))
+						->stylized(),
+					Repeater::make(__('Filtres forcés'), self::FIELD_FORCED_FILTERS)
+						->button(__('Ajouter un filtre forcé'))
+						->layout('block')
+						->fields($this->getFilterRepeaterFields(excludedTypes: [FilterTypesEnum::META, FilterTypesEnum::SEARCH], withFilterName: false, withDefaultText: false, withAppearance: false, withTaxonomyValue: true))
+						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_FORCED_FILTERS, '==', 1)])
 				]);
 			}
 
@@ -402,6 +466,21 @@ class ListingBlock extends AbstractBlock
 		$selectedPostType = null;
 
 		$postId = $_GET['post'] ?? $_POST['post_id'] ?? null;
+
+		if (null === $postId) {
+			$rawBody = file_get_contents('php://input');
+			$data = json_decode($rawBody, true); // true pour avoir un tableau associatif
+
+			if (json_last_error() === JSON_ERROR_NONE) {
+				if (is_array($data) && !empty($data['id']) && is_numeric($data['id'])) {
+					$postId = $data['id'];
+				}
+			}
+		}
+
+		if (null === $postId) {
+			$postId = get_the_ID();
+		}
 
 		if ($postId) {
 			$post = get_post($postId);

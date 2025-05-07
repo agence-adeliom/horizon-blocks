@@ -1,4 +1,6 @@
 @php
+    use App\Blocks\Listing\ListingBlock;
+
     $postType = null;
     $perPage = 12;
     $filters = $fields['filters'] ?? [];
@@ -6,6 +8,16 @@
     $secondaryFiltersLabel = $fields['secondaryFiltersButtonLabel'] ?? 'Filtres avancés';
     $hasSecondaryFilters = !empty($secondaryFilters) && $fields['withSecondaryFilters'];
     $secondaryFiltersTitle = $fields['secondaryFiltersTitle'] ?? null;
+    $forcedFilters = $fields['forcedFilters'] ?? [];
+
+    foreach ($forcedFilters as $forcedFilterKey=>$forcedFilterValue) {
+        if(!empty($block['data'])){
+            $key = sprintf('%s_%s_%s',ListingBlock::FIELD_FORCED_FILTERS,$forcedFilterKey,ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE);
+            if(!empty($block['data'][$key])) {
+                $forcedFilters[$forcedFilterKey][ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE]=array_map('intval',$block['data'][$key]);
+            }
+        }
+    }
 
     if (isset($fields['postType'])) {
         $postType = $fields['postType'];
@@ -25,6 +37,8 @@
         <x-typography.heading :fields="$fields['title']" />
     @endisset
 
-    <livewire:listing.listing :post-type="$postType" :per-page="$perPage" :filters="$filters" :secondary-filters="$hasSecondaryFilters ? $secondaryFilters : null" :secondary-filters-button-label="$secondaryFiltersLabel"
-        :secondary-filters-title="$secondaryFiltersTitle" />
+        <livewire:listing.listing :post-type="$postType" :per-page="$perPage" :filters="$filters"
+                                  :secondary-filters="$hasSecondaryFilters ? $secondaryFilters : null"
+                                  :secondary-filters-button-label="$secondaryFiltersLabel"
+                                  :secondary-filters-title="$secondaryFiltersTitle" :forced-filters="$forcedFilters"/>
 </x-block>
