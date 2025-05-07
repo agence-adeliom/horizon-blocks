@@ -10,13 +10,15 @@
     $secondaryFiltersTitle = $fields['secondaryFiltersTitle'] ?? null;
     $forcedFilters = $fields['forcedFilters'] ?? [];
 
-    foreach ($forcedFilters as $forcedFilterKey=>$forcedFilterValue) {
+    if(is_array($forcedFilters)){
+        foreach ($forcedFilters as $forcedFilterKey=>$forcedFilterValue) {
         if(!empty($block['data'])){
             $key = sprintf('%s_%s_%s',ListingBlock::FIELD_FORCED_FILTERS,$forcedFilterKey,ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE);
             if(!empty($block['data'][$key])) {
                 $forcedFilters[$forcedFilterKey][ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE]=array_map('intval',$block['data'][$key]);
             }
         }
+    }
     }
 
     if (isset($fields['postType'])) {
