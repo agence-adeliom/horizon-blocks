@@ -62,7 +62,9 @@
         @endif
     </form>
 
-    <button wire:click="resetFilters">Ré-initialiser</button>
+    @if(!empty($filters) || !empty($secondaryFilters))
+        <button wire:click="resetFilters">Ré-initialiser</button>
+    @endif
 
     <div class="loading hidden">
         Loading
