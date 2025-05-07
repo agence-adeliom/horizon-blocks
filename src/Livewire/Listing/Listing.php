@@ -26,6 +26,7 @@ use Livewire\Component;
 class Listing extends Component
 {
 	private const DEFAULT_ORDER = 'date.DESC';
+	private const DEFAULT_PER_PAGE = 12;
 
 	public ?string $postType = null;
 
@@ -39,7 +40,7 @@ class Listing extends Component
 	public array $secondaryFilterFields = [];
 	#[Url(as: 'tri')]
 	public string $order = self::DEFAULT_ORDER;
-	public int $perPage = 12;
+	public int $perPage = self::DEFAULT_PER_PAGE;
 
 	public null|false|array $filters = [];
 	public null|false|array $secondaryFilters = [];
@@ -67,6 +68,10 @@ class Listing extends Component
 
 	public function mount(): void
 	{
+		if ($this->perPage !== -1 && $this->perPage <= 0) {
+			$this->perPage = self::DEFAULT_PER_PAGE;
+		}
+
 		if (in_array($this->postType, self::MANUAL_POST_TYPES)) {
 			$card = Config::get(sprintf('posts.listing.cards.%s', $this->postType));
 
