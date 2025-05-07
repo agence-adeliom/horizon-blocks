@@ -53,5 +53,6 @@
     <livewire:listing.listing :post-type="$postType" :per-page="$perPage" :filters="$filters"
                               :secondary-filters="$hasSecondaryFilters ? $secondaryFilters : null"
                               :secondary-filters-button-label="$secondaryFiltersLabel"
-                              :secondary-filters-title="$secondaryFiltersTitle" :forced-filters="$forcedFilters"/>
+                              :secondary-filters-title="$secondaryFiltersTitle" :forced-filters="$forcedFilters"
+                              :display-sort="$displaySort" :display-number-of-results="$displayNumberOfResults"/>
 </x-block>
