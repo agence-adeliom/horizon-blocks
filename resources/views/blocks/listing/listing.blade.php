@@ -50,6 +50,10 @@
         <x-typography.heading :fields="$fields['title']"/>
     @endisset
 
+        @isset($fields['wysiwyg'])
+            <x-typography.text :content="$fields['wysiwyg']"/>
+        @endisset
+
     <livewire:listing.listing :post-type="$postType" :per-page="$perPage" :filters="$filters"
                               :secondary-filters="$hasSecondaryFilters ? $secondaryFilters : null"
                               :secondary-filters-button-label="$secondaryFiltersLabel"

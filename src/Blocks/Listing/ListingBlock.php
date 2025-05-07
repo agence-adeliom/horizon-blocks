@@ -12,6 +12,7 @@ use Adeliom\HorizonTools\Fields\Tabs\LayoutTab;
 use Adeliom\HorizonTools\Fields\Tabs\SettingsTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
+use Adeliom\HorizonTools\Fields\Text\WysiwygField;
 use Adeliom\HorizonTools\Services\BudService;
 use Adeliom\HorizonTools\Services\ClassService;
 use Adeliom\HorizonTools\Services\FileService;
@@ -89,7 +90,8 @@ class ListingBlock extends AbstractBlock
 		yield from ContentTab::make()->fields([
 			UptitleField::make(),
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h1')->required(),
-			$postTypeField
+			WysiwygField::simple(),
+			$postTypeField,
 		]);
 
 		yield from LayoutTab::make()->fields([
