@@ -10,6 +10,9 @@
     $secondaryFiltersTitle = $fields['secondaryFiltersTitle'] ?? null;
     $forcedFilters = $fields['forcedFilters'] ?? [];
 
+    $displaySort = $fields['displaySort'] ?? true;
+    $displayNumberOfResults=$fields['displayNumberOfResults']??true;
+
     if(is_array($forcedFilters)){
         foreach ($forcedFilters as $forcedFilterKey=>$forcedFilterValue) {
         if(!empty($block['data'])){

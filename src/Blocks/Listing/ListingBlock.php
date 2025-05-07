@@ -45,6 +45,8 @@ class ListingBlock extends AbstractBlock
 	public const bool ENABLED_FORCED_FILTERS = true;
 
 	public const string FIELD_PER_PAGE = 'perPage';
+	public const string FIELD_DISPLAY_SORT = 'displaySort';
+	public const string FIELD_DISPLAY_NUMBER_OF_RESULTS = 'displayNumberOfResults';
 	public const string FIELD_FILTERS = 'filters';
 	public const string FIELD_SECONDARY_FILTERS = 'secondaryFilters';
 	public const string FIELD_SECONDARY_FILTERS_BUTTON_LABEL = 'secondaryFiltersButtonLabel';
@@ -94,7 +96,13 @@ class ListingBlock extends AbstractBlock
 			Number::make(__('Nombre d’éléments par page'), self::FIELD_PER_PAGE)
 				->max(24)
 				->min(3)
-				->step(3)
+				->step(3),
+			TrueFalse::make(__('Afficher le tri'), self::FIELD_DISPLAY_SORT)
+				->default(true)
+				->stylized(),
+			TrueFalse::make(__('Afficher le nombre de résultats'), self::FIELD_DISPLAY_NUMBER_OF_RESULTS)
+				->default(true)
+				->stylized(),
 		]);
 
 		if (self::USE_FIELDS_TO_DEFINE_FILTERS) {

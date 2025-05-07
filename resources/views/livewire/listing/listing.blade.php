@@ -49,10 +49,17 @@
             </div>
         @endif
 
-        <div class="flex justify-between">
-            <x-horizon.results-counter :value="$data" singular="élément" plural="éléments"/>
-            <x-horizon.sort model="order" :options="$sortOptions"/>
-        </div>
+        @if($displayNumberOfResults || $displaySort)
+            <div class="flex @if(!$displayNumberOfResults) justify-end @else justify-between @endif">
+                @if($displayNumberOfResults)
+                    <x-horizon.results-counter :value="$data" singular="élément" plural="éléments"/>
+                @endif
+
+                @if($displaySort)
+                    <x-horizon.sort model="order" :options="$sortOptions"/>
+                @endif
+            </div>
+        @endif
     </form>
 
     <button wire:click="resetFilters">Ré-initialiser</button>

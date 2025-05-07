@@ -52,6 +52,9 @@ class Listing extends Component
 	public ?string $postTypeClass = null;
 	public ?string $card = null;
 
+	public bool $displaySort = true;
+	public bool $displayNumberOfResults = true;
+
 	private const QUICK_ACCESS_TAXONOMY_PREFIX = 'qat-';
 
 	public const DISPLAY_VALUES_IN_MULTISELECT_LABEL = false;
