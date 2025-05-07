@@ -14,8 +14,16 @@
         foreach ($forcedFilters as $forcedFilterKey=>$forcedFilterValue) {
         if(!empty($block['data'])){
             $key = sprintf('%s_%s_%s',ListingBlock::FIELD_FORCED_FILTERS,$forcedFilterKey,ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE);
-            if(!empty($block['data'][$key])) {
-                $forcedFilters[$forcedFilterKey][ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE]=array_map('intval',$block['data'][$key]);
+
+            // Search key in $block['data'] begining with $key
+            $realKeys = array_filter(array_keys($block['data']), function($k) use ($key) {
+                return strpos($k, $key) === 0;
+            });
+
+            if($realKey = array_pop($realKeys)){
+                if(!empty($block['data'][$realKey])) {
+                    $forcedFilters[$forcedFilterKey][ListingBlock::FIELD_FILTERS_TAXONOMY_VALUE]=array_map('intval',$block['data'][$realKey]);
+                }
             }
         }
     }

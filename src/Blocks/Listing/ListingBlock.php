@@ -200,7 +200,7 @@ class ListingBlock extends AbstractBlock
 
 			if ($withTaxonomyValue) {
 				foreach ($availableTaxonomies as $taxonomySlug => $taxonomyName) {
-					$filterFields[] = Taxonomy::make($taxonomyName, self::FIELD_FILTERS_TAXONOMY_VALUE)
+					$filterFields[] = Taxonomy::make($taxonomyName, self::FIELD_FILTERS_TAXONOMY_VALUE . ucfirst($taxonomySlug))
 						->required()
 						->taxonomy($taxonomySlug)
 						->appearance('multi_select')
