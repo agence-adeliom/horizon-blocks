@@ -48,6 +48,8 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_PER_PAGE = 'perPage';
 	public const string FIELD_DISPLAY_SORT = 'displaySort';
 	public const string FIELD_DISPLAY_NUMBER_OF_RESULTS = 'displayNumberOfResults';
+	public const string FIELD_ELEMENTS_LABEL_SINGULAR = 'elementsLabelSingular';
+	public const string FIELD_ELEMENTS_LABEL_PLURAL = 'elementsLabelPlural';
 	public const string FIELD_FILTERS = 'filters';
 	public const string FIELD_SECONDARY_FILTERS = 'secondaryFilters';
 	public const string FIELD_SECONDARY_FILTERS_BUTTON_LABEL = 'secondaryFiltersButtonLabel';
@@ -105,6 +107,12 @@ class ListingBlock extends AbstractBlock
 			TrueFalse::make(__('Afficher le nombre de résultats'), self::FIELD_DISPLAY_NUMBER_OF_RESULTS)
 				->default(true)
 				->stylized(),
+			Text::make(__('Nom des éléments au singulier'), self::FIELD_ELEMENTS_LABEL_SINGULAR)
+				->placeholder('élément')
+				->wrapper(['width' => 50]),
+			Text::make(__('Nom des éléments au pluriel'), self::FIELD_ELEMENTS_LABEL_PLURAL)
+				->placeholder('éléments')
+				->wrapper(['width' => 50]),
 		]);
 
 		if (self::USE_FIELDS_TO_DEFINE_FILTERS) {

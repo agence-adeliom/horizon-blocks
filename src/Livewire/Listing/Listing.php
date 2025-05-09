@@ -54,6 +54,8 @@ class Listing extends Component
 
 	public bool $displaySort = true;
 	public bool $displayNumberOfResults = true;
+	public string $labelSingular = 'élément';
+	public string $labelPlural = 'éléments';
 
 	private const QUICK_ACCESS_TAXONOMY_PREFIX = 'qat-';
 

@@ -10,6 +10,9 @@
     $secondaryFiltersTitle = $fields['secondaryFiltersTitle'] ?? null;
     $forcedFilters = $fields['forcedFilters'] ?? [];
 
+    $labelSingular = !empty($fields[ListingBlock::FIELD_ELEMENTS_LABEL_SINGULAR]) ? $fields[ListingBlock::FIELD_ELEMENTS_LABEL_SINGULAR] :__('élément');
+    $labelPlural = !empty($fields[ListingBlock::FIELD_ELEMENTS_LABEL_PLURAL]) ? $fields[ListingBlock::FIELD_ELEMENTS_LABEL_PLURAL]: __('éléments');
+
     $displaySort = $fields['displaySort'] ?? true;
     $displayNumberOfResults=$fields['displayNumberOfResults']??true;
 
@@ -58,5 +61,6 @@
                               :secondary-filters="$hasSecondaryFilters ? $secondaryFilters : null"
                               :secondary-filters-button-label="$secondaryFiltersLabel"
                               :secondary-filters-title="$secondaryFiltersTitle" :forced-filters="$forcedFilters"
-                              :display-sort="$displaySort" :display-number-of-results="$displayNumberOfResults"/>
+                              :display-sort="$displaySort" :display-number-of-results="$displayNumberOfResults"
+                              :label-singular="$labelSingular" :label-plural="$labelPlural"/>
 </x-block>
