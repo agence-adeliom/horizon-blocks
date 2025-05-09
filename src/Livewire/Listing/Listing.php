@@ -28,6 +28,8 @@ class Listing extends Component
 	private const DEFAULT_ORDER = 'date.DESC';
 	private const DEFAULT_PER_PAGE = 12;
 
+	public bool $useCache = false;
+
 	public ?string $postType = null;
 
 	public array $data = [];
@@ -165,6 +167,10 @@ class Listing extends Component
 
 		$taxQb = new QueryBuilder();
 		$taxQb->taxonomy($taxonomyName)->fetchEmptyTaxonomies(false);
+
+		if ($this->useCache) {
+			$taxQb->useCache();
+		}
 
 		foreach ($taxQb->get() as $term) {
 			if ($term instanceof \WP_Term) {
@@ -795,6 +801,10 @@ EOF;
 	{
 		if (null !== $this->postType) {
 			$qb = new QueryBuilder();
+
+			if ($this->useCache) {
+				$qb->useCache();
+			}
 
 			$qb->postType($this->postType)->page($this->page)->perPage($this->perPage)->as(BasePostViewModel::class);
 
