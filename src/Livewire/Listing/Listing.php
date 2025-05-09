@@ -696,7 +696,10 @@ EOF;
 														break;
 													default:
 														$value[$metaSlugs[$valueKey]] = $valueValue;
-														unset($value[$valueKey]);
+
+														if ($metaSlugs[$valueKey] != $valueKey) {
+															unset($value[$valueKey]);
+														}
 														break;
 												}
 											}
@@ -889,11 +892,16 @@ EOF;
 
 	public function resetFilters(): void
 	{
-		$this->page = 1;
-		$this->order = self::DEFAULT_ORDER;
+		if ($this->page !== 1) {
+			$this->page = 1;
+		}
+
+		if ($this->order !== self::DEFAULT_ORDER) {
+			$this->order = self::DEFAULT_ORDER;
+		}
 
 		foreach ($this->filterFields as $key => $filterField) {
-			$this->filterFields[$key] = null;
+			unset($this->filterFields[$key]);
 		}
 
 		$this->resetSecondaryFilters(withEvents: false, fetchData: false);
