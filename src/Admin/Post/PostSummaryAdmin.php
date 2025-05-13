@@ -29,10 +29,16 @@ class PostSummaryAdmin extends AbstractAdmin
 
 			if ('post' === $postType) {
 				$titles = BlogPostService::getPostTitles();
+				$treatedSlugTitles = [];
 
 				if (is_array($titles)) {
 					foreach ($titles as $title) {
-						$fields[] = Text::make(__('Surcharge de :') . ' ' . $title, sanitize_title($title))->placeholder($title);
+						$slug = sanitize_title($title);
+
+						if (!in_array($slug, $treatedSlugTitles)) {
+							$fields[] = Text::make(__('Surcharge de :') . ' ' . $title, $slug)->placeholder($title);
+							$treatedSlugTitles[] = $slug;
+						}
 					}
 				}
 			}
