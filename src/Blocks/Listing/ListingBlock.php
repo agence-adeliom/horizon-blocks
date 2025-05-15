@@ -16,6 +16,7 @@ use Adeliom\HorizonTools\Fields\Text\WysiwygField;
 use Adeliom\HorizonTools\Services\BudService;
 use Adeliom\HorizonTools\Services\ClassService;
 use Adeliom\HorizonTools\Services\FileService;
+use Adeliom\HorizonTools\Services\PostService;
 use Adeliom\HorizonTools\Taxonomies\AbstractTaxonomy;
 use Extended\ACF\ConditionalLogic;
 use Extended\ACF\Fields\ButtonGroup;
@@ -30,6 +31,7 @@ use Extended\ACF\Fields\Taxonomy;
 use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\TrueFalse;
 use Extended\ACF\Location;
+use Illuminate\Support\Facades\Cache;
 
 class ListingBlock extends AbstractBlock
 {
@@ -299,13 +301,29 @@ class ListingBlock extends AbstractBlock
 	private function getAvailableFilterChoices(int $level = 1): array
 	{
 		$postType = $this->getFilteredPostType();
+		$metaTaxonomyKeys = [];
+
+		$postTypeTaxonomies = Cache::remember(sprintf('post-type-taxonomies-%s', $postType), 3600, function () use ($postType) {
+			return PostService::getAllAssociatedTaxonomies(postType: $postType);
+		});
+
+		if (!empty($postTypeTaxonomies)) {
+			$metaTaxonomyKeys = array_map(function ($taxonomySlug) {
+				return sprintf('taxonomy_%s', $taxonomySlug);
+			}, array_keys($postTypeTaxonomies));
+		}
+
 		$fieldChoices = [];
 
 		if ($postType) {
 			$fields = $this->getPostTypeFields(postTypeSlug: $postType, level: $level);
 
 			foreach ($fields as $field) {
-				$fieldChoices[sprintf('%s_%s', $field['type'], $field['name'])] = $field['label'];
+				$fieldKey = sprintf('%s_%s', $field['type'], $field['name']);
+
+				if (!in_array($fieldKey, $metaTaxonomyKeys)) {
+					$fieldChoices[$fieldKey] = $field['label'];
+				}
 			}
 		}
 
