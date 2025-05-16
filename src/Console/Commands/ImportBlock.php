@@ -45,7 +45,7 @@ class ImportBlock extends Command
 
 		$blockNames = collect(array_values($shortNames));
 
-		if ($index = search(label: 'Nom du bloc', options: fn(string $value) => $blockNames->filter(fn($name) => Str::contains($name, $value, ignoreCase: true))->values()->all(), scroll: 10)) {
+		if ($index = search(label: 'Name of the block to import', options: fn(string $value) => $blockNames->filter(fn($name) => Str::contains($name, $value, ignoreCase: true))->values()->all(), scroll: 10)) {
 			$namespaceToImport = array_search($index, $shortNames);
 			$blockExtraData = $availableBlocks[$namespaceToImport];
 
