@@ -9,6 +9,8 @@ use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Services\ClassService;
 use Adeliom\HorizonTools\Services\CommandService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
+use function Laravel\Prompts\search;
 
 class ImportBlock extends Command
 {
@@ -41,7 +43,9 @@ class ImportBlock extends Command
 			return;
 		}
 
-		if ($index = $this->choice('Which block would you like to import?', array_values($shortNames), 0)) {
+		$blockNames = collect(array_values($shortNames));
+
+		if ($index = search(label: 'Nom du bloc', options: fn(string $value) => $blockNames->filter(fn($name) => Str::contains($name, $value, ignoreCase: true))->values()->all(), scroll: 10)) {
 			$namespaceToImport = array_search($index, $shortNames);
 			$blockExtraData = $availableBlocks[$namespaceToImport];
 
