@@ -122,6 +122,29 @@ class ListingBlock extends AbstractBlock
 		}
 	}
 
+	private function getMetaAppearanceChoices(): array
+	{
+		return [
+			self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
+			self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
+			self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
+			self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
+			self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
+			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
+		];
+	}
+
+	private function getTaxonomyAppearanceChoices(): array
+	{
+		return [
+			self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
+			self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
+			self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
+			self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
+			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
+		];
+	}
+
 	private function getFilterRepeaterFields(int $level = 1, array $excludedTypes = [], bool $withFilterName = true, bool $withDefaultText = true, bool $withAppearance = true, bool $withTaxonomyValue = false): array
 	{
 		$filterFields = [];
@@ -177,14 +200,8 @@ class ListingBlock extends AbstractBlock
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
 			if ($hasMeta) {
 				if ($withAppearance) {
-					$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)->choices([
-						self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
-						self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
-						self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
-						self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
-						self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
-						self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
-					])
+					$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)
+						->choices($this->getMetaAppearanceChoices())
 						->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
 				}
@@ -200,13 +217,8 @@ class ListingBlock extends AbstractBlock
 
 		if ($hasTaxonomy) {
 			if ($withAppearance) {
-				$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)->choices([
-					self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
-					self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
-					self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
-					self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
-					self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
-				])
+				$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)
+					->choices($this->getTaxonomyAppearanceChoices())
 					->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 					->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
 			}
