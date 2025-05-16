@@ -315,9 +315,9 @@ class ListingBlock extends AbstractBlock
 		$postType = $this->getFilteredPostType();
 		$metaTaxonomyKeys = [];
 
-		$postTypeTaxonomies = Cache::remember(sprintf('post-type-taxonomies-%s', $postType), 3600, function () use ($postType) {
+		$postTypeTaxonomies = null !== $postType ? Cache::remember(sprintf('post-type-taxonomies-%s', $postType), 3600, function () use ($postType) {
 			return PostService::getAllAssociatedTaxonomies(postType: $postType);
-		});
+		}) : [];
 
 		if (!empty($postTypeTaxonomies)) {
 			$metaTaxonomyKeys = array_map(function ($taxonomySlug) {
