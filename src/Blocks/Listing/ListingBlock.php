@@ -125,23 +125,23 @@ class ListingBlock extends AbstractBlock
 	private function getMetaAppearanceChoices(): array
 	{
 		return [
-			self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
-			self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
-			self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
-			self::VALUE_FILTER_APPEARANCE_TEXT => 'Champ libre',
-			self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
-			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
+			self::VALUE_FILTER_APPEARANCE_SELECT => __('Sélection'),
+			self::VALUE_FILTER_APPEARANCE_CHECKBOX => __('Cases à cocher'),
+			self::VALUE_FILTER_APPEARANCE_RADIO => __('Choix unique'),
+			self::VALUE_FILTER_APPEARANCE_TEXT => __('Champ libre'),
+			self::VALUE_FILTER_APPEARANCE_MULTISELECT => __('Sélection multiple'),
+			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => __('Sélection unique'),
 		];
 	}
 
 	private function getTaxonomyAppearanceChoices(): array
 	{
 		return [
-			self::VALUE_FILTER_APPEARANCE_SELECT => 'Sélection',
-			self::VALUE_FILTER_APPEARANCE_CHECKBOX => 'Cases à cocher',
-			self::VALUE_FILTER_APPEARANCE_RADIO => 'Choix unique',
-			self::VALUE_FILTER_APPEARANCE_MULTISELECT => 'Sélection multiple',
-			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => 'Sélection unique',
+			self::VALUE_FILTER_APPEARANCE_SELECT => __('Sélection'),
+			self::VALUE_FILTER_APPEARANCE_CHECKBOX => __('Cases à cocher'),
+			self::VALUE_FILTER_APPEARANCE_RADIO => __('Choix unique'),
+			self::VALUE_FILTER_APPEARANCE_MULTISELECT => __('Sélection multiple'),
+			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => __('Sélection unique'),
 		];
 	}
 
