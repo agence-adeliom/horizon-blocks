@@ -1,4 +1,4 @@
-<x-block :fields="$fields">
+<x-block :fields="$fields" :block="$block">
 	<div class="flex flex-col items-center max-w-3xl m-auto">
 		
 		@isset($fields['icon'])

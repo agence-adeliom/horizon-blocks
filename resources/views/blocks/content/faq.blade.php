@@ -1,4 +1,4 @@
-<x-block :fields="$fields">
+<x-block :fields="$fields" :block="$block">
     <div class="grid-12">
         <div class="lg:col-span-5 lg:mr-12">
             @isset($fields['img'])

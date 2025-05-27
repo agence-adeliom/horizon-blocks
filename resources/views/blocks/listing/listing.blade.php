@@ -44,7 +44,7 @@
     }
 @endphp
 
-<x-block :fields="$fields" class="listing-block">
+<x-block :fields="$fields" :block="$block" class="listing-block">
     @isset($fields['uptitle'])
         <x-typography.uptitle :content="$fields['uptitle']"/>
     @endisset

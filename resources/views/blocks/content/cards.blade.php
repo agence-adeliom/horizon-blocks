@@ -1,4 +1,4 @@
-<x-block :fields="$fields">
+<x-block :fields="$fields" :block="$block">
     <div class="grid gap-text-image-mobile lg:grid-cols-12 lg:gap-text-image-desktop">
         <div class="flex flex-col items-center text-center lg:col-span-8 lg:col-start-3">
             @if (@isset($fields['uptitle']) && $fields['uptitle'])

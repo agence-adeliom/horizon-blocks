@@ -1,5 +1,5 @@
 @if ($fields)
-    <x-block :fields="$fields" class="overflow-hidden">
+    <x-block :fields="$fields" :block="$block" class="overflow-hidden">
         <div class="flex flex-col gap-text-image-mobile lg:gap-text-image-desktop" x-data="initLogosSlider()">
 
             <div class="grid-12">

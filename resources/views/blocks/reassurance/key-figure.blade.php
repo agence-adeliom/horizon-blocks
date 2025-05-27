@@ -5,7 +5,7 @@
         $framed = $type === 'framed';
     @endphp
 
-    <x-block :fields="$fields">
+    <x-block :fields="$fields" :block="$block">
         <div class="flex flex-col items-center text-center mb-8 lg:mb-10">
             @isset($fields['uptitle'])
                 <x-typography.uptitle :content="$fields['uptitle']" />

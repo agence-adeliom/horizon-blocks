@@ -5,7 +5,7 @@
 @endphp
 
 
-<x-block :fields="$fields" class="{{ $bgColor }} relative" background="none">
+<x-block :fields="$fields" :block="$block" class="{{ $bgColor }} relative" background="none">
     @if($bgImage)
         <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('{{ $bgImage }}')"></div>
     @endif

@@ -1,4 +1,4 @@
-<x-block :fields="$fields" class="overflow-hidden">
+<x-block :fields="$fields" :block="$block" class="overflow-hidden">
     @isset($fields['uptitle'])
         <x-typography.heading :content="$fields['uptitle']" size="headline" />
     @endisset

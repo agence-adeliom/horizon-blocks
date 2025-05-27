@@ -1,4 +1,4 @@
-<x-block :fields="$fields">
+<x-block :fields="$fields" :block="$block">
     <div class="grid-12" x-data="initArgumentsSlider()" x-intersect:enter="shown = true" x-intersect:leave="shown = false">
         <div class="lg:col-span-5">
             @isset($fields['uptitle'])

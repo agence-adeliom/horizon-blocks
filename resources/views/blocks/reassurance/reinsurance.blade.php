@@ -9,7 +9,7 @@
         );
     @endphp
 
-    <x-block :fields="$fields">
+    <x-block :fields="$fields" :block="$block">
         <div class="flex flex-wrap">
             @foreach ($fields['items'] as $item)
                 <div @class([

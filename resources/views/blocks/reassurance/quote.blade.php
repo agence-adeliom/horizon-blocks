@@ -1,4 +1,4 @@
-<x-block :fields="$fields" background="none">
+<x-block :fields="$fields" :block="$block" background="none">
     <div class="grid-12 relative z-10">
         <div class="lg:col-span-8 lg:col-start-3">
             <div class="bg-color-01-100 rounded-card p-card flex flex-col gap-medium">

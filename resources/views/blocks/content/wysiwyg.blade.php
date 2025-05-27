@@ -21,7 +21,7 @@
     }
 @endphp
 
-<x-block class="simple-text-block" :fields="$fields">
+<x-block class="simple-text-block" :fields="$fields" :block="$block">
     <div class="grid grid-cols-12 items-center gap-6">
         <div class="{{ $alignClass }} {{ $itemsClass }} col-span-full flex flex-col lg:col-start-3 lg:col-end-11">
             @if (! empty($fields['uptitle']))

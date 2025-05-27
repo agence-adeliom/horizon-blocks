@@ -1,5 +1,5 @@
 @if ($fields)
-    <x-block :fields="$fields" class="overflow-hidden">
+    <x-block :fields="$fields" :block="$block" class="overflow-hidden">
         <div class="flex w-full flex-col gap-8 lg:gap-10">
             <div class="grid-12">
                 <div class="col-span-full flex flex-col items-center text-center lg:col-span-8 lg:col-start-3">

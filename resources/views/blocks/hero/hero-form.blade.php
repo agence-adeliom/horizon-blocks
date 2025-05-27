@@ -1,4 +1,4 @@
-<x-block :fields="$fields" class="relative">
+<x-block :fields="$fields" :block="$block" class="relative">
     <div class="grid-12 lg:gap-10">
         <div class="lg:col-span-6">
             <x-typography.heading :fields="$fields['title']" size="3" />

@@ -9,7 +9,7 @@
     $bgImage = $bgType === 'bg-image-type' && isset($fields['bg-image']) ? $fields['bg-image'] : '';
 @endphp
 
-<x-block :fields="$fields" class="{{ $bgColor }} relative" background="none">
+<x-block :fields="$fields" :block="$block" class="{{ $bgColor }} relative" background="none">
     @if ($bgImage)
         <x-media.img :image="$bgImage" class="cover-full" size="full" container-class="absolute-full"/>
     @endif
