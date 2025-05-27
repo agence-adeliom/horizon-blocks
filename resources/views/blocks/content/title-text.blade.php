@@ -1,22 +1,22 @@
 <x-block :fields="$fields" :block="$block">
     <div class="grid-12">
         <div class="lg:col-span-5">
-            @isset($fields['uptitle'])
+            @if(!empty($fields['uptitle']))
                 <x-typography.uptitle :content="$fields['uptitle']" />
-            @endisset
+            @endif
 
-            @isset($fields['title'])
+             @if(!empty($fields['title']))
                 <x-typography.heading :fields="$fields['title']" size="3" />
-            @endisset
+            @endif
         </div>
         <div class="lg:col-span-7">
-            @isset($fields['wysiwyg'])
+             @if(!empty($fields['wysiwyg']))
                 <x-typography.text :content="$fields['wysiwyg']" />
-            @endisset
+            @endif
 
-            @isset($fields['buttons'])
+             @if(!empty($fields['buttons']))
                 <x-action.buttons :buttons="$fields['buttons']" class="mt-button-text-mobile lg:mt-button-text-desktop" />
-            @endisset
+            @endif
         </div>
     </div>
 </x-block>
