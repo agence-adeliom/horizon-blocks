@@ -124,45 +124,37 @@ const setSummaryEltAsInactive = (elt: HTMLElement) => {
 };
 
 PostSummary.handleScroll = () => {
-    const associationsBefore = [];
-    let associationCurrent = null;
+    const threshold = window.innerHeight / 2;
+    let activeIndex = -1;
 
-    const scrollTop = window.scrollY + PostSummary.scrollOffset;
+    PostSummary.associations.forEach((association, idx) => {
+        const rectTop = association.content.getBoundingClientRect().top;
 
-    PostSummary.associations.forEach((association, idx, array) => {
-        const content = association.content;
+        if (rectTop <= threshold) {
+            activeIndex = idx; // Le dernier à avoir passé le seuil
+        }
+    });
+
+    PostSummary.associations.forEach((association, idx) => {
         const summary = association.summary;
-        let isBefore = false;
-        let isActive = false;
 
-        if (content.getBoundingClientRect().top + window.scrollY > scrollTop && null === associationCurrent) {
-            isActive = true;
-            associationCurrent = association;
+        if (idx < activeIndex) {
+            setSummaryEltAsBeforeActive(summary);
+        } else if (idx === activeIndex) {
             setSummaryEltAsActive(summary);
-        }
-
-        if (content.getBoundingClientRect().top + window.scrollY < scrollTop) {
-            let notLast = idx !== array.length - 1;
-
-            if (notLast) {
-                isBefore = true;
-                associationsBefore.push(association);
-                setSummaryEltAsBeforeActive(summary);
-            } else {
-                isBefore = false;
-                isActive = true;
-                setSummaryEltAsActive(summary);
-            }
-        }
-
-        if (!isActive && !isBefore) {
+        } else {
             setSummaryEltAsInactive(summary);
         }
     });
+
+    // Fallback : activer le premier si aucun trouvé
+    if (activeIndex === -1 && PostSummary.associations.length > 0) {
+        setSummaryEltAsActive(PostSummary.associations[0].summary);
+    }
 };
 
 PostSummary.init = () => {
-    document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('load', () => {
         if (PostSummary.getPostSummary()) {
             PostSummary.initElt(PostSummary.getPostSummary());
 
