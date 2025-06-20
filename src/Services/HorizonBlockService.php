@@ -15,6 +15,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\PostSummaryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\TextMediaBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\WysiwygBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroForm;
@@ -29,6 +30,7 @@ use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardCustomerReview;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardDocument;
+use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 
 class HorizonBlockService
@@ -169,6 +171,12 @@ class HorizonBlockService
 				self::LIVEWIRE_COMPONENTS => [],
 				self::COMPONENTS => [],
 				self::ADMINS => [PostSummaryAdmin::class],
+			],
+			TextMediaBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [],
+				self::COMPONENTS => [TextMedia::class],
+				self::LIVEWIRE_COMPONENTS => [],
 			]
 		];
 
