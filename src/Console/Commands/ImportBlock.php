@@ -8,6 +8,7 @@ use Adeliom\HorizonBlocks\Services\HorizonBlockService;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Services\ClassService;
 use Adeliom\HorizonTools\Services\CommandService;
+use Adeliom\HorizonTools\Services\FileService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use function Laravel\Prompts\search;
@@ -116,7 +117,7 @@ class ImportBlock extends Command
 							}
 
 							$adminFullPath = rtrim($path, '/') . '/' . $folderStructure[1];
-							file_put_contents($adminFullPath, $adminClassContent);
+							FileService::filePutContentsAndCreateMissingDirectories($adminFullPath, $adminClassContent);
 						}
 					}
 				}
@@ -149,7 +150,7 @@ class ImportBlock extends Command
 
 							$content = str_replace($namespace, $newNamespace, $content);
 
-							file_put_contents($templateClassFileName, $content);
+							FileService::filePutContentsAndCreateMissingDirectories($templateClassFileName,$content);
 
 							// Get line container return view
 							$lines = file($classFile);
@@ -170,7 +171,7 @@ class ImportBlock extends Command
 											if (file_exists($horizonPath)) {
 												if (!file_exists($templatePath)) {
 													$this->info('Copying ' . $horizonPath . ' to ' . $templatePath);
-													file_put_contents($templatePath, file_get_contents($horizonPath));
+													FileService::filePutContentsAndCreateMissingDirectories($templatePath, file_get_contents($horizonPath));
 												} else {
 													$this->error('File already exists at ' . $templatePath);
 												}
@@ -230,7 +231,7 @@ class ImportBlock extends Command
 
 						if (!file_exists($newFilePath)) {
 							$this->info('Copying ' . $horizonFilePath . ' to ' . $newFilePath);
-							file_put_contents($newFilePath, file_get_contents($horizonFilePath));
+							FileService::filePutContentsAndCreateMissingDirectories($newFilePath, file_get_contents($horizonFilePath));
 						} else {
 							$this->error('File already exists at ' . $newFilePath);
 						}
@@ -300,7 +301,7 @@ class ImportBlock extends Command
 
 						$newBudFileContent = $firstPart . PHP_EOL . '    ' . $budLineSingleQuotes . $secondPart;
 
-						file_put_contents($budFilePath, $newBudFileContent);
+						FileService::filePutContentsAndCreateMissingDirectories($budFilePath, $newBudFileContent);
 
 						$this->info(sprintf('Added bud line for %s : %s', $budName, $budLineSingleQuotes));
 					} else {
@@ -419,7 +420,7 @@ class ImportBlock extends Command
 							return;
 						}
 
-						file_put_contents($finalPath, file_get_contents($livewireHorizonViewsPath . $name));
+						FileService::filePutContentsAndCreateMissingDirectories($finalPath, file_get_contents($livewireHorizonViewsPath . $name));
 					}
 				}
 			}
@@ -445,7 +446,7 @@ class ImportBlock extends Command
 				return;
 			}
 
-			file_put_contents($finalPath, $livewireContent);
+			FileService::filePutContentsAndCreateMissingDirectories($finalPath, $livewireContent);
 		}
 	}
 
@@ -511,6 +512,6 @@ class ImportBlock extends Command
 			return;
 		}
 
-		file_put_contents($blockPath . $slug . '.blade.php', file_get_contents($blockViewPath));
+		FileService::filePutContentsAndCreateMissingDirectories($blockPath . $slug . '.blade.php', file_get_contents($blockViewPath));
 	}
 }
