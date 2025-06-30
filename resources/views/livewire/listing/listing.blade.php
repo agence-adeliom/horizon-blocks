@@ -74,7 +74,12 @@
         <div class="results">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
                 @foreach($data['items'] as $post)
-                    <x-dynamic-component :component="$card" :content="$post"/>
+                    @if(property_exists($post, 'timesAlreadyDisplayed'))
+                        {!! $post->html !!}
+                    @else
+                        <x-dynamic-component :component="$card" :content="$post"/>
+                    @endif
+
                 @endforeach
             </div>
         </div>

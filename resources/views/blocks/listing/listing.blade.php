@@ -9,6 +9,7 @@
     $hasSecondaryFilters = !empty($secondaryFilters) && $fields['withSecondaryFilters'];
     $secondaryFiltersTitle = $fields['secondaryFiltersTitle'] ?? null;
     $forcedFilters = $fields['forcedFilters'] ?? [];
+    $innerCards = [];
 
     $labelSingular = !empty($fields[ListingBlock::FIELD_ELEMENTS_LABEL_SINGULAR]) ? $fields[ListingBlock::FIELD_ELEMENTS_LABEL_SINGULAR] :__('élément');
     $labelPlural = !empty($fields[ListingBlock::FIELD_ELEMENTS_LABEL_PLURAL]) ? $fields[ListingBlock::FIELD_ELEMENTS_LABEL_PLURAL]: __('éléments');
@@ -42,6 +43,10 @@
     if (!empty($fields['perPage']) && is_numeric($fields['perPage'])) {
         $perPage = intval($fields['perPage']);
     }
+
+    if (!empty($fields['innerCards'])) {
+        $innerCards = $fields['innerCards'];
+    }
 @endphp
 
 <x-block :fields="$fields" :block="$block" class="listing-block">
@@ -62,5 +67,6 @@
                               :secondary-filters-button-label="$secondaryFiltersLabel"
                               :secondary-filters-title="$secondaryFiltersTitle" :forced-filters="$forcedFilters"
                               :display-sort="$displaySort" :display-number-of-results="$displayNumberOfResults"
-                              :label-singular="$labelSingular" :label-plural="$labelPlural"/>
+                              :label-singular="$labelSingular" :label-plural="$labelPlural"
+                              :inner-cards="$innerCards"/>
 </x-block>

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Livewire\Listing;
 
+use Adeliom\HorizonBlocks\ViewModels\ListingInnerCardViewModel;
 use Adeliom\HorizonTools\Database\MetaQuery;
 use Adeliom\HorizonTools\Database\QueryBuilder;
 use Adeliom\HorizonTools\Database\TaxQuery;
 use Adeliom\HorizonTools\Enum\FilterTypesEnum;
 use Adeliom\HorizonTools\Services\AcfService;
+use Adeliom\HorizonTools\Services\ArrayService;
 use Adeliom\HorizonTools\Services\ClassService;
 use Adeliom\HorizonTools\ViewModels\Post\BasePostViewModel;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
@@ -43,6 +45,11 @@ class Listing extends Component
 	#[Url(as: 'tri')]
 	public string $order = self::DEFAULT_ORDER;
 	public int $perPage = self::DEFAULT_PER_PAGE;
+	public ?array $innerCards = null;
+	/**
+	 * @var ListingInnerCardViewModel[]
+	 */
+	private array $displayedInnerCards = [];
 
 	public null|false|array $filters = [];
 	public null|false|array $secondaryFilters = [];
@@ -797,6 +804,115 @@ EOF;
 		}
 	}
 
+	private function adaptQueryBuilderToListingCards(QueryBuilder $qb): void
+	{
+		$cards = [];
+		$cardsAlreadyDisplayed = 0;
+		$cardsDisplayedOnCurrentPage = 0;
+
+		$displayed = [];
+		$this->displayedInnerCards = [];
+
+		if (!empty($this->innerCards)) {
+			foreach ($this->innerCards as $innerCard) {
+				$card = new ListingInnerCardViewModel();
+				$card->setClass($innerCard['class'] ?? null)->setPosition((int)$innerCard['position'] ?? null);
+
+				if (!empty($innerCard[ListingBlock::FIELD_INNER_CARD_PAGES])) {
+					switch ($innerCard[ListingBlock::FIELD_INNER_CARD_PAGES]) {
+						case ListingBlock::VALUE_INNER_CARD_PAGES_FIRST:
+							$card->setPages([1]);
+							break;
+						case ListingBlock::VALUE_INNER_CARD_PAGES_CUSTOM:
+							$card->setPages(array_filter(array_map('intval', explode(',', $innerCard[ListingBlock::FIELD_INNER_CARD_CUSTOM_PAGES]))));
+							break;
+						case ListingBlock::VALUE_INNER_CARD_PAGES_ALL:
+						default:
+							$card->setPages('all');
+							break;
+					}
+				}
+
+				$card->setTimesAlreadyDisplayed(currentPage: $qb->getPage());
+
+				$cards[] = $card;
+			}
+		}
+
+		foreach ($cards as $card) {
+			$cardsAlreadyDisplayed += $card->getTimesAlreadyDisplayed();
+
+			if ((is_array($card->getPages()) && in_array($qb->getPage(), $card->getPages())) || ($card->getPages() === ListingBlock::VALUE_INNER_CARD_PAGES_ALL)) {
+				$cardsDisplayedOnCurrentPage++;
+				$displayed[] = $card;
+			}
+		}
+
+		$oldPage = $qb->getPage();
+		$qb->page(1);
+		$totalCardsDisplayedPerPage = $this->getTotalCardsDisplayedPerPage(numberOfItems: $qb->getCount(), perPage: $qb->getPerPage(), cards: $cards);
+		$qb->page($oldPage);
+
+		$qb->forcedPageNumber(count($totalCardsDisplayedPerPage));
+
+		$originalPerPage = $qb->getPerPage();
+
+		$adjustedPerPage = max(0, $originalPerPage - $cardsDisplayedOnCurrentPage);
+		$offset = max(0, ($qb->getPage() - 1) * $originalPerPage - $cardsAlreadyDisplayed);
+
+		$qb->perPage($adjustedPerPage);
+		$qb->forcedOffset($offset);
+
+		foreach ($displayed as $item) {
+			$this->displayedInnerCards[$item->getPosition() - 1] = $item;
+		}
+	}
+
+	/**
+	 * @param ListingInnerCardViewModel[] $cards
+	 * @return array<int, int>
+	 */
+	private function getTotalCardsDisplayedPerPage(int $numberOfItems, int $perPage, array $cards): array
+	{
+		$pages = [];
+
+		$this->handlePage(pages: $pages, page: 1, number: $numberOfItems, perPage: $perPage, cards: $cards);
+
+		return $pages;
+	}
+
+	/**
+	 * @param ListingInnerCardViewModel[] $cards
+	 */
+	private function handlePage(array &$pages, int $page, int $number, int $perPage, array $cards): void
+	{
+		if (!isset($pages[$page])) {
+			$pages[$page] = 0;
+		}
+
+		foreach ($cards as $card) {
+			if (is_array($card->getPages()) && in_array($page, $card->getPages())) {
+				$pages[$page]++;
+			} elseif (is_string($card->getPages())) {
+				switch ($card->getPages()) {
+					case ListingBlock::VALUE_INNER_CARD_PAGES_ALL:
+						$pages[$page]++;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+
+		$cardsOnCurrentPage = $pages[$page] ?? 0;
+		$remainingElementsOnPage = $perPage - $cardsOnCurrentPage;
+		$remainingElements = $number - $remainingElementsOnPage;
+
+		if ($remainingElements > 0) {
+			$this->handlePage(pages: $pages, page: $page + 1, number: $remainingElements, perPage: $perPage, cards: $cards);
+		}
+	}
+
 	public function getData(): void
 	{
 		if (null !== $this->postType) {
@@ -858,11 +974,25 @@ EOF;
 				}
 			}
 
+			$this->adaptQueryBuilderToListingCards($qb);
+
 			$this->data = $qb->getPaginatedData(
 				callback: function (BasePostViewModel $post) {
 					return $post->toStdClass();
 				}
 			);
+
+			if (!empty($this->displayedInnerCards)) {
+				$items = $this->data['items'];
+
+				foreach ($this->displayedInnerCards as $displayedInnerCard) {
+					$indexToHave = $displayedInnerCard->getPosition() - 1;
+
+					ArrayService::insertAtIndex($items, $indexToHave, $displayedInnerCard->toStdClass());
+				}
+
+				$this->data['items'] = $items;
+			}
 
 			if (
 				$this->page > 1 &&
