@@ -52,6 +52,15 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_DISPLAY_NUMBER_OF_RESULTS = 'displayNumberOfResults';
 	public const string FIELD_ELEMENTS_LABEL_SINGULAR = 'elementsLabelSingular';
 	public const string FIELD_ELEMENTS_LABEL_PLURAL = 'elementsLabelPlural';
+	public const string FIELD_INNER_CARDS = 'innerCards';
+	public const string FIELD_INNER_CARD_CLASS = 'class';
+	public const string FIELD_INNER_CARD_POSITION = 'position';
+	public const string FIELD_INNER_CARD_PAGES = 'pages';
+	public const string VALUE_INNER_CARD_PAGES_FIRST = 'first';
+	public const string VALUE_INNER_CARD_PAGES_ALL = 'all';
+	public const string VALUE_INNER_CARD_PAGES_CUSTOM = 'custom';
+	public const string FIELD_INNER_CARD_CUSTOM_PAGES = 'customPages';
+
 	public const string FIELD_FILTERS = 'filters';
 	public const string FIELD_SECONDARY_FILTERS = 'secondaryFilters';
 	public const string FIELD_SECONDARY_FILTERS_BUTTON_LABEL = 'secondaryFiltersButtonLabel';
@@ -98,7 +107,7 @@ class ListingBlock extends AbstractBlock
 			$postTypeField,
 		]);
 
-		yield from LayoutTab::make()->fields([
+		$layoutFields = [
 			Number::make(__('Nombre d’éléments par page'), self::FIELD_PER_PAGE)
 				->max(24)
 				->min(3)
@@ -114,8 +123,57 @@ class ListingBlock extends AbstractBlock
 				->wrapper(['width' => 50]),
 			Text::make(__('Nom des éléments au pluriel'), self::FIELD_ELEMENTS_LABEL_PLURAL)
 				->placeholder('éléments')
-				->wrapper(['width' => 50]),
-		]);
+				->wrapper(['width' => 50])
+		];
+
+		if ($listingCardsClasses = ClassService::getAllClassesFromPath(get_template_directory() . '/app/View/Components/Cards/ListingCards')) {
+			$listingCardChoices = [];
+
+			foreach ($listingCardsClasses as $listingCardsClass) {
+				$cardName = ClassService::getClassNameFromFullName($listingCardsClass);
+
+				// Check if constant NAME exists in the class
+				if (defined($listingCardsClass . '::NAME')) {
+					$cardName = constant($listingCardsClass . '::NAME');
+				}
+
+				$listingCardChoices[$listingCardsClass] = $cardName;
+			}
+
+			if (!empty($listingCardChoices)) {
+				$layoutFields[] = Repeater::make(__('Cards internes'), self::FIELD_INNER_CARDS)
+					->helperText(__('Les cards internes sont des cards qui peuvent être insérées dans le listing, soit sur la première page, soit sur toutes les pages.'))
+					->layout('block')->fields([
+						Select::make(__('Card à afficher'), self::FIELD_INNER_CARD_CLASS)
+							->stylized()
+							->nullable()
+							->choices($listingCardChoices),
+						Number::make(__('Position de la card'), self::FIELD_INNER_CARD_POSITION)
+							->required()
+							->conditionalLogic([
+								ConditionalLogic::where(self::FIELD_INNER_CARD_CLASS, '!=', '')
+							]),
+						ButtonGroup::make(__('Pages'), self::FIELD_INNER_CARD_PAGES)
+							->choices([
+								self::VALUE_INNER_CARD_PAGES_FIRST => __('Première'),
+								self::VALUE_INNER_CARD_PAGES_ALL => __('Toutes'),
+								self::VALUE_INNER_CARD_PAGES_CUSTOM => __('Personnalisées')
+							])
+							->conditionalLogic([
+								ConditionalLogic::where(self::FIELD_INNER_CARD_CLASS, '!=', '')
+							]),
+						Text::make(__('Pages'), self::FIELD_INNER_CARD_CUSTOM_PAGES)
+							->required()
+							->helperText(__('Indiquez les numéros de pages séparés par des virgules (ex: 1,2,3)'))
+							->conditionalLogic([
+								ConditionalLogic::where(self::FIELD_INNER_CARD_CLASS, '!=', '')
+									->and(self::FIELD_INNER_CARD_PAGES, '==', self::VALUE_INNER_CARD_PAGES_CUSTOM)
+							])
+					]);
+			}
+		}
+
+		yield from LayoutTab::make()->fields($layoutFields);
 
 		if (self::USE_FIELDS_TO_DEFINE_FILTERS) {
 			yield from self::filterFields();
