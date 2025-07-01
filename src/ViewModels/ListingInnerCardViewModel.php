@@ -108,15 +108,17 @@ class ListingInnerCardViewModel
 		return $this;
 	}
 
-	public function render(array $data = []): void
+	public function render(?int $currentPage = null, array $data = []): void
 	{
 		$html = null;
 
 		$class = $this->getClass();
 
-		$component = new $class;
+		$component = new $class($this->getPosition(), $this->getPosition());
 
-		$view = $component->render();
+		$view = $component->render([
+			'page' => 'test',
+		]);
 
 		if ($view instanceof View) {
 			$html = $view->toHtml();
@@ -125,9 +127,9 @@ class ListingInnerCardViewModel
 		$this->setHtml($html);
 	}
 
-	public function getHtml(array $data = []): ?string
+	public function getHtml(?int $currentPage = null, array $data = []): ?string
 	{
-		$this->render(data: $data);
+		$this->render(currentPage: $currentPage, data: $data);
 
 		return $this->html;
 	}
@@ -139,7 +141,7 @@ class ListingInnerCardViewModel
 		return $this;
 	}
 
-	public function toStdClass(): \stdClass
+	public function toStdClass(?int $currentPage = null): \stdClass
 	{
 		$stdClass = new \stdClass();
 		$stdClass->class = $this->getClass();
@@ -147,7 +149,7 @@ class ListingInnerCardViewModel
 		$stdClass->pages = $this->getPages();
 		$stdClass->timesAlreadyDisplayed = $this->getTimesAlreadyDisplayed();
 		$stdClass->bladeComponentName = $this->getBladeComponentName();
-		$stdClass->html = $this->getHtml();
+		$stdClass->html = $this->getHtml(currentPage: $currentPage);
 
 		return $stdClass;
 	}
