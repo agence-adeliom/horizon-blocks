@@ -75,7 +75,19 @@ class ListingInnerCardViewModel
 					}
 				}
 			} elseif (is_string($this->getPages())) {
-				$timesAlreadyDisplayed = $currentPage - 1;
+				switch ($this->getPages()){
+					case 'even':
+						$basePage = $currentPage - 1;
+						$timesAlreadyDisplayed = (int) floor($basePage / 2);
+						break;
+					case 'odd':
+						$basePage = $currentPage - 1;
+						$timesAlreadyDisplayed = (int) ceil($basePage / 2);
+						break;
+					default:
+						$timesAlreadyDisplayed = $currentPage - 1;
+						break;
+				}
 			}
 		}
 

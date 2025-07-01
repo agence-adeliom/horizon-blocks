@@ -826,6 +826,12 @@ EOF;
 						case ListingBlock::VALUE_INNER_CARD_PAGES_CUSTOM:
 							$card->setPages(array_filter(array_map('intval', explode(',', $innerCard[ListingBlock::FIELD_INNER_CARD_CUSTOM_PAGES]))));
 							break;
+						case ListingBlock::VALUE_INNER_CARD_PAGES_ODD:
+							$card->setPages('odd');
+							break;
+						case ListingBlock::VALUE_INNER_CARD_PAGES_EVEN:
+							$card->setPages('even');
+							break;
 						case ListingBlock::VALUE_INNER_CARD_PAGES_ALL:
 						default:
 							$card->setPages('all');
@@ -842,7 +848,31 @@ EOF;
 		foreach ($cards as $card) {
 			$cardsAlreadyDisplayed += $card->getTimesAlreadyDisplayed();
 
-			if ((is_array($card->getPages()) && in_array($qb->getPage(), $card->getPages())) || ($card->getPages() === ListingBlock::VALUE_INNER_CARD_PAGES_ALL)) {
+			$shouldDisplay = false;
+
+			if ((is_array($card->getPages()) && in_array($qb->getPage(), $card->getPages()))) {
+				$shouldDisplay = true;
+			} elseif (is_string($card->getPages())) {
+				switch ($card->getPages()) {
+					case ListingBlock::VALUE_INNER_CARD_PAGES_ALL:
+						$shouldDisplay = true;
+						break;
+					case ListingBlock::VALUE_INNER_CARD_PAGES_ODD:
+						if ($qb->getPage() % 2 !== 0) {
+							$shouldDisplay = true;
+						}
+						break;
+					case ListingBlock::VALUE_INNER_CARD_PAGES_EVEN:
+						if ($qb->getPage() % 2 === 0) {
+							$shouldDisplay = true;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+
+			if ($shouldDisplay) {
 				$cardsDisplayedOnCurrentPage++;
 				$displayed[] = $card;
 			}
@@ -897,6 +927,16 @@ EOF;
 				switch ($card->getPages()) {
 					case ListingBlock::VALUE_INNER_CARD_PAGES_ALL:
 						$pages[$page]++;
+						break;
+					case ListingBlock::VALUE_INNER_CARD_PAGES_EVEN:
+						if ($page % 2 === 0) {
+							$pages[$page]++;
+						}
+						break;
+					case ListingBlock::VALUE_INNER_CARD_PAGES_ODD:
+						if ($page % 2 !== 0) {
+							$pages[$page]++;
+						}
 						break;
 					default:
 						break;

@@ -58,6 +58,8 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_INNER_CARD_PAGES = 'pages';
 	public const string VALUE_INNER_CARD_PAGES_FIRST = 'first';
 	public const string VALUE_INNER_CARD_PAGES_ALL = 'all';
+	public const string VALUE_INNER_CARD_PAGES_ODD = 'odd';
+	public const string VALUE_INNER_CARD_PAGES_EVEN = 'even';
 	public const string VALUE_INNER_CARD_PAGES_CUSTOM = 'custom';
 	public const string FIELD_INNER_CARD_CUSTOM_PAGES = 'customPages';
 
@@ -153,10 +155,13 @@ class ListingBlock extends AbstractBlock
 							->conditionalLogic([
 								ConditionalLogic::where(self::FIELD_INNER_CARD_CLASS, '!=', '')
 							]),
-						ButtonGroup::make(__('Pages'), self::FIELD_INNER_CARD_PAGES)
+						Select::make(__('Pages'), self::FIELD_INNER_CARD_PAGES)
+							->stylized()
 							->choices([
 								self::VALUE_INNER_CARD_PAGES_FIRST => __('Première'),
 								self::VALUE_INNER_CARD_PAGES_ALL => __('Toutes'),
+								self::VALUE_INNER_CARD_PAGES_ODD => __('Impaires'),
+								self::VALUE_INNER_CARD_PAGES_EVEN => __('Paires'),
 								self::VALUE_INNER_CARD_PAGES_CUSTOM => __('Personnalisées')
 							])
 							->conditionalLogic([
