@@ -114,11 +114,12 @@ class ListingInnerCardViewModel
 
 		$class = $this->getClass();
 
-		$component = new $class($this->getPosition(), $this->getPosition());
-
-		$view = $component->render([
-			'page' => 'test',
+		$component = new $class([
+			'currentPage' => $currentPage,
+			'position' => $this->getPosition(),
 		]);
+
+		$view = $component->render();
 
 		if ($view instanceof View) {
 			$html = $view->toHtml();
