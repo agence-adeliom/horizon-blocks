@@ -164,7 +164,8 @@ class Listing extends Component
 		string $appearance,
 		string $label,
 		string $placeholder,
-		int $level = 1
+		int     $level = 1,
+		?string $choiceAll = null,
 	): void
 	{
 		$workingFilters = match ($level) {
@@ -200,6 +201,8 @@ class Listing extends Component
 			}
 		}
 
+		$this->handleChoiceAll(choiceAll: $choiceAll, workingFilters: $workingFilters, filterName: $filterName);
+
 		switch ($level) {
 			case 1:
 				$this->filters = $workingFilters;
@@ -221,7 +224,8 @@ class Listing extends Component
 		?string $fieldClass,
 		string $label,
 		string $placeholder,
-		int    $level = 1
+		int     $level = 1,
+		?string $choiceAll = null,
 	): void
 	{
 		$workingFilters = match ($level) {
@@ -339,6 +343,8 @@ EOF;
 			}
 		}
 
+		$this->handleChoiceAll(choiceAll: $choiceAll, workingFilters: $workingFilters, filterName: $filterName);
+
 		switch ($level) {
 			case 1:
 				$this->filters = $workingFilters;
@@ -348,6 +354,26 @@ EOF;
 				break;
 			default:
 				break;
+		}
+	}
+
+	private function handleChoiceAll(?string $choiceAll = null, array &$workingFilters = [], string $filterName)
+	{
+		if (null !== $choiceAll) {
+			$value = sanitize_title($choiceAll);
+
+			if (empty($this->filterFields[$filterName])) {
+				$this->filterFields[$filterName] = $value;
+			}
+
+			$workingFilters[$filterName]['hasChoiceAll'] = true;
+			$workingFilters[$filterName]['choiceAllValue'] = $value;
+			$workingFilters[$filterName]['choices'] = array_merge([
+				[
+					self::KEY_SLUG => $value,
+					self::KEY_NAME => $choiceAll,
+				]
+			], $workingFilters[$filterName]['choices']);
 		}
 	}
 
@@ -377,6 +403,12 @@ EOF;
 				$value = match ($type) {
 					FilterTypesEnum::META->value => $filter[ListingBlock::FIELD_FILTERS_FIELD],
 					FilterTypesEnum::TAXONOMY->value => $filter[ListingBlock::FIELD_FILTERS_TAXONOMY],
+					default => null,
+				};
+
+				$choiceAll = match ($type) {
+					FilterTypesEnum::META->value => !empty($filter[ListingBlock::FIELD_FILTERS_META_CHOICE_ALL]) ? $filter[ListingBlock::FIELD_FILTERS_META_CHOICE_ALL] : null,
+					FilterTypesEnum::TAXONOMY->value => !empty($filter[ListingBlock::FIELD_FILTERS_TAX_CHOICE_ALL]) ? $filter[ListingBlock::FIELD_FILTERS_TAX_CHOICE_ALL] : null,
 					default => null,
 				};
 
@@ -425,7 +457,8 @@ EOF;
 							fieldClass: $fieldClass,
 							label: $label,
 							placeholder: $placeholder,
-							level: $level
+							level: $level,
+							choiceAll: $choiceAll
 						);
 						break;
 					case FilterTypesEnum::TAXONOMY:
@@ -436,7 +469,8 @@ EOF;
 							appearance: $appearance,
 							label: $label,
 							placeholder: $placeholder,
-							level: $level
+							level: $level,
+							choiceAll: $choiceAll
 						);
 						break;
 					case FilterTypesEnum::SEARCH:
@@ -651,119 +685,129 @@ EOF;
 				if ($workingFilters[$name] && isset($workingFilters[$name]['isSearch']) && $workingFilters[$name]['isSearch']) {
 					$qb->search($value);
 				} else {
-					switch ($workingFilters[$name]['appearance']) {
-						case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
-						case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
-						case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
-						case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
-						case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
-						case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
-							switch ($workingFilters[$name]['type']) {
-								case FilterTypesEnum::TAXONOMY->value:
-									$taxonomyName = $workingFilters[$name]['value'];
+					$handleFilter = true;
 
-									$taxQuery = new TaxQuery();
+					if ($workingFilters[$name]['choiceAllValue'] ?? false) {
+						if ($value === $workingFilters[$name]['choiceAllValue']) {
+							$handleFilter = false;
+						}
+					}
 
-									switch ($workingFilters[$name]['appearance']) {
-										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
-										case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
-										case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
-											$taxQuery->add($taxonomyName, [$value]);
-											break;
-										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
-										case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
-											$taxQuery->setRelation('OR');
+					if ($handleFilter) {
+						switch ($workingFilters[$name]['appearance']) {
+							case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
+							case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
+								switch ($workingFilters[$name]['type']) {
+									case FilterTypesEnum::TAXONOMY->value:
+										$taxonomyName = $workingFilters[$name]['value'];
 
-											if (is_array($value)) {
-												foreach ($value as $slug => $enabled) {
-													if ($enabled == 'true') {
-														$subTaxQuery = new TaxQuery();
-														$subTaxQuery->add($taxonomyName, [$slug]);
-														$taxQuery->add($subTaxQuery);
+										$taxQuery = new TaxQuery();
+
+										switch ($workingFilters[$name]['appearance']) {
+											case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+											case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
+											case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
+												$taxQuery->add($taxonomyName, [$value]);
+												break;
+											case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+											case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
+												$taxQuery->setRelation('OR');
+
+												if (is_array($value)) {
+													foreach ($value as $slug => $enabled) {
+														if ($enabled == 'true') {
+															$subTaxQuery = new TaxQuery();
+															$subTaxQuery->add($taxonomyName, [$slug]);
+															$taxQuery->add($subTaxQuery);
+														}
+													}
+												}
+												break;
+											default:
+												break;
+										}
+
+										$qb->addTaxQuery($taxQuery);
+										break;
+									case FilterTypesEnum::META->value:
+										$metaName = $workingFilters[$name]['value'];
+
+										$metaSlugs = array_column($workingFilters[$name]['choices'], self::KEY_SLUG);
+										$metaNames = array_column($workingFilters[$name]['choices'], self::KEY_NAME);
+
+										// Merge $metaSlugs and $metaNames by using metaSlugs as keys
+										$metaSlugs = array_combine($metaSlugs, $metaNames);
+
+										$metaQuery = new MetaQuery();
+
+										if (is_array($value)) {
+											foreach ($value as $valueKey => $valueValue) {
+												if (isset($metaSlugs[$valueKey])) {
+													switch ($workingFilters[$name]['metaType']) {
+														case Taxonomy::class:
+															break;
+														default:
+															$value[$metaSlugs[$valueKey]] = $valueValue;
+
+															if ($metaSlugs[$valueKey] != $valueKey) {
+																unset($value[$valueKey]);
+															}
+															break;
 													}
 												}
 											}
-											break;
-										default:
-											break;
-									}
-
-									$qb->addTaxQuery($taxQuery);
-									break;
-								case FilterTypesEnum::META->value:
-									$metaName = $workingFilters[$name]['value'];
-
-									$metaSlugs = array_column($workingFilters[$name]['choices'], self::KEY_SLUG);
-									$metaNames = array_column($workingFilters[$name]['choices'], self::KEY_NAME);
-
-									// Merge $metaSlugs and $metaNames by using metaSlugs as keys
-									$metaSlugs = array_combine($metaSlugs, $metaNames);
-
-									$metaQuery = new MetaQuery();
-
-									if (is_array($value)) {
-										foreach ($value as $valueKey => $valueValue) {
-											if (isset($metaSlugs[$valueKey])) {
+										} else {
+											if (isset($metaSlugs[$value])) {
 												switch ($workingFilters[$name]['metaType']) {
 													case Taxonomy::class:
 														break;
 													default:
-														$value[$metaSlugs[$valueKey]] = $valueValue;
-
-														if ($metaSlugs[$valueKey] != $valueKey) {
-															unset($value[$valueKey]);
-														}
+														$value = $metaSlugs[$value];
 														break;
 												}
 											}
 										}
-									} else {
-										if (isset($metaSlugs[$value])) {
-											switch ($workingFilters[$name]['metaType']) {
-												case Taxonomy::class:
-													break;
-												default:
-													$value = $metaSlugs[$value];
-													break;
-											}
-										}
-									}
 
-									switch ($workingFilters[$name]['appearance']) {
-										case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
-											$metaQuery->add($metaName, $value, 'LIKE');
-											break;
-										case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
-										case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
-										case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
-											$metaQuery->add($metaName, $value);
-											break;
-										case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
-										case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
-											$metaQuery->setRelation('OR');
+										switch ($workingFilters[$name]['appearance']) {
+											case ListingBlock::VALUE_FILTER_APPEARANCE_TEXT:
+												$metaQuery->add($metaName, $value, 'LIKE');
+												break;
+											case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
+											case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
+											case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
+												$metaQuery->add($metaName, $value);
+												break;
+											case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
+											case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
+												$metaQuery->setRelation('OR');
 
-											if (is_array($value)) {
-												foreach ($value as $slug => $enabled) {
-													if ($enabled == 'true') {
-														$subMetaQuery = new MetaQuery();
-														$subMetaQuery->add($metaName, $slug);
-														$metaQuery->add($subMetaQuery);
+												if (is_array($value)) {
+													foreach ($value as $slug => $enabled) {
+														if ($enabled == 'true') {
+															$subMetaQuery = new MetaQuery();
+															$subMetaQuery->add($metaName, $slug);
+															$metaQuery->add($subMetaQuery);
+														}
 													}
 												}
-											}
-											break;
-										default:
-											break;
-									}
+												break;
+											default:
+												break;
+										}
 
-									$qb->addMetaQuery($metaQuery);
-									break;
-								default:
-									break;
-							}
-							break;
-						default:
-							break;
+										$qb->addMetaQuery($metaQuery);
+										break;
+									default:
+										break;
+								}
+								break;
+							default:
+								break;
+						}
 					}
 				}
 			}

@@ -4,7 +4,7 @@
 
     $name = $value['label'] ?? null;
 
-    if (!isset($withEmpty)) {
+    if (!isset($withEmpty) || (isset($value['hasChoiceAll']) && $value['hasChoiceAll'])) {
         $withEmpty = true;
     }
 @endphp
@@ -68,8 +68,11 @@
                                    @isset($values[$value['name']][$choice['slug']])
                                        @if($values[$value['name']][$choice['slug']] == 'true')
                                            checked="checked"
-                                    @endif
-                                    @endisset>
+                                   @endif
+                                   @endisset
+                                   @if((empty($values) || empty($values[$value['name']])) && $withEmpty && !empty($value['choiceAllValue']) && $choice['slug'] === $value['choiceAllValue'])
+                                       checked="checked"
+                                    @endif>
                             <label for="{{ $model }}_{{ $key }}">{{ $choice['name'] }}</label>
                         </div>
                     @endforeach

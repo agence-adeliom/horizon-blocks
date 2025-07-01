@@ -78,6 +78,9 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_FILTERS_APPEARANCE = 'appearance';
 	public const string FIELD_FILTERS_META_APPEARANCE = self::FIELD_FILTERS_APPEARANCE . 'Meta';
 	public const string FIELD_FILTERS_TAX_APPEARANCE = self::FIELD_FILTERS_APPEARANCE . 'Tax';
+	public const string FIELD_FILTERS_CHOICE_ALL = 'choiceAll';
+	public const string FIELD_FILTERS_META_CHOICE_ALL = self::FIELD_FILTERS_CHOICE_ALL . 'Meta';
+	public const string FIELD_FILTERS_TAX_CHOICE_ALL = self::FIELD_FILTERS_CHOICE_ALL . 'Tax';
 	public const string FIELD_FILTERS_NAME = 'name';
 	public const string FIELD_FILTERS_PLACEHOLDER = 'placeholder';
 
@@ -266,6 +269,12 @@ class ListingBlock extends AbstractBlock
 						->choices($this->getMetaAppearanceChoices())
 						->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
+
+					$filterFields[] = Text::make(__('Choix "Tous"'), self::FIELD_FILTERS_META_CHOICE_ALL)
+						->helperText(__('Laisser vide pour ne pas afficher le choix "Tous"'))
+						->conditionalLogic([
+							ConditionalLogic::where(self::FIELD_FILTERS_META_APPEARANCE, '==', self::VALUE_FILTER_APPEARANCE_RADIO),
+						]);
 				}
 
 				$filterFields[] = Select::make(__('Champ'), self::FIELD_FILTERS_FIELD)
@@ -283,6 +292,12 @@ class ListingBlock extends AbstractBlock
 					->choices($this->getTaxonomyAppearanceChoices())
 					->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 					->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
+
+				$filterFields[] = Text::make(__('Choix "Tous"'), self::FIELD_FILTERS_TAX_CHOICE_ALL)
+					->helperText(__('Laisser vide pour ne pas afficher le choix "Tous"'))
+					->conditionalLogic([
+						ConditionalLogic::where(self::FIELD_FILTERS_TAX_APPEARANCE, '==', self::VALUE_FILTER_APPEARANCE_RADIO),
+					]);
 			}
 
 			$filterFields[] = Select::make(__('Taxonomie'), self::FIELD_FILTERS_TAXONOMY)
