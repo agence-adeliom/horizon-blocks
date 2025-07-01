@@ -1030,7 +1030,7 @@ EOF;
 				foreach ($this->displayedInnerCards as $displayedInnerCard) {
 					$indexToHave = $displayedInnerCard->getPosition() - 1;
 
-					ArrayService::insertAtIndex($items, $indexToHave, $displayedInnerCard->toStdClass(currentPage: $this->page));
+					ArrayService::insertAtIndex($items, $indexToHave, $displayedInnerCard->toStdClass(currentPage: $this->page, perPage: $this->perPage));
 				}
 
 				$this->data['items'] = $items;
