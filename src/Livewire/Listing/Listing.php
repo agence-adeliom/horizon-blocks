@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Adeliom\HorizonBlocks\Livewire\Listing;
+namespace App\Livewire\Listing;
 
 use Adeliom\HorizonBlocks\ViewModels\ListingInnerCardViewModel;
 use Adeliom\HorizonTools\Database\MetaQuery;
@@ -742,13 +742,13 @@ EOF;
 										case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
 											$metaQuery->setRelation('OR');
 
-										if (is_array($value)) {
-											foreach ($value as $slug => $enabled) {
-												if ($enabled == 'true') {
-													$subMetaQuery = new MetaQuery();
-													$subMetaQuery->add($metaName, $slug);
-													$metaQuery->add($subMetaQuery);
-												}
+											if (is_array($value)) {
+												foreach ($value as $slug => $enabled) {
+													if ($enabled == 'true') {
+														$subMetaQuery = new MetaQuery();
+														$subMetaQuery->add($metaName, $slug);
+														$metaQuery->add($subMetaQuery);
+													}
 												}
 											}
 											break;
@@ -896,6 +896,8 @@ EOF;
 		foreach ($displayed as $item) {
 			$this->displayedInnerCards[$item->getPosition() - 1] = $item;
 		}
+
+		ksort($this->displayedInnerCards);
 	}
 
 	/**

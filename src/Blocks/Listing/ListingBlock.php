@@ -155,11 +155,10 @@ class ListingBlock extends AbstractBlock
 							->conditionalLogic([
 								ConditionalLogic::where(self::FIELD_INNER_CARD_CLASS, '!=', '')
 							]),
-						Select::make(__('Pages'), self::FIELD_INNER_CARD_PAGES)
-							->stylized()
+						RadioButton::make(__('Pages'), self::FIELD_INNER_CARD_PAGES)
 							->choices([
-								self::VALUE_INNER_CARD_PAGES_FIRST => __('Première'),
 								self::VALUE_INNER_CARD_PAGES_ALL => __('Toutes'),
+								self::VALUE_INNER_CARD_PAGES_FIRST => __('Première'),
 								self::VALUE_INNER_CARD_PAGES_ODD => __('Impaires'),
 								self::VALUE_INNER_CARD_PAGES_EVEN => __('Paires'),
 								self::VALUE_INNER_CARD_PAGES_CUSTOM => __('Personnalisées')
