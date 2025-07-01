@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire\Listing;
+namespace Adeliom\HorizonBlocks\Livewire\Listing;
 
 use Adeliom\HorizonBlocks\ViewModels\ListingInnerCardViewModel;
 use Adeliom\HorizonTools\Database\MetaQuery;
