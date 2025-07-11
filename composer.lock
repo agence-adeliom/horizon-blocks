@@ -4,30 +4,30 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0fe6c3578883f0855b837e650a58ae71",
+    "content-hash": "26fd2c45a0113be1430453fd343d9514",
     "packages": [
         {
             "name": "agence-adeliom/horizon-tools",
-            "version": "dev-main",
+            "version": "dev-feature/search-engine",
             "source": {
                 "type": "git",
                 "url": "https://github.com/agence-adeliom/horizon-tools.git",
-                "reference": "1cd7e0ec1ab19ba22f1fede974624fc31dea20c7"
+                "reference": "da10f91608509e360a965af9e495e76daeab6122"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/1cd7e0ec1ab19ba22f1fede974624fc31dea20c7",
-                "reference": "1cd7e0ec1ab19ba22f1fede974624fc31dea20c7",
+                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/da10f91608509e360a965af9e495e76daeab6122",
+                "reference": "da10f91608509e360a965af9e495e76daeab6122",
                 "shasum": ""
             },
             "require": {
                 "enshrined/svg-sanitize": "^0.19.0",
+                "league/color-extractor": "^0.4.0",
                 "livewire/livewire": "^3.5",
                 "php": ">=8.2",
                 "roots/acorn": "^4.0",
                 "vinkla/extended-acf": "^14.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -45,10 +45,10 @@
             ],
             "description": "Tools for Sage WordPress Theme, made by the Adeliom Agency",
             "support": {
-                "source": "https://github.com/agence-adeliom/horizon-tools/tree/main",
+                "source": "https://github.com/agence-adeliom/horizon-tools/tree/feature/search-engine",
                 "issues": "https://github.com/agence-adeliom/horizon-tools/issues"
             },
-            "time": "2025-06-30T10:32:53+00:00"
+            "time": "2025-07-11T12:48:39+00:00"
         },
         {
             "name": "brick/math",
@@ -2423,6 +2423,67 @@
                 "source": "https://github.com/laravel/serializable-closure"
             },
             "time": "2024-11-14T18:34:49+00:00"
+        },
+        {
+            "name": "league/color-extractor",
+            "version": "0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/color-extractor.git",
+                "reference": "21fcac6249c5ef7d00eb83e128743ee6678fe505"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/color-extractor/zipball/21fcac6249c5ef7d00eb83e128743ee6678fe505",
+                "reference": "21fcac6249c5ef7d00eb83e128743ee6678fe505",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": "^7.3 || ^8.0"
+            },
+            "replace": {
+                "matthecat/colorextractor": "*"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2",
+                "phpunit/phpunit": "^9.5"
+            },
+            "suggest": {
+                "ext-curl": "To download images from remote URLs if allow_url_fopen is disabled for security reasons"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\ColorExtractor\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mathieu Lechat",
+                    "email": "math.lechat@gmail.com",
+                    "homepage": "http://matthecat.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Extract colors from an image as a human would do.",
+            "homepage": "https://github.com/thephpleague/color-extractor",
+            "keywords": [
+                "color",
+                "extract",
+                "human",
+                "image",
+                "palette"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/color-extractor/issues",
+                "source": "https://github.com/thephpleague/color-extractor/tree/0.4.0"
+            },
+            "time": "2022-09-24T15:57:16+00:00"
         },
         {
             "name": "league/flysystem",
