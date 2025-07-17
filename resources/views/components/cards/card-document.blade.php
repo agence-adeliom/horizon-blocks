@@ -16,7 +16,7 @@
         $attributes['class'],
     ])>
         <div class="flex items-start md:items-center flex-1 gap-4">
-            <x-far-file-lines class="icon-24 text-primary" />
+            <x-far-file-lines class="icon-10 text-primary" />
             <div class="flex flex-col gap-1 md:flex-row md:items-center">
                 <x-typography.text class="font-semibold text-text-primary" :content="$document['title'] ?? $document['file']['name']" />
                 <x-typography.text class="text-sm" content="(.{{ $extension . ', ' . $filesize }})" />            </div>
