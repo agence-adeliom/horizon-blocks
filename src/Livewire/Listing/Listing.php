@@ -12,6 +12,7 @@ use Adeliom\HorizonTools\Enum\FilterTypesEnum;
 use Adeliom\HorizonTools\Services\AcfService;
 use Adeliom\HorizonTools\Services\ArrayService;
 use Adeliom\HorizonTools\Services\ClassService;
+use Adeliom\HorizonTools\Services\PostService;
 use Adeliom\HorizonTools\ViewModels\Post\BasePostViewModel;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
 use Extended\ACF\Fields\Image;
@@ -87,33 +88,7 @@ class Listing extends Component
 			$this->perPage = self::DEFAULT_PER_PAGE;
 		}
 
-		if (in_array($this->postType, self::MANUAL_POST_TYPES)) {
-			$card = Config::get(sprintf('posts.listing.cards.%s', $this->postType));
-
-			if ($card) {
-				$this->card = $card;
-			} else {
-				throw new \Exception(
-					sprintf(
-						'You have to set a card for the post-type "%s" in the "posts.php" config file (posts.listing.cards.%s)',
-						$this->postType,
-						$this->postType
-					)
-				);
-			}
-		} elseif (null !== $this->postType) {
-			$this->postTypeClass = ClassService::getPostTypeClassBySlug($this->postType);
-			$this->card = $this->postTypeClass::$card;
-
-			if (null === $this->card) {
-				throw new \Exception(
-					sprintf(
-						'You have to set a card for the post-type in the class "%s". It should be a static var $card',
-						$this->postTypeClass
-					)
-				);
-			}
-		}
+		$this->card = PostService::getCardByPostType($this->postType);
 
 		$this->initFilters();
 
