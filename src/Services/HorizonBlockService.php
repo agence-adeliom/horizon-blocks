@@ -13,6 +13,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\Catchphrase;
 use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\HighlightBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\PostSummaryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TextMediaBlock;
@@ -88,6 +89,11 @@ class HorizonBlockService
 				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
+            HighlightBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
 			DocumentsBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
 				self::ASSET_FILES => [],
