@@ -19,6 +19,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TextMediaBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\WysiwygBlock;
+use Adeliom\HorizonBlocks\Blocks\Hero\HeroBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroForm;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\CustomerReviewBlock;
@@ -139,6 +140,11 @@ class HorizonBlockService
 				self::ASSET_FILES => [],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
+            HeroBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
 			FaqBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
 				self::ASSET_FILES => [],
