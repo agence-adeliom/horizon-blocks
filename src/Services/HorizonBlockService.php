@@ -135,6 +135,13 @@ class HorizonBlockService
 				],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
+            GalleryBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [
+                    'resources/scripts/blocks/gallery.ts',
+                ],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
 			QuoteBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
 				self::ASSET_FILES => [],
