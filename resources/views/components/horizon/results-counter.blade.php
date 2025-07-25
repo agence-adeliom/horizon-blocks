@@ -1,5 +1,7 @@
 @php
-    if (!isset($singular)) {
+    use Adeliom\HorizonTools\Services\StringService;
+
+	if (!isset($singular)) {
         $singular = 'résultat';
     }
 
@@ -13,14 +15,7 @@
         <span class="font-semibold">
             {{ $value['total'] }}
         </span>
-        @switch(true)
-            @case($value['total'] == 1 || $value['total'] == 0)
-                {{ $singular }}
-            @break;
 
-            @default
-                {{ $plural }}
-            @break;
-        @endswitch
+        {{ StringService::singularOrPlural(count: $value['total'], singular: $singular,plural: $plural) }}
     </p>
 @endif
