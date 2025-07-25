@@ -13,6 +13,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\Catchphrase;
 use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\GalleryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\HighlightBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\PostSummaryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
