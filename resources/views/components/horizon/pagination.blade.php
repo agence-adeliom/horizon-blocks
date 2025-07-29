@@ -3,6 +3,8 @@
         $nextLabel = $nextLabel ?? 'Suivant';
         $previousLabel = $previousLabel ?? 'Précédent';
 
+        $containerClass = $containerClass ?? null;
+
         $baseButtonClass =
             'cursor-pointer block w-10 h-10 rounded flex items-center justify-center transition-opacity duration-200';
         $inactiveButtonClass = '!cursor-not-allowed opacity-30';
@@ -76,7 +78,7 @@
     @endphp
 
     @if (!empty($displayValues) && $pages > 1)
-        <div class="flex justify-center gap-4 lg:gap-10">
+        <div class="flex justify-center gap-4 lg:gap-10{{ $containerClass ? ' '.$containerClass : '' }}">
             @if ($hasButtons)
                 @if ($current > 1)
                     <a @class([$baseButtonClass]) title="{{ $previousLabel }}"
