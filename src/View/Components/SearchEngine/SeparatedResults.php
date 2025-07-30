@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\View\Components\SearchEngine;
+namespace Adeliom\HorizonBlocks\View\Components\SearchEngine;
 
 use Closure;
 use Illuminate\Contracts\View\View;

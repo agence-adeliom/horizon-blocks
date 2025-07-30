@@ -37,8 +37,8 @@ use Adeliom\HorizonBlocks\View\Components\Cards\CardCustomerReview;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardDocument;
 use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
 use Adeliom\HorizonBlocks\View\Components\Offer;
-use App\View\Components\SearchEngine\MergedResults;
-use App\View\Components\SearchEngine\SeparatedResults;
+use Adeliom\HorizonBlocks\View\Components\SearchEngine\MergedResults;
+use Adeliom\HorizonBlocks\View\Components\SearchEngine\SeparatedResults;
 
 class HorizonBlockService
 {
