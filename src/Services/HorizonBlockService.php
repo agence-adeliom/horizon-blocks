@@ -34,6 +34,8 @@ use Adeliom\HorizonBlocks\View\Components\Cards\CardCustomerReview;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardDocument;
 use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
 use Adeliom\HorizonBlocks\View\Components\Offer;
+use App\View\Components\SearchEngine\MergedResults;
+use App\View\Components\SearchEngine\SeparatedResults;
 
 class HorizonBlockService
 {
@@ -69,6 +71,10 @@ class HorizonBlockService
 					'resources/styles/components/blocks/search-engine-results.css',
 				],
 				self::LIVEWIRE_COMPONENTS => [SearchEngineResults::class],
+				self::COMPONENTS => [
+					MergedResults::class,
+					SeparatedResults::class,
+				],
 			],
 			CtaBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,
