@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26fd2c45a0113be1430453fd343d9514",
+    "content-hash": "0fe6c3578883f0855b837e650a58ae71",
     "packages": [
         {
             "name": "agence-adeliom/horizon-tools",
-            "version": "dev-feature/search-engine",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/agence-adeliom/horizon-tools.git",
-                "reference": "eebcbd3c291974f3140e5cbd97f8b4fc511a8956"
+                "reference": "602d1d725035b81f2106d5d05f7967ff85352c9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/eebcbd3c291974f3140e5cbd97f8b4fc511a8956",
-                "reference": "eebcbd3c291974f3140e5cbd97f8b4fc511a8956",
+                "url": "https://api.github.com/repos/agence-adeliom/horizon-tools/zipball/602d1d725035b81f2106d5d05f7967ff85352c9a",
+                "reference": "602d1d725035b81f2106d5d05f7967ff85352c9a",
                 "shasum": ""
             },
             "require": {
@@ -28,6 +28,7 @@
                 "roots/acorn": "^4.0",
                 "vinkla/extended-acf": "^14.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -45,10 +46,10 @@
             ],
             "description": "Tools for Sage WordPress Theme, made by the Adeliom Agency",
             "support": {
-                "source": "https://github.com/agence-adeliom/horizon-tools/tree/feature/search-engine",
+                "source": "https://github.com/agence-adeliom/horizon-tools/tree/main",
                 "issues": "https://github.com/agence-adeliom/horizon-tools/issues"
             },
-            "time": "2025-07-30T13:29:21+00:00"
+            "time": "2025-07-30T13:51:20+00:00"
         },
         {
             "name": "brick/math",
