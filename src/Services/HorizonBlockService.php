@@ -23,11 +23,13 @@ use Adeliom\HorizonBlocks\Blocks\Content\WysiwygBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroForm;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
+use Adeliom\HorizonBlocks\Blocks\Listing\SearchEngineResultsBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\CustomerReviewBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\KeyFigureBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\LogosBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\QuoteBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
+use Adeliom\HorizonBlocks\Livewire\Listing\SearchEngineResults;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
@@ -62,9 +64,14 @@ class HorizonBlockService
 				self::ASSET_FILES => [
 					'resources/scripts/blocks/listing.ts',
 				],
-				self::LIVEWIRE_COMPONENTS => [
-					Listing::class,
+				self::LIVEWIRE_COMPONENTS => [Listing::class],
+			],
+			SearchEngineResultsBlock::class => [
+				self::REQUIRES_LIVEWIRE => true,
+				self::ASSET_FILES => [
+					'resources/styles/components/blocks/search-engine-results.css',
 				],
+				self::LIVEWIRE_COMPONENTS => [SearchEngineResults::class],
 			],
 			CtaBlock::class => [
 				self::REQUIRES_LIVEWIRE => false,

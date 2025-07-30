@@ -410,7 +410,14 @@ class ImportBlock extends Command
 				$explode = explode('src/Livewire', $pathToLivewireClass);
 
 				if (isset($explode[1])) {
-					$name = strtolower(rtrim(ltrim($explode[1], '/'), '.php')) . '.blade.php';
+					$nameBase = rtrim(ltrim($explode[1], '/'), '.php');
+
+					// Convertit les majuscules en tirets suivis de minuscules
+					$converted = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $nameBase));
+					// Remplace les espaces ou les barres obliques par des tirets
+					$converted= str_replace([' ', '/'], ['-', '/'], $converted);
+
+					$name = $converted . '.blade.php';
 
 					if (file_exists($livewireHorizonViewsPath . $name)) {
 						$finalPath = $livewireViewsPath . $name;

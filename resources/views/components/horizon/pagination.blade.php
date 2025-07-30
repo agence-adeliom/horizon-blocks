@@ -3,6 +3,8 @@
         $nextLabel = $nextLabel ?? 'Suivant';
         $previousLabel = $previousLabel ?? 'Précédent';
 
+        $containerClass = $containerClass ?? null;
+
         $baseButtonClass =
             'cursor-pointer block w-10 h-10 rounded flex items-center justify-center transition-opacity duration-200';
         $inactiveButtonClass = '!cursor-not-allowed opacity-30';
@@ -43,6 +45,7 @@
         sort($pageNumbers);
         $displayValues = [];
         $last = null;
+
         foreach ($pageNumbers as $value) {
             if ($last !== null && $value - $last > 1) {
                 $displayValues[] = $separator;
@@ -50,16 +53,39 @@
             $displayValues[] = $value;
             $last = $value;
         }
+
+        if(!isset($extraHandleParamsFirst)||!is_bool($extraHandleParamsFirst)) {
+            $extraHandleParamsFirst=false;
+        }
+
+        if(isset($extraHandleParams)) {
+            $extraHandleParams = sprintf('%s', implode(', ', array_map(function($param){
+                if(is_string($param)) {
+                    return "'$param'";
+                }
+
+                return $param;
+            }, $extraHandleParams)));
+
+            if($extraHandleParamsFirst){
+                $extraHandleParams = $extraHandleParams.', ';
+            }else {
+                $extraHandleParams = ', '.$extraHandleParams;
+            }
+        }else {
+            $extraHandleParams = '';
+        }
     @endphp
 
     @if (!empty($displayValues) && $pages > 1)
-        <div class="flex justify-center gap-4 lg:gap-10">
+        <div class="flex justify-center gap-4 lg:gap-10{{ $containerClass ? ' '.$containerClass : '' }}">
             @if ($hasButtons)
                 @if ($current > 1)
                     <a @class([$baseButtonClass]) title="{{ $previousLabel }}"
-                        href="{{ request()->fullUrlWithQuery(['pagination' => $current - 1]) }}"
-                        @click.prevent="scrollToAnchor('listing')"
-                        @if ($handle) wire:click.prevent="{{ $handle }}({{ $current - 1 }})" @endif>
+                       href="{{ request()->fullUrlWithQuery(['pagination' => $current - 1]) }}"
+                       @click.prevent="scrollToAnchor('listing')"
+                       @if ($handle) wire:click.prevent="{{ $handle }}(
+                       @if($extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif{{ $current - 1 }}@if(!$extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif )" @endif>
                         <x-far-angle-left class="icon-20" />
                     </a>
                 @else
@@ -75,9 +101,10 @@
                         <span @class([$baseNumberClass, $activeNumberClass])>{{ $page }}</span>
                     @elseif($page != $separator)
                         <a @class([$baseNumberClass]) title="Page {{ $page }}"
-                            href="{{ request()->fullUrlWithQuery(['pagination' => $page]) }}"
-                            @click.prevent="scrollToAnchor('listing')"
-                            @if ($handle) wire:click.prevent="{{ $handle }}({{ $page }})" @endif>{{ $page }}</a>
+                           href="{{ request()->fullUrlWithQuery(['pagination' => $page]) }}"
+                           @click.prevent="scrollToAnchor('listing')"
+                           @if ($handle) wire:click.prevent="{{ $handle }}(
+                           @if($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif {{$page}} @if(!$extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif )" @endif>{{ $page }}</a>
                     @else
                         <span class="my-2 mx-1">{{ $separator }}</span>
                     @endif
@@ -88,9 +115,10 @@
             @if ($hasButtons)
                 @if ($current < $pages)
                     <a @class([$baseButtonClass]) title="{{ $nextLabel }}"
-                        href="{{ request()->fullUrlWithQuery(['pagination' => $current + 1]) }}"
-                        @click.prevent="scrollToAnchor('listing')"
-                        @if ($handle) wire:click.prevent="{{ $handle }}({{ $current + 1 }})" @endif>
+                       href="{{ request()->fullUrlWithQuery(['pagination' => $current + 1]) }}"
+                       @click.prevent="scrollToAnchor('listing')"
+                       @if ($handle) wire:click.prevent="{{ $handle }}(
+                       @if($extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif {{ $current + 1 }} @if(!$extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif )" @endif>
                         <x-far-angle-right class="icon-20" />
                     </a>
                 @else
