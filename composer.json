@@ -21,6 +21,6 @@
   "require": {
     "php": ">=8.4",
     "agence-adeliom/horizon-tools": "dev-upgrade/sage-11",
-    "laravel/prompts": "^0.3"
+    "laravel/prompts": "^0.1.25"
   }
 }
