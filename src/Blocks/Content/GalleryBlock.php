@@ -13,7 +13,7 @@ use Adeliom\HorizonTools\Fields\Tabs\MediaTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
-use Adeliom\HorizonTools\Services\BudService;
+use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Extended\ACF\Fields\Gallery;
 
 
@@ -51,8 +51,6 @@ class GalleryBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        if ($galleryJs = BudService::getUrl('gallery.js')) {
-            wp_enqueue_script('gallery-js', $galleryJs);
-        }
+		CompilationService::getAsset('resources/scripts/blocks/gallery.ts')?->enqueue();
     }
 }

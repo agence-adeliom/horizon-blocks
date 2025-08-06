@@ -13,8 +13,8 @@ use Adeliom\HorizonTools\Fields\Tabs\SettingsTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
-use Adeliom\HorizonTools\Services\BudService;
 use Adeliom\HorizonTools\Services\ClassService;
+use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Adeliom\HorizonTools\Services\FileService;
 use Adeliom\HorizonTools\Services\PostService;
 use Adeliom\HorizonTools\Taxonomies\AbstractTaxonomy;
@@ -382,9 +382,7 @@ class ListingBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		if ($listingJs = BudService::getUrl('listing.js')) {
-			wp_enqueue_script('listing-block', $listingJs);
-		}
+		CompilationService::getAsset('resources/scripts/blocks/listing.ts')?->enqueue();
 	}
 
 	private function getAvailableFilterChoices(int $level = 1): array

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Adeliom\HorizonBlocks\Blocks\Listing;
 
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
-use Adeliom\HorizonTools\Services\BudService;
+use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Adeliom\HorizonTools\Services\SearchEngineService;
 use Extended\ACF\Fields\Message;
 
@@ -30,12 +30,6 @@ class SearchEngineResultsBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		if ($searchEngineJs = BudService::getUrl('search-engine-results.js')) {
-			wp_enqueue_script('search-engine-results-block', $searchEngineJs);
-		}
-
-		if ($searchEngineCss = BudService::getUrl('search-engine-results.css')) {
-			wp_enqueue_script('search-engine-results-block', $searchEngineCss);
-		}
+		CompilationService::getAsset('resources/styles/components/blocks/search-engine-results.css')?->enqueue();
 	}
 }

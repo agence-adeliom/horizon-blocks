@@ -7,7 +7,6 @@ namespace Adeliom\HorizonBlocks\Blocks\Content;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Choices\TrueFalseField;
 use Adeliom\HorizonTools\Services\BlogPostService;
-use Adeliom\HorizonTools\Services\BudService;
 use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use App\Admin\Post\PostSummaryAdmin;
 use Extended\ACF\ConditionalLogic;

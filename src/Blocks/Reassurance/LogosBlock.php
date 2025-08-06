@@ -11,10 +11,10 @@ use Adeliom\HorizonTools\Fields\Tabs\LayoutTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
+use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\Link;
 use Extended\ACF\Fields\Repeater;
-use Adeliom\HorizonTools\Services\BudService;
 
 class LogosBlock extends AbstractBlock
 {
@@ -55,12 +55,6 @@ class LogosBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        if ($logosCss = BudService::getUrl('logos.css')) {
-            wp_enqueue_style('logos-block-css', $logosCss);
-        }
-
-        if ($logosJs = BudService::getUrl('logos.js')) {
-            wp_enqueue_script('logos-block-js', $logosJs);
-        }
+		CompilationService::getAsset('resources/scripts/blocks/logos.ts')?->enqueueAll();
     }
 }

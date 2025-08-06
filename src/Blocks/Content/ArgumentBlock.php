@@ -12,8 +12,7 @@ use Adeliom\HorizonTools\Fields\Tabs\ContentTab;
 use Adeliom\HorizonTools\Fields\Tabs\LayoutTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
-use Adeliom\HorizonTools\Services\BudService;
-use Extended\ACF\Fields\Image;
+use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\Textarea;
@@ -57,12 +56,6 @@ class ArgumentBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        if ($argumentsCss = BudService::getUrl('arguments.css')) {
-            wp_enqueue_style('arguments-block-css', $argumentsCss);
-        }
-
-        if ($argumentsJs = BudService::getUrl('arguments.js')) {
-            wp_enqueue_script('arguments-block-js', $argumentsJs);
-        }
+		CompilationService::getAsset('resources/scripts/blocks/arguments.ts')?->enqueueAll();
     }
 }
