@@ -8,6 +8,7 @@ use Adeliom\HorizonBlocks\Services\HorizonBlockService;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Services\ClassService;
 use Adeliom\HorizonTools\Services\CommandService;
+use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Adeliom\HorizonTools\Services\FileService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
@@ -193,7 +194,7 @@ class ImportBlock extends Command
 	private function handleAdditionalFiles(array $filePaths): void
 	{
 		if ($filePaths) {
-			$filesToBud = [];
+			$filesToCompilator = [];
 
 			$this->newLine();
 			$this->info(sprintf('Handling %d additional file·s...', count($filePaths)));
@@ -254,16 +255,100 @@ class ImportBlock extends Command
 								break;
 						}
 
-						if (!isset($filesToBud[$rootName])) {
-							$filesToBud[$rootName] = [self::TYPE_SCRIPT => [], self::TYPE_STYLE => []];
+						if (!isset($filesToCompilator[$rootName])) {
+							$filesToCompilator[$rootName] = [self::TYPE_SCRIPT => [], self::TYPE_STYLE => []];
 						}
 
-						$filesToBud[$rootName][$type] = $budString;
+						$filesToCompilator[$rootName][$type] = $budString;
 					}
 				}
 			}
 
-			$this->appendFilesToBud($filesToBud);
+			switch (true) {
+				case CompilationService::shouldUseVite():
+					$this->appendFilesToVite($filesToCompilator);
+					break;
+				default:
+					$this->appendFilesToBud($filesToCompilator);
+					break;
+			}
+		}
+	}
+
+	private function appendFilesToVite(array $toHandle): void
+	{
+		if ($viteFilePath = $this->getViteConfigPath()) {
+			$this->newLine();
+			$this->info('Handling Vite file...');
+
+			foreach ($toHandle as $name => $assets) {
+				$paths = [];
+
+				if (!empty($assets[self::TYPE_SCRIPT])) {
+					$paths[] = $assets[self::TYPE_SCRIPT];
+				}
+
+				if (!empty($assets[self::TYPE_STYLE])) {
+					$paths[] = $assets[self::TYPE_STYLE];
+				}
+
+				if (!empty($paths)) {
+					$viteName = last(explode('/', $name));
+
+					$paths = array_map(function ($path) {
+						return sprintf("'%s'", $path);
+					}, $paths);
+
+					$viteConfigContent = file_get_contents($viteFilePath);
+
+					if (!$viteConfigContent) {
+						$this->error('Vite config file is empty');
+					} else {
+						$viteConfigContent = preg_replace_callback(
+							'/laravel\(\s*{[^}]*?input:\s*\[([^\]]*)\]/s',
+							function ($matches) use ($paths) {
+								$inputBlock = $matches[1];
+
+								// Détection de l'indentation de base (celle de `input: [`)
+								preg_match('/^( *)(input:\s*\[)/m', $matches[0], $indentMatch);
+								$baseIndent = $indentMatch[1] ?? '  '; // fallback à 2 espaces
+								$itemIndent = $baseIndent . '  '; // indentation des items (ex: 2 niveaux)
+
+								// Nettoyage et normalisation
+								$existingPaths = array_map('trim', explode(',', trim($inputBlock)));
+								$existingPaths = array_filter($existingPaths); // supprime les lignes vides
+
+								// Remove indentation from existing paths
+								$existingPaths = array_map(function ($path) {
+									return trim($path, "\n\r\t ");
+								}, $existingPaths);
+
+								// Ajout des nouveaux chemins s'ils ne sont pas déjà présents
+								foreach ($paths as $newPath) {
+									if (!in_array(trim($newPath, "'\""), array_map(fn($p) => trim($p, "'\""), $existingPaths))) {
+										$existingPaths[] = trim($newPath, "\n\r\t ");
+									}
+								}
+
+								// Reconstruction avec indentation propre
+								$newInput = "input: [\n";
+								foreach ($existingPaths as $i => $path) {
+									$comma = $i === array_key_last($existingPaths) ? '' : ',';
+									$newInput .= $itemIndent . $path . $comma . "\n";
+								}
+								$newInput .= $baseIndent . "]";
+
+								return preg_replace('/input:\s*\[[^\]]*\]/s', $newInput, $matches[0]);
+							},
+							$viteConfigContent
+						);
+
+						FileService::filePutContentsAndCreateMissingDirectories($viteFilePath, $viteConfigContent);
+
+						$this->info(sprintf('Added bud line for %s', $viteName));
+					}
+				}
+			}
 		}
 	}
 
@@ -276,11 +361,11 @@ class ImportBlock extends Command
 			foreach ($toHandle as $name => $assets) {
 				$paths = [];
 
-				if (isset($assets[self::TYPE_SCRIPT]) && !empty($assets[self::TYPE_SCRIPT])) {
+				if (!empty($assets[self::TYPE_SCRIPT])) {
 					$paths[] = $assets[self::TYPE_SCRIPT];
 				}
 
-				if (isset($assets[self::TYPE_STYLE]) && !empty($assets[self::TYPE_STYLE])) {
+				if (!empty($assets[self::TYPE_STYLE])) {
 					$paths[] = $assets[self::TYPE_STYLE];
 				}
 
@@ -316,6 +401,11 @@ class ImportBlock extends Command
 	private function getBudConfigPath(): string
 	{
 		return $this->getTemplatePath() . '/bud.config.js';
+	}
+
+	private function getViteConfigPath(): string
+	{
+		return $this->getTemplatePath() . '/vite.config.js';
 	}
 
 	private function getViewsDirectory(): string

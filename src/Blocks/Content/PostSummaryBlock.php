@@ -8,6 +8,7 @@ use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Choices\TrueFalseField;
 use Adeliom\HorizonTools\Services\BlogPostService;
 use Adeliom\HorizonTools\Services\BudService;
+use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use App\Admin\Post\PostSummaryAdmin;
 use Extended\ACF\ConditionalLogic;
 use Extended\ACF\Fields\Text;
@@ -78,9 +79,7 @@ EOF;
 
 	public function renderBlockCallback(): void
 	{
-		if ($postSummaryJs = BudService::getUrl('post-summary.js')) {
-			wp_enqueue_script('post-summary-block', $postSummaryJs);
-		}
+		CompilationService::getAsset('post-summary.js')?->enqueue();
 	}
 
 	public function getPostTypes(): ?array
