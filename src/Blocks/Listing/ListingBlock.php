@@ -382,7 +382,14 @@ class ListingBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		CompilationService::getAsset('resources/scripts/blocks/listing.ts')?->enqueue();
+		switch (true) {
+			case CompilationService::shouldUseBud():
+				CompilationService::getAsset('listing.js')?->enqueue();
+				break;
+			default:
+				CompilationService::getAsset('resources/scripts/blocks/listing.ts')?->enqueue();
+				break;
+		}
 	}
 
 	private function getAvailableFilterChoices(int $level = 1): array

@@ -56,6 +56,14 @@ class StepBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		CompilationService::getAsset('resources/scripts/blocks/steps.ts')?->enqueueAll();
+		switch (true) {
+			case CompilationService::shouldUseBud():
+				CompilationService::getAsset('steps.js')?->enqueue();
+				CompilationService::getAsset('steps.css')?->enqueue();
+				break;
+			default:
+				CompilationService::getAsset('resources/scripts/blocks/steps.ts')?->enqueueAll();
+				break;
+		}
 	}
 }

@@ -56,6 +56,14 @@ class ArgumentBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-		CompilationService::getAsset('resources/scripts/blocks/arguments.ts')?->enqueueAll();
+		switch (true) {
+			case CompilationService::shouldUseBud():
+				CompilationService::getAsset('arguments.js')?->enqueue();
+				CompilationService::getAsset('arguments.css')?->enqueue();
+				break;
+			default:
+				CompilationService::getAsset('resources/scripts/blocks/arguments.ts')?->enqueueAll();
+				break;
+		}
     }
 }

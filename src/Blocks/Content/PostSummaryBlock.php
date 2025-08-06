@@ -78,7 +78,14 @@ EOF;
 
 	public function renderBlockCallback(): void
 	{
-		CompilationService::getAsset('post-summary.js')?->enqueue();
+		switch (true) {
+			case CompilationService::shouldUseBud():
+				CompilationService::getAsset('post-summary.js')?->enqueue();
+				break;
+			default:
+				CompilationService::getAsset('resources/scripts/blocks/post-summary.ts')?->enqueue();
+				break;
+		}
 	}
 
 	public function getPostTypes(): ?array

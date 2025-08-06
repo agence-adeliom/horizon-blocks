@@ -55,6 +55,14 @@ class LogosBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-		CompilationService::getAsset('resources/scripts/blocks/logos.ts')?->enqueueAll();
+		switch (true) {
+			case CompilationService::shouldUseBud():
+				CompilationService::getAsset('logos.js')?->enqueue();
+				CompilationService::getAsset('logos.css')?->enqueue();
+				break;
+			default:
+				CompilationService::getAsset('resources/scripts/blocks/logos.ts')?->enqueueAll();
+				break;
+		}
     }
 }

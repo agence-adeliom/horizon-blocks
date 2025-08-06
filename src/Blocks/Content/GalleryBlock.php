@@ -51,6 +51,13 @@ class GalleryBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-		CompilationService::getAsset('resources/scripts/blocks/gallery.ts')?->enqueue();
+		switch (true) {
+			case CompilationService::shouldUseBud():
+				CompilationService::getAsset('gallery.js')?->enqueue();
+				break;
+			default:
+				CompilationService::getAsset('resources/scripts/blocks/gallery.ts')?->enqueue();
+				break;
+		}
     }
 }

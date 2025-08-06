@@ -58,6 +58,13 @@ class CustomerReviewBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-		CompilationService::getAsset('resources/scripts/blocks/customer-review.ts')?->enqueueAll();
+		switch (true) {
+			case CompilationService::shouldUseBud():
+				CompilationService::getAsset('customer-review.js')?->enqueueAll();
+				break;
+			default:
+				CompilationService::getAsset('resources/scripts/blocks/customer-review.ts')?->enqueueAll();
+				break;
+		}
     }
 }

@@ -30,6 +30,13 @@ class SearchEngineResultsBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		CompilationService::getAsset('resources/styles/components/blocks/search-engine-results.css')?->enqueue();
+		switch (true) {
+			case CompilationService::shouldUseBud():
+				CompilationService::getAsset('search-engine-results.css')?->enqueue();
+				break;
+			default:
+				CompilationService::getAsset('resources/styles/components/blocks/search-engine-results.css')?->enqueue();
+				break;
+		}
 	}
 }
