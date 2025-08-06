@@ -1,26 +1,26 @@
 {
-    "name": "agence-adeliom/horizon-blocks",
-    "type": "library",
-    "autoload": {
-        "psr-4": {
-            "Adeliom\\HorizonBlocks\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Agence Adeliom",
-            "email": "dev@adeliom.com"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:agence-adeliom/horizon-tools.git"
-        }
-    ],
-    "require": {
-        "php": ">=8.4",
-        "agence-adeliom/horizon-tools": "dev-main",
-        "laravel/prompts": "^0.1.25"
+  "name": "agence-adeliom/horizon-blocks",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Adeliom\\HorizonBlocks\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "Agence Adeliom",
+      "email": "dev@adeliom.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:agence-adeliom/horizon-tools.git"
+    }
+  ],
+  "require": {
+    "php": ">=8.4",
+    "agence-adeliom/horizon-tools": "dev-upgrade/sage-11",
+    "laravel/prompts": "^0.3"
+  }
 }
