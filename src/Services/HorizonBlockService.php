@@ -16,6 +16,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\GalleryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\HighlightBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\PostSummaryBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\PricesBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TextMediaBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
@@ -40,7 +41,6 @@ use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\MergedResults;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\SeparatedResults;
-use App\Blocks\Content\PricesBlock;
 use App\View\Components\Cards\CardPrice;
 
 class HorizonBlockService
