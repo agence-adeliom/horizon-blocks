@@ -217,7 +217,7 @@ class HorizonBlockService
 				self::ASSET_FILES => [],
 				self::COMPONENTS => [],
 				self::LIVEWIRE_COMPONENTS => [],
-			]
+			],
 		];
 
 		// Filter blocks by putting ones requiring Livewire last
