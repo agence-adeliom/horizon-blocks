@@ -40,6 +40,8 @@ use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\MergedResults;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\SeparatedResults;
+use App\Blocks\Content\PricesBlock;
+use App\View\Components\Cards\CardPrice;
 
 class HorizonBlockService
 {
@@ -218,6 +220,12 @@ class HorizonBlockService
 				self::COMPONENTS => [],
 				self::LIVEWIRE_COMPONENTS => [],
 			],
+			PricesBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [],
+				self::COMPONENTS => [CardPrice::class],
+				self::LIVEWIRE_COMPONENTS => [],
+			]
 		];
 
 		// Filter blocks by putting ones requiring Livewire last
