@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\View\Components\Cards;
+namespace Adeliom\HorizonBlocks\View\Components\Cards;
 
+use Adeliom\HorizonBlocks\Blocks\Content\PricesBlock;
 use Adeliom\HorizonTools\Fields\Buttons\ButtonField;
 use Adeliom\HorizonTools\Services\NumberService;
-use App\Blocks\Content\PricesBlock;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
