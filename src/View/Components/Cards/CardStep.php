@@ -14,7 +14,7 @@ class CardStep extends Component
 	/**
 	 * Create a new component instance.
 	 */
-	public function __construct() {}
+	public function __construct(public readonly array $step) {}
 
 	/**
 	 * Get the view / contents that represent the component.
