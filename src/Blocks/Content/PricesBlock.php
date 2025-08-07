@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Blocks\Content;
+namespace Adeliom\HorizonBlocks\Blocks\Content;
 
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Buttons\ButtonField;
