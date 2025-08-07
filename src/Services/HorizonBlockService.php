@@ -28,6 +28,7 @@ use Adeliom\HorizonBlocks\Blocks\Reassurance\CustomerReviewBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\KeyFigureBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\LogosBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\QuoteBlock;
+use Adeliom\HorizonBlocks\Blocks\Reassurance\ReinsuranceBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 use Adeliom\HorizonBlocks\Livewire\Listing\SearchEngineResults;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
@@ -209,6 +210,12 @@ class HorizonBlockService
 				self::REQUIRES_LIVEWIRE => false,
 				self::ASSET_FILES => [],
 				self::COMPONENTS => [TextMedia::class],
+				self::LIVEWIRE_COMPONENTS => [],
+			],
+			ReinsuranceBlock::class => [
+				self::REQUIRES_LIVEWIRE => false,
+				self::ASSET_FILES => [],
+				self::COMPONENTS => [],
 				self::LIVEWIRE_COMPONENTS => [],
 			]
 		];
