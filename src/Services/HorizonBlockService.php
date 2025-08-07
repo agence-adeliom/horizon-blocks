@@ -33,6 +33,7 @@ use Adeliom\HorizonBlocks\Blocks\Reassurance\ReinsuranceBlock;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 use Adeliom\HorizonBlocks\Livewire\Listing\SearchEngineResults;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
+use Adeliom\HorizonBlocks\View\Components\Cards\CardPrice;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardCustomerReview;
@@ -41,7 +42,6 @@ use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\MergedResults;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\SeparatedResults;
-use App\View\Components\Cards\CardPrice;
 
 class HorizonBlockService
 {
