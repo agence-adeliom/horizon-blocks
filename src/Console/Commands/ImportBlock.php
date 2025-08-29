@@ -345,7 +345,7 @@ class ImportBlock extends Command
 
 						FileService::filePutContentsAndCreateMissingDirectories($viteFilePath, $viteConfigContent);
 
-						$this->info(sprintf('Added bud line for %s', $viteName));
+						$this->info(sprintf('Added Vite line for %s', $viteName));
 					}
 				}
 			}
@@ -388,7 +388,7 @@ class ImportBlock extends Command
 
 						FileService::filePutContentsAndCreateMissingDirectories($budFilePath, $newBudFileContent);
 
-						$this->info(sprintf('Added bud line for %s : %s', $budName, $budLineSingleQuotes));
+						$this->info(sprintf('Added Bud line for %s : %s', $budName, $budLineSingleQuotes));
 					} else {
 						$containedLine = str_contains($budFileContent, $budLine) ? $budLine : $budLineSingleQuotes;
 						$this->error(sprintf('Bud line already exists for %s (%s)', $budName, $containedLine));
