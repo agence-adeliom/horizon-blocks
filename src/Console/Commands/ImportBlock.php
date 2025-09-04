@@ -80,6 +80,45 @@ class ImportBlock extends Command
 						$this->createLivewireComponent(className: $livewireClass);
 					}
 				}
+
+				$this->handleAssociatedIllustration($shortName);
+			}
+		}
+	}
+
+	private function handleAssociatedIllustration(string $shortName): void
+	{
+		$hypotheticalImagePathWithoutExtension = Str::of($shortName)->kebab()->replace('\\', '/')->replace('-block', '')->replace('/-', '/');
+
+		$hypotheticalFullPathWithoutExtension = $this->getHorizonBlockImagesDirectory() . $hypotheticalImagePathWithoutExtension;
+		$hypotheticalFolderPath = explode('/', $hypotheticalFullPathWithoutExtension);
+
+		$fileName = array_pop($hypotheticalFolderPath);
+
+		$hypotheticalFolderPath = implode('/', $hypotheticalFolderPath) . '/';
+		$fullPath = null;
+		$fullFileName = null;
+
+		foreach (scandir($hypotheticalFolderPath) as $fileFullName) {
+			if (str_starts_with($fileFullName, $fileName)) {
+				$fullPath = $hypotheticalFolderPath . $fileFullName;
+				$fullFileName = $fileFullName;
+				break;
+			}
+		}
+
+		if (null !== $fullPath && null !== $fullFileName && file_exists($fullPath)) {
+			$inTemplatePath = $this->getBlockImagesPath() . $hypotheticalImagePathWithoutExtension->replace($fileName, $fullFileName);
+
+			if (file_exists($inTemplatePath)) {
+				$this->info('Illustration already exists at ' . $inTemplatePath);
+			} else {
+				$this->newLine();
+				$this->error('Handling block illustration...');
+
+				FileService::filePutContentsAndCreateMissingDirectories($inTemplatePath, file_get_contents($fullPath));
+
+				$this->info('Copied illustration to ' . $inTemplatePath);
 			}
 		}
 	}
@@ -318,6 +357,16 @@ class ImportBlock extends Command
 		return $this->getTemplatePath() . '/bud.config.js';
 	}
 
+	private function getImagesDirectory(): string
+	{
+		return '/resources/images/';
+	}
+
+	private function getBlockImagesDirectory(): string
+	{
+		return $this->getImagesDirectory() . 'admin/blocks/';
+	}
+
 	private function getViewsDirectory(): string
 	{
 		return '/resources/views/';
@@ -383,9 +432,24 @@ class ImportBlock extends Command
 		return $this->getHorizonRoot() . $this->getStylesDirectory();
 	}
 
+	private function getHorizonImagesDirectory(): string
+	{
+		return $this->getHorizonRoot() . $this->getImagesDirectory();
+	}
+
+	private function getHorizonBlockImagesDirectory(): string
+	{
+		return $this->getHorizonRoot() . $this->getBlockImagesDirectory();
+	}
+
 	private function getViewsPath(): string
 	{
 		return $this->getTemplatePath() . $this->getViewsDirectory();
+	}
+
+	private function getBlockImagesPath(): string
+	{
+		return $this->getTemplatePath() . $this->getBlockImagesDirectory();
 	}
 
 	private function getTemplatePath(): ?string
