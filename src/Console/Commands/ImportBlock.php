@@ -16,7 +16,7 @@ use function Laravel\Prompts\search;
 
 class ImportBlock extends Command
 {
-	protected $signature = 'import:block';
+	protected $signature = 'import:block {quickImportSlug?}';
 	protected $description = 'Import a block from Horizon Blocks';
 
 	private const TYPE_SCRIPT = 'script';
@@ -47,8 +47,25 @@ class ImportBlock extends Command
 
 		$blockNames = collect(array_values($shortNames));
 
-		if ($index = search(label: 'Name of the block to import', options: fn(string $value) => $blockNames->filter(fn($name) => Str::contains($name, $value, ignoreCase: true))->values()->all(), scroll: 10)) {
+		$namespaceToImport = null;
+
+		// On essaie de récupérer le "hash" du block
+		if ($quickImportSlug = $this->argument('quickImportSlug')) {
+			foreach (array_keys($shortNames) as $shortName) {
+				if (Str::of($shortName)->endsWith(Str::of($quickImportSlug)->replace('/', '\\')->toString())) {
+					$namespaceToImport = $shortName;
+					break;
+				}
+			}
+		}
+
+		// S'il n'y a pas de hash fourni, ou s'il ne correspond à rien, on demande à l'utilisateur·ice de choisir
+		if (null === $namespaceToImport && $index = search(label: 'Name of the block to import', options: fn(string $value) => $blockNames->filter(fn($name) => Str::contains($name, $value, ignoreCase: true))->values()->all(), scroll: 10)) {
 			$namespaceToImport = array_search($index, $shortNames);
+		}
+
+		// Si on a un block à importer :
+		if (null !== $namespaceToImport) {
 			$blockExtraData = $availableBlocks[$namespaceToImport];
 
 			$pathToBlockControllerFile = ClassService::getFilePathFromClassName($namespaceToImport);
