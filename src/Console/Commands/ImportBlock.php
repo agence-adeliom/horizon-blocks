@@ -111,10 +111,10 @@ class ImportBlock extends Command
 			$inTemplatePath = $this->getBlockImagesPath() . $hypotheticalImagePathWithoutExtension->replace($fileName, $fullFileName);
 
 			if (file_exists($inTemplatePath)) {
-				$this->info('Illustration already exists at ' . $inTemplatePath);
+				$this->error('Illustration already exists at ' . $inTemplatePath);
 			} else {
 				$this->newLine();
-				$this->error('Handling block illustration...');
+				$this->info('Handling block illustration...');
 
 				FileService::filePutContentsAndCreateMissingDirectories($inTemplatePath, file_get_contents($fullPath));
 
