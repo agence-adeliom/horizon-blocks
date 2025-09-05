@@ -1,4 +1,10 @@
 <x-block :fields="$fields" :block="$block">
+    @if(!empty($context['structuredData']))
+        <script type="application/ld+json">
+            @json($context['structuredData'])
+        </script>
+    @endif
+
     <div class="grid-12">
         <div class="lg:col-span-5 lg:mr-12">
             @isset($fields['img'])
@@ -17,9 +23,6 @@
                 <x-typography.text :content="$fields['wysiwyg']" class="pt-medium" />
             @endisset
 
-            @isset($fields['buttons'])
-                <x-action.buttons :buttons="$fields['buttons']" class="mt-button-text-mobile lg:mt-button-text-desktop" />
-            @endisset
         </div>
         <div class="lg:col-span-7 flex flex-col gap-medium">
             @if (@isset($fields['questions']) && $fields['questions'])
