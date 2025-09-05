@@ -12,6 +12,7 @@ use Adeliom\HorizonTools\Fields\Tabs\LayoutTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
+use Adeliom\HorizonTools\Services\SeoService;
 use App\PostTypes\FAQ;
 use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\Relationship;
@@ -46,9 +47,53 @@ class FaqBlock extends AbstractBlock
 		]);
 	}
 
+	private function getStructuredData(string $question, string $answer, ?string $publicationDate = null): array
+	{
+		$siteName = get_bloginfo('name');
+
+		$answerData = [
+			"@context" => "https://schema.org",
+			"@type" => "Answer",
+			"text" => strip_tags($answer),
+			"author" => [
+				"@type" => "Organization",
+				"name" => $siteName
+			],
+		];
+
+		if ($publicationDate) {
+			$answerData['datePublished'] = $publicationDate;
+		}
+
+		return [
+			"@context" => "https://schema.org",
+			"@type" => "Question",
+			"name" => $question,
+			"acceptedAnswer" => $answerData,
+		];
+	}
+
 	public function addToContext(): array
 	{
-		return [];
+		$fields = get_fields();
+		$structuredData = [];
+
+		if (SeoService::isCurrentPageIndexed() && !empty($fields[self::FIELDS_QUESTIONS])) {
+			foreach ($fields[self::FIELDS_QUESTIONS] as $questionPost) {
+				if ($questionFields = get_fields($questionPost)) {
+					if (!empty($questionFields[FAQ::FIELD_QUESTION]) && !empty($questionFields[FAQ::FIELD_ANSWER])) {
+						$question = $questionFields[FAQ::FIELD_QUESTION];
+						$answer = $questionFields[FAQ::FIELD_ANSWER];
+
+						$structuredData[] = $this->getStructuredData($question, $answer, publicationDate: $questionPost->post_date);
+					}
+				}
+			}
+		}
+
+		return [
+			'structuredData' => $structuredData,
+		];
 	}
 
 	public function renderBlockCallback(): void
