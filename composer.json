@@ -24,8 +24,8 @@
     ],
     "require": {
         "php": ">=8.4",
-        "agence-adeliom/horizon-tools": "dev-main",
-        "agence-adeliom/horizon-posttypes": "dev-main",
+        "agence-adeliom/horizon-tools": "dev-sage/10",
+        "agence-adeliom/horizon-posttypes": "dev-sage/10",
         "laravel/prompts": "^0.1.25"
     }
 }
