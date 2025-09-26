@@ -42,6 +42,7 @@ use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\MergedResults;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\SeparatedResults;
+use Adeliom\HorizonPostTypes\PostTypes\FAQ;
 
 class HorizonBlockService
 {
@@ -49,6 +50,7 @@ class HorizonBlockService
 	public const string ASSET_FILES = 'additionalFiles';
 	public const string LIVEWIRE_COMPONENTS = 'livewireComponents';
 	public const string COMPONENTS = 'components';
+	public const string REQUIRED_POSTTYPES = 'requiredPostTypes';
 	public const ADMINS = 'admins';
 
 	public static function getAvailableBlocks(): array
@@ -175,6 +177,9 @@ class HorizonBlockService
 				self::LIVEWIRE_COMPONENTS => [],
 				self::COMPONENTS => [
 					CardFaq::class
+				],
+				self::REQUIRED_POSTTYPES => [
+					FAQ::class,
 				],
 			],
 			HeroForm::class => [

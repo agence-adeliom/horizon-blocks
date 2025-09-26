@@ -13,14 +13,19 @@
     }
   ],
   "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:agence-adeliom/horizon-tools.git"
-    }
-  ],
-  "require": {
+      {
+        "type": "vcs",
+        "url": "git@github.com:agence-adeliom/horizon-tools.git"
+      },
+      {
+       "type": "vcs",
+        "url": "git@github.com:agence-adeliom/horizon-posttypes.git"
+      }
+    ],
+    "require": {
     "php": ">=8.4",
     "agence-adeliom/horizon-tools": "dev-upgrade/sage-11",
+    "agence-adeliom/horizon-posttypes": "dev-upgrade/sage-11",
     "laravel/prompts": "^0.1.25 || ^0.3"
   }
 }

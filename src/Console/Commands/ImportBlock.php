@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Adeliom\HorizonBlocks\Console\Commands;
 
 use Adeliom\HorizonBlocks\Services\HorizonBlockService;
+use Adeliom\HorizonPostTypes\Console\Commands\ImportPostType;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Services\ClassService;
 use Adeliom\HorizonTools\Services\CommandService;
@@ -16,304 +17,394 @@ use function Laravel\Prompts\search;
 
 class ImportBlock extends Command
 {
-	protected $signature = 'import:block {quickImportSlug?}';
-	protected $description = 'Import a block from Horizon Blocks';
+    protected $signature = 'import:block {quickImportSlug?}';
+    protected $description = 'Import a block from Horizon Blocks';
 
-	private const TYPE_SCRIPT = 'script';
-	private const TYPE_STYLE = 'style';
+    private const TYPE_SCRIPT = 'script';
+    private const TYPE_STYLE = 'style';
 
-	public function handle(): void
-	{
-		$availableBlocks = HorizonBlockService::getAvailableBlocks();
-		$classes = array_keys($availableBlocks);
-		$shortNames = [];
-		$fullNames = [];
+    public function handle(): void
+    {
+        $availableBlocks = HorizonBlockService::getAvailableBlocks();
+        $classes = array_keys($availableBlocks);
+        $shortNames = [];
+        $fullNames = [];
 
-		foreach ($classes as $className) {
-			$blockExtraData = $availableBlocks[$className];
+        foreach ($classes as $className) {
+            $blockExtraData = $availableBlocks[$className];
 
-			$fullNames[$className] = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', '', $className);
-			$shortNames[$className] = $className::$title;
+            $fullNames[$className] = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', '', $className);
+            $shortNames[$className] = $className::$title;
 
-			if (isset($blockExtraData[HorizonBlockService::REQUIRES_LIVEWIRE]) && $blockExtraData[HorizonBlockService::REQUIRES_LIVEWIRE]) {
-				$shortNames[$className] .= ' (Requires Livewire)';
-			}
-		}
+            if (isset($blockExtraData[HorizonBlockService::REQUIRES_LIVEWIRE]) && $blockExtraData[HorizonBlockService::REQUIRES_LIVEWIRE]) {
+                $shortNames[$className] .= ' (Requires Livewire)';
+            }
+        }
 
-		if (empty($shortNames)) {
-			$this->error('No block to import!');
-			return;
-		}
+        if (empty($shortNames)) {
+            $this->error('No block to import!');
+            return;
+        }
 
-		$blockNames = collect(array_values($shortNames));
+        $blockNames = collect(array_values($shortNames));
 
-		$namespaceToImport = null;
+        $namespaceToImport = null;
 
-		// On essaie de récupérer le "hash" du block
-		if ($quickImportSlug = $this->argument('quickImportSlug')) {
-			foreach (array_keys($shortNames) as $shortName) {
-				if (Str::of($shortName)->endsWith(Str::of($quickImportSlug)->replace('/', '\\')->toString())) {
-					$namespaceToImport = $shortName;
-					break;
-				}
-			}
-		}
+        // On essaie de récupérer le "hash" du block
+        if ($quickImportSlug = $this->argument('quickImportSlug')) {
+            foreach (array_keys($shortNames) as $shortName) {
+                if (Str::of($shortName)->endsWith(Str::of($quickImportSlug)->replace('/', '\\')->toString())) {
+                    $namespaceToImport = $shortName;
+                    break;
+                }
+            }
+        }
 
-		// S'il n'y a pas de hash fourni, ou s'il ne correspond à rien, on demande à l'utilisateur·ice de choisir
-		if (null === $namespaceToImport && $index = search(label: 'Name of the block to import', options: fn(string $value) => $blockNames->filter(fn($name) => Str::contains($name, $value, ignoreCase: true))->values()->all(), scroll: 10)) {
-			$namespaceToImport = array_search($index, $shortNames);
-		}
+        // S'il n'y a pas de hash fourni, ou s'il ne correspond à rien, on demande à l'utilisateur·ice de choisir
+        if (
+            null === $namespaceToImport &&
+            ($index = search(
+                label: 'Name of the block to import',
+                options: fn(string $value) => $blockNames
+                    ->filter(fn($name) => Str::contains($name, $value, ignoreCase: true))
+                    ->values()
+                    ->all(),
+                scroll: 10,
+            ))
+        ) {
+            $namespaceToImport = array_search($index, $shortNames);
+        }
 
-		// Si on a un block à importer :
-		if (null !== $namespaceToImport) {
-			$blockExtraData = $availableBlocks[$namespaceToImport];
+        // Si on a un block à importer :
+        if (null !== $namespaceToImport) {
+            $blockExtraData = $availableBlocks[$namespaceToImport];
 
-			$pathToBlockControllerFile = ClassService::getFilePathFromClassName($namespaceToImport);
+            if (!empty($blockExtraData[HorizonBlockService::REQUIRED_POSTTYPES])) {
+                $this->handleAssociatedPostTypes($blockExtraData[HorizonBlockService::REQUIRED_POSTTYPES]);
+            }
 
-			if (file_exists($pathToBlockControllerFile)) {
-				$shortName = $fullNames[$namespaceToImport];
+            $pathToBlockControllerFile = ClassService::getFilePathFromClassName($namespaceToImport);
 
-				$structure = CommandService::getFolderStructure(str_replace('\\', '/', $shortName));
-				$folders = $structure['folders'];
-				$className = $structure['class'];
+            if (file_exists($pathToBlockControllerFile)) {
+                $shortName = $fullNames[$namespaceToImport];
 
-				if (isset($blockExtraData[HorizonBlockService::ADMINS]) && is_array($blockExtraData[HorizonBlockService::ADMINS])) {
-					$this->handleAssociatedAdmins(adminClasses: $blockExtraData[HorizonBlockService::ADMINS]);
-				}
+                $structure = CommandService::getFolderStructure(str_replace('\\', '/', $shortName));
+                $folders = $structure['folders'];
+                $className = $structure['class'];
 
-				if (isset($blockExtraData[HorizonBlockService::COMPONENTS]) && is_array($blockExtraData[HorizonBlockService::COMPONENTS])) {
-					$this->handleAdditionalComponents(componentClasses: $blockExtraData[HorizonBlockService::COMPONENTS]);
-				}
+                if (isset($blockExtraData[HorizonBlockService::ADMINS]) && is_array($blockExtraData[HorizonBlockService::ADMINS])) {
+                    $this->handleAssociatedAdmins(adminClasses: $blockExtraData[HorizonBlockService::ADMINS]);
+                }
 
-				if (isset($blockExtraData[HorizonBlockService::ASSET_FILES]) && is_array($blockExtraData[HorizonBlockService::ASSET_FILES])) {
-					$this->handleAdditionalFiles($blockExtraData[HorizonBlockService::ASSET_FILES]);
-				}
+                if (isset($blockExtraData[HorizonBlockService::COMPONENTS]) && is_array($blockExtraData[HorizonBlockService::COMPONENTS])) {
+                    $this->handleAdditionalComponents(componentClasses: $blockExtraData[HorizonBlockService::COMPONENTS]);
+                }
 
-				$this->createBlockBladeFile(className: $className, folders: $folders);
-				$this->createBlockControllerFile(className: $className, folders: $folders, pathToBlockControllerFile: $pathToBlockControllerFile, structure: $structure);
+                if (
+                    isset($blockExtraData[HorizonBlockService::ASSET_FILES]) &&
+                    is_array($blockExtraData[HorizonBlockService::ASSET_FILES])
+                ) {
+                    $this->handleAdditionalFiles($blockExtraData[HorizonBlockService::ASSET_FILES]);
+                }
 
-				if (isset($blockExtraData[HorizonBlockService::LIVEWIRE_COMPONENTS])) {
-					foreach ($blockExtraData[HorizonBlockService::LIVEWIRE_COMPONENTS] as $livewireClass) {
-						$this->createLivewireTemplate(className: $livewireClass);
-						$this->createLivewireComponent(className: $livewireClass);
-					}
-				}
+                $this->createBlockBladeFile(className: $className, folders: $folders);
+                $this->createBlockControllerFile(
+                    className: $className,
+                    folders: $folders,
+                    pathToBlockControllerFile: $pathToBlockControllerFile,
+                    structure: $structure,
+                );
 
-				$this->handleAssociatedIllustration($shortName);
-			}
-		}
-	}
+                if (isset($blockExtraData[HorizonBlockService::LIVEWIRE_COMPONENTS])) {
+                    foreach ($blockExtraData[HorizonBlockService::LIVEWIRE_COMPONENTS] as $livewireClass) {
+                        $this->createLivewireTemplate(className: $livewireClass);
+                        $this->createLivewireComponent(className: $livewireClass);
+                    }
+                }
 
-	private function handleAssociatedIllustration(string $shortName): void
-	{
-		$hypotheticalImagePathWithoutExtension = Str::of($shortName)->kebab()->replace('\\', '/')->replace('-block', '')->replace('/-', '/');
+                $this->handleAssociatedIllustration($shortName);
+            }
+        }
+    }
 
-		$hypotheticalFullPathWithoutExtension = $this->getHorizonBlockImagesDirectory() . $hypotheticalImagePathWithoutExtension;
-		$hypotheticalFolderPath = explode('/', $hypotheticalFullPathWithoutExtension);
+    private function handleAssociatedPostTypes(array $requiredPostTypes = []): void
+    {
+        if (!empty($requiredPostTypes)) {
+            foreach ($requiredPostTypes as $requiredPostTypeClassName) {
+                if (!class_exists($requiredPostTypeClassName)) {
+                    continue;
+                }
 
-		$fileName = array_pop($hypotheticalFolderPath);
+                $requiredPostTypeClassInstance = new $requiredPostTypeClassName();
+                $postTypeName = $requiredPostTypeClassName::$slug;
 
-		$hypotheticalFolderPath = implode('/', $hypotheticalFolderPath) . '/';
-		$fullPath = null;
-		$fullFileName = null;
+                if ($postTypeConfig = $requiredPostTypeClassInstance->getConfig()) {
+                    if (!empty($postTypeConfig['args']['labels']['name'])) {
+                        $postTypeName = $postTypeConfig['args']['labels']['name'];
+                    } elseif (!empty($postTypeConfig['args']['label'])) {
+                        $postTypeName = $postTypeConfig['args']['label'];
+                    }
+                }
 
-		foreach (scandir($hypotheticalFolderPath) as $fileFullName) {
-			if (str_starts_with($fileFullName, $fileName)) {
-				$fullPath = $hypotheticalFolderPath . $fileFullName;
-				$fullFileName = $fileFullName;
-				break;
-			}
-		}
+                $shortName = str_replace('Adeliom\\HorizonPostTypes\\PostTypes\\', '', $requiredPostTypeClassName);
 
-		if (null !== $fullPath && null !== $fullFileName && file_exists($fullPath)) {
-			$inTemplatePath = $this->getBlockImagesPath() . $hypotheticalImagePathWithoutExtension->replace($fileName, $fullFileName);
+                $pathToPostTypeControllerFile = ClassService::getFilePathFromClassName($requiredPostTypeClassName);
 
-			if (file_exists($inTemplatePath)) {
-				$this->error('Illustration already exists at ' . $inTemplatePath);
-			} else {
-				$this->newLine();
-				$this->info('Handling block illustration...');
+                $structure = CommandService::getFolderStructure(str_replace('\\', '/', $shortName));
+                $folders = $structure['folders'];
+                $className = $structure['class'];
 
-				FileService::filePutContentsAndCreateMissingDirectories($inTemplatePath, file_get_contents($fullPath));
+                $expectedClassName = 'App\\PostTypes\\' . $className;
 
-				$this->info('Copied illustration to ' . $inTemplatePath);
-			}
-		}
-	}
+                if (class_exists($expectedClassName)) {
+                    $this->info('Required postType ' . $expectedClassName . ' already exists, skipping import.');
+                    continue;
+                }
 
-	private function handleAssociatedAdmins(array $adminClasses): void
-	{
-		$this->newLine();
-		$this->info('Handling additional admin classes...');
+                if (
+                    !$this->confirm(
+                        sprintf(
+                            'The block requires the post-type "%s" (%s). Do you want to import it now?',
+                            $postTypeName,
+                            $requiredPostTypeClassName,
+                        ),
+                        true,
+                    )
+                ) {
+                    continue;
+                }
 
-		foreach ($adminClasses as $adminClass) {
-			if ($classFile = ClassService::getFilePathFromClassName($adminClass)) {
-				if (file_exists($classFile)) {
-					$adminClassContent = file_get_contents($classFile);
-					$adminClassContent = str_replace('Adeliom\\HorizonBlocks\\Admin\\', 'App\\Admin\\', $adminClassContent);
+                $importPostTypeCommand = new ImportPostType();
+                $importPostTypeCommand->createPostTypeControllerFile(
+                    className: $className,
+                    folders: $folders,
+                    pathToPostTypeControllerFile: $pathToPostTypeControllerFile,
+                    structure: $structure,
+                    instance: $this,
+                );
+            }
+        }
+    }
 
-					$path = $this->getTemplatePath() . '/app/Admin/';
+    private function handleAssociatedIllustration(string $shortName): void
+    {
+        $hypotheticalImagePathWithoutExtension = Str::of($shortName)
+            ->kebab()
+            ->replace('\\', '/')
+            ->replace('-block', '')
+            ->replace('/-', '/');
 
-					$folderStructure = explode('horizon-blocks/src/Admin/', $classFile);
+        $hypotheticalFullPathWithoutExtension = $this->getHorizonBlockImagesDirectory() . $hypotheticalImagePathWithoutExtension;
+        $hypotheticalFolderPath = explode('/', $hypotheticalFullPathWithoutExtension);
 
-					if ($folderStructure[1]) {
-						$folders = array_filter(array_map(function ($folder) {
-							return str_ends_with($folder, '.php') ? null : $folder;
-						}, explode('/', $folderStructure[1])));
+        $fileName = array_pop($hypotheticalFolderPath);
 
-						if (!empty($folders)) {
-							$folderPath = $path;
+        $hypotheticalFolderPath = implode('/', $hypotheticalFolderPath) . '/';
+        $fullPath = null;
+        $fullFileName = null;
 
-							foreach ($folders as $folder) {
-								$folderPath = rtrim($folderPath, '/') . '/' . $folder;
+        foreach (scandir($hypotheticalFolderPath) as $fileFullName) {
+            if (str_starts_with($fileFullName, $fileName)) {
+                $fullPath = $hypotheticalFolderPath . $fileFullName;
+                $fullFileName = $fileFullName;
+                break;
+            }
+        }
 
-								// Create folder if it doesn't exist
-								if (!file_exists($folderPath)) {
-									mkdir($folderPath, 0755, true);
-								}
-							}
+        if (null !== $fullPath && null !== $fullFileName && file_exists($fullPath)) {
+            $inTemplatePath = $this->getBlockImagesPath() . $hypotheticalImagePathWithoutExtension->replace($fileName, $fullFileName);
 
-							$adminFullPath = rtrim($path, '/') . '/' . $folderStructure[1];
-							FileService::filePutContentsAndCreateMissingDirectories($adminFullPath, $adminClassContent);
-						}
-					}
-				}
-			}
-		}
-	}
+            if (file_exists($inTemplatePath)) {
+                $this->error('Illustration already exists at ' . $inTemplatePath);
+            } else {
+                $this->newLine();
+                $this->info('Handling block illustration...');
 
-	private function handleAdditionalComponents(array $componentClasses)
-	{
-		$this->newLine();
-		$this->info('Handling additional components...');
+                FileService::filePutContentsAndCreateMissingDirectories($inTemplatePath, file_get_contents($fullPath));
 
-		foreach ($componentClasses as $componentClass) {
-			if ($classFile = ClassService::getFilePathFromClassName($componentClass)) {
-				if (file_exists($classFile)) {
-					$results = explode($this->getHorizonBlockComponentClassesDirectory(), $classFile);
+                $this->info('Copied illustration to ' . $inTemplatePath);
+            }
+        }
+    }
 
-					if (isset($results[1])) {
-						$componentFileName = $results[1];
+    private function handleAssociatedAdmins(array $adminClasses): void
+    {
+        $this->newLine();
+        $this->info('Handling additional admin classes...');
 
-						$templateClassFileName = $this->getTemplatePath() . $this->getComponentClassesDirectory() . $componentFileName;
+        foreach ($adminClasses as $adminClass) {
+            if ($classFile = ClassService::getFilePathFromClassName($adminClass)) {
+                if (file_exists($classFile)) {
+                    $adminClassContent = file_get_contents($classFile);
+                    $adminClassContent = str_replace('Adeliom\\HorizonBlocks\\Admin\\', 'App\\Admin\\', $adminClassContent);
 
-						if (!file_exists($templateClassFileName)) {
-							$this->info('Copying ' . $classFile . ' to ' . $templateClassFileName);
+                    $path = $this->getTemplatePath() . '/app/Admin/';
 
-							$content = file_get_contents($classFile);
+                    $folderStructure = explode('horizon-blocks/src/Admin/', $classFile);
 
-							$namespace = implode('\\', array_slice(explode('\\', $componentClass), 0, -1));
-							$newNamespace = 'App\\View\\' . implode('\\', array_slice(explode('\\', $componentClass), 3, -1));
+                    if ($folderStructure[1]) {
+                        $folders = array_filter(
+                            array_map(function ($folder) {
+                                return str_ends_with($folder, '.php') ? null : $folder;
+                            }, explode('/', $folderStructure[1])),
+                        );
 
-							$content = str_replace($namespace, $newNamespace, $content);
+                        if (!empty($folders)) {
+                            $folderPath = $path;
 
-							FileService::filePutContentsAndCreateMissingDirectories($templateClassFileName,$content);
+                            foreach ($folders as $folder) {
+                                $folderPath = rtrim($folderPath, '/') . '/' . $folder;
 
-							// Get line container return view
-							$lines = file($classFile);
-							$lineNumber = 0;
-							foreach ($lines as $lineNumber => $line) {
-								if (strpos($line, 'return view') !== false) {
-									if (preg_match("/return view\('?\"?([a-zA-Z.-]+)'?\"?\)/", $line, $m)) {
-										if (isset($m[1])) {
-											$folders = explode('.', $m[1]);
+                                // Create folder if it doesn't exist
+                                if (!file_exists($folderPath)) {
+                                    mkdir($folderPath, 0755, true);
+                                }
+                            }
 
-											$fileName = end($folders) . '.blade.php';
-											unset($folders[count($folders) - 1]);
-											$filePath = implode('/', $folders) . '/' . $fileName;
+                            $adminFullPath = rtrim($path, '/') . '/' . $folderStructure[1];
+                            FileService::filePutContentsAndCreateMissingDirectories($adminFullPath, $adminClassContent);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-											$templatePath = $this->getViewsPath() . $filePath;
-											$horizonPath = $this->getHorizonViewsDirectory() . $filePath;
+    private function handleAdditionalComponents(array $componentClasses)
+    {
+        $this->newLine();
+        $this->info('Handling additional components...');
 
-											if (file_exists($horizonPath)) {
-												if (!file_exists($templatePath)) {
-													$this->info('Copying ' . $horizonPath . ' to ' . $templatePath);
-													FileService::filePutContentsAndCreateMissingDirectories($templatePath, file_get_contents($horizonPath));
-												} else {
-													$this->error('File already exists at ' . $templatePath);
-												}
-											}
-										}
-									}
-									break;
-								}
-							}
-						} else {
-							$this->error('File already exists at ' . $templateClassFileName);
-						}
-					}
-				}
-			}
-		}
-	}
+        foreach ($componentClasses as $componentClass) {
+            if ($classFile = ClassService::getFilePathFromClassName($componentClass)) {
+                if (file_exists($classFile)) {
+                    $results = explode($this->getHorizonBlockComponentClassesDirectory(), $classFile);
 
-	private function handleAdditionalFiles(array $filePaths): void
-	{
-		if ($filePaths) {
-			$filesToCompilator = [];
+                    if (isset($results[1])) {
+                        $componentFileName = $results[1];
 
-			$this->newLine();
-			$this->info(sprintf('Handling %d additional file·s...', count($filePaths)));
+                        $templateClassFileName = $this->getTemplatePath() . $this->getComponentClassesDirectory() . $componentFileName;
 
-			foreach ($filePaths as $filePath) {
-				$type = null;
-				$sourcePath = null;
-				$relativePath = null;
-				$horizonPath = null;
-				$fileName = null;
+                        if (!file_exists($templateClassFileName)) {
+                            $this->info('Copying ' . $classFile . ' to ' . $templateClassFileName);
 
-				$extension = pathinfo($filePath, PATHINFO_EXTENSION);
-				$fileName = pathinfo($filePath, PATHINFO_FILENAME);
+                            $content = file_get_contents($classFile);
 
-				switch ($extension) {
-					case 'ts':
-						$type = self::TYPE_SCRIPT;
-						$sourcePath = $this->getHorizonScriptsDirectory();
-						$relativePath = $this->getScriptsDirectory();
-						break;
-					case 'css':
-						$type = self::TYPE_STYLE;
-						$sourcePath = $this->getHorizonStylesDirectory();
-						$relativePath = $this->getStylesDirectory();
-						break;
-					default:
-						break;
-				}
+                            $namespace = implode('\\', array_slice(explode('\\', $componentClass), 0, -1));
+                            $newNamespace = 'App\\View\\' . implode('\\', array_slice(explode('\\', $componentClass), 3, -1));
 
-				if ($type && $sourcePath && $relativePath) {
-					$horizonFilePath = rtrim($sourcePath, ltrim($relativePath, '/')) . '/' . $filePath;
+                            $content = str_replace($namespace, $newNamespace, $content);
 
-					if (file_exists($horizonFilePath)) {
-						$newFilePath = $this->getTemplatePath() . '/' . $filePath;
+                            FileService::filePutContentsAndCreateMissingDirectories($templateClassFileName, $content);
 
-						if (!file_exists($newFilePath)) {
-							$this->info('Copying ' . $horizonFilePath . ' to ' . $newFilePath);
-							FileService::filePutContentsAndCreateMissingDirectories($newFilePath, file_get_contents($horizonFilePath));
-						} else {
-							$this->error('File already exists at ' . $newFilePath);
-						}
+                            // Get line container return view
+                            $lines = file($classFile);
+                            $lineNumber = 0;
+                            foreach ($lines as $lineNumber => $line) {
+                                if (strpos($line, 'return view') !== false) {
+                                    if (preg_match("/return view\('?\"?([a-zA-Z.-]+)'?\"?\)/", $line, $m)) {
+                                        if (isset($m[1])) {
+                                            $folders = explode('.', $m[1]);
 
-						$budString = null;
-						$rootName = null;
+                                            $fileName = end($folders) . '.blade.php';
+                                            unset($folders[count($folders) - 1]);
+                                            $filePath = implode('/', $folders) . '/' . $fileName;
 
-						switch ($type) {
-							case self::TYPE_SCRIPT:
-								$rootName = ltrim($filePath, $this->getScriptsDirectory());
-								$rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
-								$budString = sprintf('@scripts/%s', $rootName);
-								break;
-							case self::TYPE_STYLE:
-								$rootName = ltrim($filePath, $this->getStylesDirectory());
-								$rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
-								$budString = sprintf('@styles/%s', $rootName);
-								break;
-							default:
-								break;
-						}
+                                            $templatePath = $this->getViewsPath() . $filePath;
+                                            $horizonPath = $this->getHorizonViewsDirectory() . $filePath;
 
-						if (!isset($filesToCompilator[$rootName])) {
-							$filesToCompilator[$rootName] = [self::TYPE_SCRIPT => [], self::TYPE_STYLE => []];
-						}
+                                            if (file_exists($horizonPath)) {
+                                                if (!file_exists($templatePath)) {
+                                                    $this->info('Copying ' . $horizonPath . ' to ' . $templatePath);
+                                                    FileService::filePutContentsAndCreateMissingDirectories(
+                                                        $templatePath,
+                                                        file_get_contents($horizonPath),
+                                                    );
+                                                } else {
+                                                    $this->error('File already exists at ' . $templatePath);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        } else {
+                            $this->error('File already exists at ' . $templateClassFileName);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private function handleAdditionalFiles(array $filePaths): void
+    {
+        if ($filePaths) {
+            $filesToCompilator = [];
+
+            $this->newLine();
+            $this->info(sprintf('Handling %d additional file·s...', count($filePaths)));
+
+            foreach ($filePaths as $filePath) {
+                $type = null;
+                $sourcePath = null;
+                $relativePath = null;
+                $horizonPath = null;
+                $fileName = null;
+
+                $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+                $fileName = pathinfo($filePath, PATHINFO_FILENAME);
+
+                switch ($extension) {
+                    case 'ts':
+                        $type = self::TYPE_SCRIPT;
+                        $sourcePath = $this->getHorizonScriptsDirectory();
+                        $relativePath = $this->getScriptsDirectory();
+                        break;
+                    case 'css':
+                        $type = self::TYPE_STYLE;
+                        $sourcePath = $this->getHorizonStylesDirectory();
+                        $relativePath = $this->getStylesDirectory();
+                        break;
+                    default:
+                        break;
+                }
+
+                if ($type && $sourcePath && $relativePath) {
+                    $horizonFilePath = rtrim($sourcePath, ltrim($relativePath, '/')) . '/' . $filePath;
+
+                    if (file_exists($horizonFilePath)) {
+                        $newFilePath = $this->getTemplatePath() . '/' . $filePath;
+
+                        if (!file_exists($newFilePath)) {
+                            $this->info('Copying ' . $horizonFilePath . ' to ' . $newFilePath);
+                            FileService::filePutContentsAndCreateMissingDirectories($newFilePath, file_get_contents($horizonFilePath));
+                        } else {
+                            $this->error('File already exists at ' . $newFilePath);
+                        }
+
+                        $budString = null;
+                        $rootName = null;
+
+                        switch ($type) {
+                            case self::TYPE_SCRIPT:
+                                $rootName = ltrim($filePath, $this->getScriptsDirectory());
+                                $rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
+                                $budString = sprintf('@scripts/%s', $rootName);
+                                break;
+                            case self::TYPE_STYLE:
+                                $rootName = ltrim($filePath, $this->getStylesDirectory());
+                                $rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
+                                $budString = sprintf('@styles/%s', $rootName);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        if (!isset($filesToCompilator[$rootName])) {
+                            $filesToCompilator[$rootName] = [self::TYPE_SCRIPT => [], self::TYPE_STYLE => []];
+                        }
 
 						$filesToCompilator[$rootName][$type] = $budString;
 					}
@@ -405,61 +496,61 @@ class ImportBlock extends Command
 					}
 				}
 			}
-		}
-	}
+        }
+    }
 
-	private function appendFilesToBud(array $toHandle): void
-	{
-		if ($budFilePath = $this->getBudConfigPath()) {
-			$this->newLine();
-			$this->info('Handling Bud file...');
+    private function appendFilesToBud(array $toHandle): void
+    {
+        if ($budFilePath = $this->getBudConfigPath()) {
+            $this->newLine();
+            $this->info('Handling Bud file...');
 
-			foreach ($toHandle as $name => $assets) {
-				$paths = [];
+            foreach ($toHandle as $name => $assets) {
+                $paths = [];
 
-				if (!empty($assets[self::TYPE_SCRIPT])) {
-					$paths[] = $assets[self::TYPE_SCRIPT];
-				}
+                if (!empty($assets[self::TYPE_SCRIPT])) {
+                    $paths[] = $assets[self::TYPE_SCRIPT];
+                }
 
-				if (!empty($assets[self::TYPE_STYLE])) {
-					$paths[] = $assets[self::TYPE_STYLE];
-				}
+                if (!empty($assets[self::TYPE_STYLE])) {
+                    $paths[] = $assets[self::TYPE_STYLE];
+                }
 
-				if (!empty($paths)) {
-					$budName = last(explode('/', $name));
-					$budLine = sprintf('.entry("%s", %s)', $budName, json_encode($paths, JSON_UNESCAPED_SLASHES));
-					$budLineSingleQuotes = str_replace('"', "'", $budLine);
+                if (!empty($paths)) {
+                    $budName = last(explode('/', $name));
+                    $budLine = sprintf('.entry("%s", %s)', $budName, json_encode($paths, JSON_UNESCAPED_SLASHES));
+                    $budLineSingleQuotes = str_replace('"', "'", $budLine);
 
-					$budFileContent = file_get_contents($budFilePath);
+                    $budFileContent = file_get_contents($budFilePath);
 
-					if (!str_contains($budFileContent, $budLine) && !str_contains($budFileContent, $budLineSingleQuotes)) {
-						// Insert line after the last .entry taking tabs and spaces into account
-						$lastEntry = strrpos($budFileContent, '.entry(');
-						$lastEntryEnd = strpos($budFileContent, ')', $lastEntry) + 1;
+                    if (!str_contains($budFileContent, $budLine) && !str_contains($budFileContent, $budLineSingleQuotes)) {
+                        // Insert line after the last .entry taking tabs and spaces into account
+                        $lastEntry = strrpos($budFileContent, '.entry(');
+                        $lastEntryEnd = strpos($budFileContent, ')', $lastEntry) + 1;
 
-						$firstPart = substr($budFileContent, 0, $lastEntryEnd);
-						$secondPart = substr($budFileContent, $lastEntryEnd);
+                        $firstPart = substr($budFileContent, 0, $lastEntryEnd);
+                        $secondPart = substr($budFileContent, $lastEntryEnd);
 
-						$newBudFileContent = $firstPart . PHP_EOL . '    ' . $budLineSingleQuotes . $secondPart;
+                        $newBudFileContent = $firstPart . PHP_EOL . '    ' . $budLineSingleQuotes . $secondPart;
 
-						FileService::filePutContentsAndCreateMissingDirectories($budFilePath, $newBudFileContent);
+                        FileService::filePutContentsAndCreateMissingDirectories($budFilePath, $newBudFileContent);
 
-						$this->info(sprintf('Added Bud line for %s : %s', $budName, $budLineSingleQuotes));
-					} else {
-						$containedLine = str_contains($budFileContent, $budLine) ? $budLine : $budLineSingleQuotes;
-						$this->error(sprintf('Bud line already exists for %s (%s)', $budName, $containedLine));
-					}
-				}
-			}
-		}
-	}
+                        $this->info(sprintf('Added Bud line for %s : %s', $budName, $budLineSingleQuotes));
+                    } else {
+                        $containedLine = str_contains($budFileContent, $budLine) ? $budLine : $budLineSingleQuotes;
+                        $this->error(sprintf('Bud line already exists for %s (%s)', $budName, $containedLine));
+                    }
+                }
+            }
+        }
+    }
 
-	private function getBudConfigPath(): string
-	{
-		return $this->getTemplatePath() . '/bud.config.js';
-	}
+    private function getBudConfigPath(): string
+    {
+        return $this->getTemplatePath() . '/bud.config.js';
+    }
 
-	private function getViteConfigPath(): string
+    private function getViteConfigPath(): string
 	{
 		return $this->getTemplatePath() . '/vite.config.js';
 	}
@@ -469,227 +560,232 @@ class ImportBlock extends Command
 		return '/resources/images/';
 	}
 
-	private function getBlockImagesDirectory(): string
-	{
-		return $this->getImagesDirectory() . 'admin/blocks/';
-	}
+    private function getBlockImagesDirectory(): string
+    {
+        return $this->getImagesDirectory() . 'admin/blocks/';
+    }
 
-	private function getViewsDirectory(): string
-	{
-		return '/resources/views/';
-	}
+    private function getViewsDirectory(): string
+    {
+        return '/resources/views/';
+    }
 
-	private function getScriptsDirectory(): string
-	{
-		return '/resources/scripts/';
-	}
+    private function getScriptsDirectory(): string
+    {
+        return '/resources/scripts/';
+    }
 
-	private function getStylesDirectory(): string
-	{
-		return '/resources/styles/';
-	}
+    private function getStylesDirectory(): string
+    {
+        return '/resources/styles/';
+    }
 
-	private function getComponentClassesDirectory(): string
-	{
-		return '/app/View/Components/';
-	}
+    private function getComponentClassesDirectory(): string
+    {
+        return '/app/View/Components/';
+    }
 
-	private function getHorizonBlockComponentClassesDirectory(): string
-	{
-		return '/src/View/Components/';
-	}
+    private function getHorizonBlockComponentClassesDirectory(): string
+    {
+        return '/src/View/Components/';
+    }
 
-	private function getHorizonBlockAdminClassesDirectory(): string
-	{
-		return '/src/Admin/';
-	}
+    private function getHorizonBlockAdminClassesDirectory(): string
+    {
+        return '/src/Admin/';
+    }
 
-	private function getBlockViewsDirectory(): string
-	{
-		return $this->getViewsPath() . 'blocks/';
-	}
+    private function getBlockViewsDirectory(): string
+    {
+        return $this->getViewsPath() . 'blocks/';
+    }
 
-	private function getLivewireViewsDirectory(): string
-	{
-		return $this->getViewsPath() . 'livewire/';
-	}
+    private function getLivewireViewsDirectory(): string
+    {
+        return $this->getViewsPath() . 'livewire/';
+    }
 
-	private function getHorizonRoot(): string
-	{
-		return __DIR__ . '/../../..';
-	}
+    private function getHorizonRoot(): string
+    {
+        return __DIR__ . '/../../..';
+    }
 
-	private function getHorizonViewsDirectory()
-	{
-		return $this->getHorizonRoot() . $this->getViewsDirectory();
-	}
+    private function getHorizonViewsDirectory()
+    {
+        return $this->getHorizonRoot() . $this->getViewsDirectory();
+    }
 
-	private function getLivewireHorizonViewsDirectory(): string
-	{
-		return $this->getHorizonViewsDirectory() . 'livewire/';
-	}
+    private function getLivewireHorizonViewsDirectory(): string
+    {
+        return $this->getHorizonViewsDirectory() . 'livewire/';
+    }
 
-	private function getHorizonScriptsDirectory(): string
-	{
-		return $this->getHorizonRoot() . $this->getScriptsDirectory();
-	}
+    private function getHorizonScriptsDirectory(): string
+    {
+        return $this->getHorizonRoot() . $this->getScriptsDirectory();
+    }
 
-	private function getHorizonStylesDirectory(): string
-	{
-		return $this->getHorizonRoot() . $this->getStylesDirectory();
-	}
+    private function getHorizonStylesDirectory(): string
+    {
+        return $this->getHorizonRoot() . $this->getStylesDirectory();
+    }
 
-	private function getHorizonImagesDirectory(): string
-	{
-		return $this->getHorizonRoot() . $this->getImagesDirectory();
-	}
+    private function getHorizonImagesDirectory(): string
+    {
+        return $this->getHorizonRoot() . $this->getImagesDirectory();
+    }
 
-	private function getHorizonBlockImagesDirectory(): string
-	{
-		return $this->getHorizonRoot() . $this->getBlockImagesDirectory();
-	}
+    private function getHorizonBlockImagesDirectory(): string
+    {
+        return $this->getHorizonRoot() . $this->getBlockImagesDirectory();
+    }
 
-	private function getViewsPath(): string
-	{
-		return $this->getTemplatePath() . $this->getViewsDirectory();
-	}
+    private function getViewsPath(): string
+    {
+        return $this->getTemplatePath() . $this->getViewsDirectory();
+    }
 
-	private function getBlockImagesPath(): string
-	{
-		return $this->getTemplatePath() . $this->getBlockImagesDirectory();
-	}
+    private function getBlockImagesPath(): string
+    {
+        return $this->getTemplatePath() . $this->getBlockImagesDirectory();
+    }
 
-	private function getTemplatePath(): ?string
-	{
-		if (function_exists('get_template_directory')) {
-			return get_template_directory();
-		}
+    public function getTemplatePath(): ?string
+    {
+        if (function_exists('get_template_directory')) {
+            return get_template_directory();
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private function createLivewireTemplate(string $className): void
-	{
-		$this->newLine();
-		$this->info(sprintf('Handling Livewire template for %s...', $className));
+    private function createLivewireTemplate(string $className): void
+    {
+        $this->newLine();
+        $this->info(sprintf('Handling Livewire template for %s...', $className));
 
-		if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
-			$livewireViewsPath = $this->getLivewireViewsDirectory();
-			$livewireHorizonViewsPath = $this->getLivewireHorizonViewsDirectory();
+        if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
+            $livewireViewsPath = $this->getLivewireViewsDirectory();
+            $livewireHorizonViewsPath = $this->getLivewireHorizonViewsDirectory();
 
-			if (file_exists($livewireHorizonViewsPath)) {
-				$explode = explode('src/Livewire', $pathToLivewireClass);
+            if (file_exists($livewireHorizonViewsPath)) {
+                $explode = explode('src/Livewire', $pathToLivewireClass);
 
-				if (isset($explode[1])) {
-					$nameBase = rtrim(ltrim($explode[1], '/'), '.php');
+                if (isset($explode[1])) {
+                    $nameBase = rtrim(ltrim($explode[1], '/'), '.php');
 
-					// Convertit les majuscules en tirets suivis de minuscules
-					$converted = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $nameBase));
-					// Remplace les espaces ou les barres obliques par des tirets
-					$converted= str_replace([' ', '/'], ['-', '/'], $converted);
+                    // Convertit les majuscules en tirets suivis de minuscules
+                    $converted = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $nameBase));
+                    // Remplace les espaces ou les barres obliques par des tirets
+                    $converted = str_replace([' ', '/'], ['-', '/'], $converted);
 
-					$name = $converted . '.blade.php';
+                    $name = $converted . '.blade.php';
 
-					if (file_exists($livewireHorizonViewsPath . $name)) {
-						$finalPath = $livewireViewsPath . $name;
+                    if (file_exists($livewireHorizonViewsPath . $name)) {
+                        $finalPath = $livewireViewsPath . $name;
 
-						if (file_exists($finalPath)) {
-							$this->error(sprintf('Livewire template already exists at %s', $livewireViewsPath . $name));
-							return;
-						}
+                        if (file_exists($finalPath)) {
+                            $this->error(sprintf('Livewire template already exists at %s', $livewireViewsPath . $name));
+                            return;
+                        }
 
-						FileService::filePutContentsAndCreateMissingDirectories($finalPath, file_get_contents($livewireHorizonViewsPath . $name));
-					}
-				}
-			}
-		}
-	}
+                        FileService::filePutContentsAndCreateMissingDirectories(
+                            $finalPath,
+                            file_get_contents($livewireHorizonViewsPath . $name),
+                        );
+                    }
+                }
+            }
+        }
+    }
 
-	private function createLivewireComponent(string $className): void
-	{
-		$this->newLine();
-		$this->info(sprintf('Handling Livewire controller for %s...', $className));
+    private function createLivewireComponent(string $className): void
+    {
+        $this->newLine();
+        $this->info(sprintf('Handling Livewire controller for %s...', $className));
 
-		if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
-			$livewireContent = file_get_contents($pathToLivewireClass);
-			$livewireContent = str_replace('Adeliom\\HorizonBlocks\\Livewire\\', 'App\\Livewire\\', $livewireContent);
+        if ($pathToLivewireClass = ClassService::getFilePathFromClassName(className: $className)) {
+            $livewireContent = file_get_contents($pathToLivewireClass);
+            $livewireContent = str_replace('Adeliom\\HorizonBlocks\\Livewire\\', 'App\\Livewire\\', $livewireContent);
 
-			$path = $this->getTemplatePath() . '/app/Livewire/';
-			$structure = CommandService::getFolderStructure(str_replace('\\', '/', str_replace('Adeliom\\HorizonBlocks\\Livewire\\', '', $className)));
+            $path = $this->getTemplatePath() . '/app/Livewire/';
+            $structure = CommandService::getFolderStructure(
+                str_replace('\\', '/', str_replace('Adeliom\\HorizonBlocks\\Livewire\\', '', $className)),
+            );
 
-			$finalPath = $path . $structure['path'];
+            $finalPath = $path . $structure['path'];
 
-			if (file_exists($finalPath)) {
-				$this->error(sprintf('Livewire controller already exists at %s', $finalPath));
-				return;
-			}
+            if (file_exists($finalPath)) {
+                $this->error(sprintf('Livewire controller already exists at %s', $finalPath));
+                return;
+            }
 
-			FileService::filePutContentsAndCreateMissingDirectories($finalPath, $livewireContent);
-		}
-	}
+            FileService::filePutContentsAndCreateMissingDirectories($finalPath, $livewireContent);
+        }
+    }
 
-	private function createBlockControllerFile(string $className, array $folders, string $pathToBlockControllerFile, array $structure): void
-	{
-		$this->newLine();
-		$this->info('Handling block controller...');
+    private function createBlockControllerFile(string $className, array $folders, string $pathToBlockControllerFile, array $structure): void
+    {
+        $this->newLine();
+        $this->info('Handling block controller...');
 
-		$blockClassContent = file_get_contents($pathToBlockControllerFile);
-		$blockClassContent = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', 'App\\Blocks\\', $blockClassContent);
+        $blockClassContent = file_get_contents($pathToBlockControllerFile);
+        $blockClassContent = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', 'App\\Blocks\\', $blockClassContent);
 
-		$path = $this->getTemplatePath() . '/app/Blocks/';
-		$filepath = $path . $structure['path'];
+        $path = $this->getTemplatePath() . '/app/Blocks/';
+        $filepath = $path . $structure['path'];
 
-		$result = CommandService::handleClassCreation(AbstractBlock::class, $filepath, $path, $folders, $className, $blockClassContent);
+        $result = CommandService::handleClassCreation(AbstractBlock::class, $filepath, $path, $folders, $className, $blockClassContent);
 
-		if ($result === 'already_exists') {
-			$this->error(sprintf('Block controller already exists at %s', $filepath));
-		}
-	}
+        if ($result === 'already_exists') {
+            $this->error(sprintf('Block controller already exists at %s', $filepath));
+        }
+    }
 
-	private function createBlockBladeFile(string $className, array $folders): void
-	{
-		$this->newLine();
-		$this->info('Handling block template...');
+    private function createBlockBladeFile(string $className, array $folders): void
+    {
+        $this->newLine();
+        $this->info('Handling block template...');
 
-		$blockViewsPath = $this->getBlockViewsDirectory();
-		$slug = ClassService::slugifyClassName($className);
+        $blockViewsPath = $this->getBlockViewsDirectory();
+        $slug = ClassService::slugifyClassName($className);
 
-		// We remove unecessary block template suffix
-		if (str_ends_with($slug, '-block')) {
-			$slug = substr($slug, 0, -6);
-		}
+        // We remove unecessary block template suffix
+        if (str_ends_with($slug, '-block')) {
+            $slug = substr($slug, 0, -6);
+        }
 
-		$folderPath = '';
+        $folderPath = '';
 
-		// We create the block folder if it doesn't exist
-		if (!file_exists($blockViewsPath)) {
-			mkdir($blockViewsPath);
-		}
+        // We create the block folder if it doesn't exist
+        if (!file_exists($blockViewsPath)) {
+            mkdir($blockViewsPath);
+        }
 
-		// We create the block folder structure if it doesn't exist
-		$blockPath = $blockViewsPath;
-		foreach ($folders as $folder) {
-			$blockPath .= strtolower($folder) . '/';
-			$folderPath .= strtolower($folder) . '/';
+        // We create the block folder structure if it doesn't exist
+        $blockPath = $blockViewsPath;
+        foreach ($folders as $folder) {
+            $blockPath .= strtolower($folder) . '/';
+            $folderPath .= strtolower($folder) . '/';
 
-			if (!file_exists($blockPath)) {
-				mkdir($blockPath);
-			}
-		}
+            if (!file_exists($blockPath)) {
+                mkdir($blockPath);
+            }
+        }
 
-		// We create the block template file if it doesn't exist
-		if (file_exists($blockPath . $slug . '.blade.php')) {
-			$this->error(sprintf('Block template already exists at %s', $blockPath . $slug . '.blade.php'));
-			return;
-		}
+        // We create the block template file if it doesn't exist
+        if (file_exists($blockPath . $slug . '.blade.php')) {
+            $this->error(sprintf('Block template already exists at %s', $blockPath . $slug . '.blade.php'));
+            return;
+        }
 
-		$blockViewPath = __DIR__ . '/../../..' . $this->getViewsDirectory() . 'blocks/' . $folderPath . $slug . '.blade.php';
+        $blockViewPath = __DIR__ . '/../../..' . $this->getViewsDirectory() . 'blocks/' . $folderPath . $slug . '.blade.php';
 
-		if (!file_exists($blockViewPath)) {
-			$this->error(sprintf('Block template not found at %s', $blockViewPath));
-			return;
-		}
+        if (!file_exists($blockViewPath)) {
+            $this->error(sprintf('Block template not found at %s', $blockViewPath));
+            return;
+        }
 
-		FileService::filePutContentsAndCreateMissingDirectories($blockPath . $slug . '.blade.php', file_get_contents($blockViewPath));
-	}
+        FileService::filePutContentsAndCreateMissingDirectories($blockPath . $slug . '.blade.php', file_get_contents($blockViewPath));
+    }
 }
