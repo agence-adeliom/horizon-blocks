@@ -16,11 +16,16 @@
         {
             "type": "vcs",
             "url": "git@github.com:agence-adeliom/horizon-tools.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:agence-adeliom/horizon-posttypes.git"
         }
     ],
     "require": {
         "php": ">=8.4",
         "agence-adeliom/horizon-tools": "dev-main",
+        "agence-adeliom/horizon-posttypes": "dev-main",
         "laravel/prompts": "^0.1.25"
     }
 }
