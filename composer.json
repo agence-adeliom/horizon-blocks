@@ -24,8 +24,8 @@
     ],
     "require": {
         "php": ">=8.4",
-        "agence-adeliom/horizon-tools": "dev-upgrade/sage-11",
-        "agence-adeliom/horizon-posttypes": "dev-upgrade/sage-11",
+        "agence-adeliom/horizon-tools": "dev-sage/11",
+        "agence-adeliom/horizon-posttypes": "dev-sage/11",
         "laravel/prompts": "^0.1.25 || ^0.3"
     }
 }
