@@ -23,6 +23,10 @@
                 <x-typography.text :content="$fields['wysiwyg']" class="pt-medium" />
             @endif
 
+            @if (!empty($fields['buttons']))
+                <x-action.buttons :buttons="$fields['buttons']" class="mt-button-text-mobile lg:mt-button-text-desktop" />
+            @endif
+
         </div>
         <div class="lg:col-span-7 flex flex-col gap-medium">
             @if (!empty($fields['questions']))
