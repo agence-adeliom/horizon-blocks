@@ -1,4 +1,4 @@
-<div>
+<div id="listing-container">
     <form wire:change="handleFilters">
         @if($filters)
             <div>
