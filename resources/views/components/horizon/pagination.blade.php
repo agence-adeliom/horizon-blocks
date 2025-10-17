@@ -12,6 +12,7 @@
         $baseNumberClass =
             'block w-10 h-10 rounded-lg flex items-center justify-center cursor-pointer text-text-secondary font-semibold';
         $activeNumberClass = 'cursor-default border border-primary rounded';
+        $idToScroll = 'listing-container';
 
         $displayAround = 3;
         $halfAround = ($displayAround - 1) / 2;
@@ -83,7 +84,7 @@
                 @if ($current > 1)
                     <a @class([$baseButtonClass]) title="{{ $previousLabel }}"
                        href="{{ request()->fullUrlWithQuery(['pagination' => $current - 1]) }}"
-                       @click.prevent="scrollToAnchor('listing')"
+                       @click.prevent="scrollToAnchor({{$idToScroll}})"
                        @if ($handle) wire:click.prevent="{{ $handle }}(
                        @if($extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif{{ $current - 1 }}@if(!$extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif )" @endif>
                         <x-far-angle-left class="icon-20" />
@@ -102,7 +103,7 @@
                     @elseif($page != $separator)
                         <a @class([$baseNumberClass]) title="Page {{ $page }}"
                            href="{{ request()->fullUrlWithQuery(['pagination' => $page]) }}"
-                           @click.prevent="scrollToAnchor('listing')"
+                           @click.prevent="scrollToAnchor({{$idToScroll}})"
                            @if ($handle) wire:click.prevent="{{ $handle }}(
                            @if($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif {{$page}} @if(!$extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif )" @endif>{{ $page }}</a>
                     @else
@@ -116,7 +117,7 @@
                 @if ($current < $pages)
                     <a @class([$baseButtonClass]) title="{{ $nextLabel }}"
                        href="{{ request()->fullUrlWithQuery(['pagination' => $current + 1]) }}"
-                       @click.prevent="scrollToAnchor('listing')"
+                       @click.prevent="scrollToAnchor({{$idToScroll}})"
                        @if ($handle) wire:click.prevent="{{ $handle }}(
                        @if($extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif {{ $current + 1 }} @if(!$extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif )" @endif>
                         <x-far-angle-right class="icon-20" />
