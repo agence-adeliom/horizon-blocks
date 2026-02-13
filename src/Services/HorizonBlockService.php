@@ -39,6 +39,7 @@ use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardCustomerReview;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardDocument;
 use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
+use Adeliom\HorizonBlocks\View\Components\Navigation\HierarchicalSummaryElement;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\MergedResults;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\SeparatedResults;
@@ -46,202 +47,167 @@ use Adeliom\HorizonPostTypes\PostTypes\FAQ;
 
 class HorizonBlockService
 {
-	public const string REQUIRES_LIVEWIRE = 'requiresLivewire';
-	public const string ASSET_FILES = 'additionalFiles';
-	public const string LIVEWIRE_COMPONENTS = 'livewireComponents';
-	public const string COMPONENTS = 'components';
-	public const string REQUIRED_POSTTYPES = 'requiredPostTypes';
-	public const ADMINS = 'admins';
+    public const string REQUIRES_LIVEWIRE = 'requiresLivewire';
+    public const string ASSET_FILES = 'additionalFiles';
+    public const string LIVEWIRE_COMPONENTS = 'livewireComponents';
+    public const string COMPONENTS = 'components';
+    public const string REQUIRED_POSTTYPES = 'requiredPostTypes';
+    public const string ADMINS = 'admins';
 
-	public static function getAvailableBlocks(): array
-	{
-		$blocks = [
-			TitleTextBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
-			WysiwygBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
-			ListingBlock::class => [
-				self::REQUIRES_LIVEWIRE => true,
-				self::ASSET_FILES => [
-					'resources/scripts/blocks/listing.ts',
-				],
-				self::LIVEWIRE_COMPONENTS => [Listing::class],
-			],
-			SearchEngineResultsBlock::class => [
-				self::REQUIRES_LIVEWIRE => true,
-				self::ASSET_FILES => [
-					'resources/styles/components/blocks/search-engine-results.css',
-				],
-				self::LIVEWIRE_COMPONENTS => [SearchEngineResults::class],
-				self::COMPONENTS => [
-					MergedResults::class,
-					SeparatedResults::class,
-				],
-			],
-			CtaBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
-			ArgumentBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [
-					'resources/scripts/blocks/arguments.ts',
-				],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
-			CardsBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [
-					CardBasic::class
-				],
-			],
-			Catchphrase::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
+    public static function getAvailableBlocks(): array
+    {
+        $blocks = [
+            TitleTextBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            WysiwygBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            ListingBlock::class => [
+                self::REQUIRES_LIVEWIRE => true,
+                self::ASSET_FILES => ['resources/scripts/blocks/listing.ts'],
+                self::LIVEWIRE_COMPONENTS => [Listing::class],
+            ],
+            SearchEngineResultsBlock::class => [
+                self::REQUIRES_LIVEWIRE => true,
+                self::ASSET_FILES => ['resources/styles/components/blocks/search-engine-results.css'],
+                self::LIVEWIRE_COMPONENTS => [SearchEngineResults::class],
+                self::COMPONENTS => [MergedResults::class, SeparatedResults::class],
+            ],
+            CtaBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            ArgumentBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => ['resources/scripts/blocks/arguments.ts'],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            CardsBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [CardBasic::class],
+            ],
+            Catchphrase::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
             HighlightBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
                 self::ASSET_FILES => [],
                 self::LIVEWIRE_COMPONENTS => [],
             ],
-			DocumentsBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [
-					CardDocument::class
-				],
-			],
-			StepBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [
-					'resources/scripts/blocks/steps.ts',
-				],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [
-					CardStep::class
-				],
-			],
-			CustomerReviewBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [
-					'resources/scripts/blocks/customer-review.ts',
-				],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [
-					CardCustomerReview::class
-				],
-			],
-			KeyFigureBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
-			LogosBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [
-					'resources/scripts/blocks/logos.ts',
-				],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
-            GalleryBlock::class => [
+            DocumentsBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
-                self::ASSET_FILES => [
-                    'resources/scripts/blocks/gallery.ts',
-                ],
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [CardDocument::class],
+            ],
+            StepBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => ['resources/scripts/blocks/steps.ts'],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [CardStep::class],
+            ],
+            CustomerReviewBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => ['resources/scripts/blocks/customer-review.ts'],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [CardCustomerReview::class],
+            ],
+            KeyFigureBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
                 self::LIVEWIRE_COMPONENTS => [],
             ],
-			QuoteBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
+            LogosBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => ['resources/scripts/blocks/logos.ts'],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            GalleryBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => ['resources/scripts/blocks/gallery.ts'],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            QuoteBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
             HeroBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
                 self::ASSET_FILES => [],
                 self::LIVEWIRE_COMPONENTS => [],
             ],
-			FaqBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [
-					CardFaq::class
-				],
-				self::REQUIRED_POSTTYPES => [
-					FAQ::class,
-				],
-			],
-			HeroForm::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [
-					Offer::class
-				],
-			],
-			FormBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [
-					Offer::class
-				],
-			],
-			FormConfirmationBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [],
-			],
-			PostSummaryBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [
-					'resources/scripts/blocks/post-summary.ts',
-				],
-				self::LIVEWIRE_COMPONENTS => [],
-				self::COMPONENTS => [],
-				self::ADMINS => [PostSummaryAdmin::class],
-			],
-			TextMediaBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::COMPONENTS => [TextMedia::class],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
-			ReinsuranceBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::COMPONENTS => [],
-				self::LIVEWIRE_COMPONENTS => [],
-			],
-			PricesBlock::class => [
-				self::REQUIRES_LIVEWIRE => false,
-				self::ASSET_FILES => [],
-				self::COMPONENTS => [CardPrice::class],
-				self::LIVEWIRE_COMPONENTS => [],
-			]
-		];
+            FaqBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [CardFaq::class],
+                self::REQUIRED_POSTTYPES => [FAQ::class],
+            ],
+            HeroForm::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [Offer::class],
+            ],
+            FormBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [Offer::class],
+            ],
+            FormConfirmationBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [],
+            ],
+            PostSummaryBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => ['resources/scripts/blocks/post-summary.ts'],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [HierarchicalSummaryElement::class],
+                self::ADMINS => [PostSummaryAdmin::class],
+            ],
+            TextMediaBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::COMPONENTS => [TextMedia::class],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            ReinsuranceBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::COMPONENTS => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            PricesBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::COMPONENTS => [CardPrice::class],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+        ];
 
-		// Filter blocks by putting ones requiring Livewire last
-		uasort($blocks, function ($a, $b) {
-			if ($a[self::REQUIRES_LIVEWIRE] === $b[self::REQUIRES_LIVEWIRE]) {
-				return 0;
-			}
+        // Filter blocks by putting ones requiring Livewire last
+        uasort($blocks, function ($a, $b) {
+            if ($a[self::REQUIRES_LIVEWIRE] === $b[self::REQUIRES_LIVEWIRE]) {
+                return 0;
+            }
 
-			return $a[self::REQUIRES_LIVEWIRE] ? 1 : -1;
-		});
+            return $a[self::REQUIRES_LIVEWIRE] ? 1 : -1;
+        });
 
-		return $blocks;
-	}
+        return $blocks;
+    }
 }

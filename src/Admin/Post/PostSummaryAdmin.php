@@ -12,50 +12,90 @@ use Extended\ACF\Location;
 
 class PostSummaryAdmin extends AbstractAdmin
 {
-	public static ?string $title = 'Sommaire';
-	public static bool $isOptionPage = false;
-	public static ?string $optionPageIcon = null;
+    public static ?string $title = 'Sommaire';
+    public static bool $isOptionPage = false;
+    public static ?string $optionPageIcon = null;
 
-	public const FIELD_TITLES = 'summaryTitles';
+    public const string FIELD_TITLES = 'summaryTitles';
+    public const array TO_RETRIEVE = ['h2'];
+    public const bool USE_HTML = true;
+    public const bool HIERARCHICAL = true;
 
-	public function getFields(): ?iterable
-	{
-		$fields = [];
+    public function getFields(): ?iterable
+    {
+        $fields = [];
 
-		$currentPostId = is_admin() ? $_GET['post'] ?? ($_POST['post_id'] ?? null) : get_the_ID();
+        $currentPostId = is_admin() ? $_GET['post'] ?? ($_POST['post_id'] ?? null) : get_the_ID();
 
-		if (is_numeric($currentPostId)) {
-			$postType = get_post_type($currentPostId);
+        if (is_numeric($currentPostId)) {
+            $postType = get_post_type($currentPostId);
 
-			if ('post' === $postType) {
-				$titles = BlogPostService::getPostTitles();
-				$treatedSlugTitles = [];
+            if ('post' === $postType) {
+                $titles = BlogPostService::getPostTitles(
+                    retrieveOnly: self::TO_RETRIEVE,
+                    useHtml: self::USE_HTML,
+                    hierarchical: self::HIERARCHICAL,
+                    useCache: false,
+                );
 
-				if (is_array($titles)) {
-					foreach ($titles as $title) {
-						$slug = sanitize_title($title);
+                $treatedSlugTitles = [];
 
-						if (!in_array($slug, $treatedSlugTitles)) {
-							$fields[] = Text::make(__('Surcharge de :') . ' ' . $title, $slug)->placeholder($title);
-							$treatedSlugTitles[] = $slug;
-						}
-					}
-				}
-			}
-		}
+                if (is_array($titles)) {
+                    foreach ($titles as $title) {
+                        if (!self::HIERARCHICAL) {
+                            $slug = sanitize_title($title);
 
-		yield Group::make(__('Titres'), self::FIELD_TITLES)
-			->helperText(__('Cette section permet de surcharger les titres dans le sommaire de l’article.'))
-			->fields($fields);
-	}
+                            if (!in_array($slug, $treatedSlugTitles)) {
+                                $fields[] = Text::make(__('Surcharge de :') . ' ' . $title, $slug)->placeholder($title);
+                                $treatedSlugTitles[] = $slug;
+                            }
+                        } else {
+                            $slug = sanitize_title($title['content']);
 
-	public function getPosition(): string
-	{
-		return 'side';
-	}
+                            if (!in_array($slug, $treatedSlugTitles)) {
+                                $fields[] = Text::make(__('Surcharge de :') . ' ' . $title['content'], $slug)->placeholder(
+                                    $title['content'],
+                                );
+                                $treatedSlugTitles[] = $slug;
+                            }
 
-	public function getLocation(): iterable
-	{
-		yield Location::where('post_type', '==', 'post');
-	}
+                            $this->handleChildrenFields(fields: $fields, element: $title, treatedSlugTitles: $treatedSlugTitles);
+                        }
+                    }
+                }
+            }
+        }
+
+        yield Group::make(__('Titres'), self::FIELD_TITLES)
+            ->helperText(__('Cette section permet de surcharger les titres dans le sommaire de l’article.'))
+            ->fields($fields);
+    }
+
+    private function handleChildrenFields(array &$fields, array $element, array &$treatedSlugTitles): void
+    {
+        if (empty($element['children'])) {
+            return;
+        }
+
+        foreach ($element['children'] as $child) {
+            $slug = sanitize_title($child['content']);
+
+            if (!in_array($slug, $treatedSlugTitles)) {
+                $fields[] = Text::make(__('Surcharge de :') . ' ' . $child['content'], $slug)->placeholder($child['content']);
+                $treatedSlugTitles[] = $slug;
+            }
+
+            $this->handleChildrenFields(fields: $fields, element: $child, treatedSlugTitles: $treatedSlugTitles);
+        }
+    }
+
+    public function getPosition(): string
+    {
+        return 'side';
+    }
+
+    public function getLocation(): iterable
+    {
+        yield Location::where('post_type', '==', 'post');
+    }
 }

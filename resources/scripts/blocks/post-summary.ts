@@ -54,9 +54,12 @@ PostSummary.getPostSummary = () => {
 
 PostSummary.initElt = (elt: HTMLElement) => {
     const listElts: Element[] = Array.from(elt.querySelectorAll(PostSummary.eltSelector));
+    const htmlBased = elt.hasAttribute('html-based');
 
     listElts.forEach(listElt => {
         let title: string = null;
+        let level: string = 'h2';
+        let contentTitle = null;
 
         if (listElt.hasAttribute('data-title')) {
             title = listElt.getAttribute('data-title').trim();
@@ -64,16 +67,31 @@ PostSummary.initElt = (elt: HTMLElement) => {
             title = listElt.textContent.trim();
         }
 
-        const xpath = `//*[normalize-space(text())="${title}"]`;
-        let contentTitle = null;
-        const nodeSnapshot = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        if (listElt.hasAttribute('data-level')) {
+            level = listElt.getAttribute('data-level').trim();
+        }
 
-        for (let i = 0; i < nodeSnapshot.snapshotLength; i++) {
-            const item = nodeSnapshot.snapshotItem(i);
+        if (!htmlBased) {
+            const xpath = `//*[normalize-space(text())="${title}"]`;
+            const nodeSnapshot = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
-            if (item.classList.contains('heading')) {
-                contentTitle = item;
-                break;
+            for (let i = 0; i < nodeSnapshot.snapshotLength; i++) {
+                const item = nodeSnapshot.snapshotItem(i);
+
+                if (item.classList.contains('heading')) {
+                    contentTitle = item;
+                    break;
+                }
+            }
+        } else if (level && title) {
+            const elements = document.querySelectorAll(level);
+
+            // Parcourt les éléments pour trouver celui qui a le bon textContent
+            for (const element of elements) {
+                // textContent récupère le texte brut sans les balises HTML
+                if (element.textContent.trim() === title.trim()) {
+                    contentTitle = element;
+                }
             }
         }
 
@@ -157,6 +175,23 @@ PostSummary.init = () => {
     window.addEventListener('load', () => {
         if (PostSummary.getPostSummary()) {
             PostSummary.initElt(PostSummary.getPostSummary());
+
+            const toggleSummary = document.querySelector('[js-toggle-summary]');
+            const summaryContainer: HTMLElement = document.querySelector('[js-summary-container]');
+            const summaryContent: HTMLElement = document.querySelector('[js-summary-content]');
+            const summaryContentHeight: number = summaryContent.offsetHeight;
+
+            summaryContent.style.maxHeight = `${summaryContentHeight}px`;
+
+            toggleSummary?.addEventListener('click', () => {
+                if (summaryContainer.classList.contains('is-open')) {
+                    summaryContent.style.maxHeight = '0px';
+                } else {
+                    summaryContent.style.maxHeight = `${summaryContentHeight}px`;
+                }
+
+                summaryContainer.classList.toggle('is-open');
+            });
 
             if (PostSummary.associations) {
                 window.addEventListener('scroll', () => {
