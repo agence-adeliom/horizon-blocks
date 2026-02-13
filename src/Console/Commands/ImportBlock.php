@@ -20,8 +20,9 @@ class ImportBlock extends Command
     protected $signature = 'import:block {quickImportSlug?}';
     protected $description = 'Import a block from Horizon Blocks';
 
-    private const TYPE_SCRIPT = 'script';
-    private const TYPE_STYLE = 'style';
+    private const string TYPE_SCRIPT = 'script';
+    private const string TYPE_STYLE = 'style';
+    private const string TYPE_VIEW = 'view';
 
     public function handle(): void
     {
@@ -367,6 +368,11 @@ class ImportBlock extends Command
                         $sourcePath = $this->getHorizonStylesDirectory();
                         $relativePath = $this->getStylesDirectory();
                         break;
+                    case 'php':
+                        $type = self::TYPE_VIEW;
+                        $sourcePath = $this->getHorizonViewsDirectory();
+                        $relativePath = $this->getViewsDirectory();
+                        break;
                     default:
                         break;
                 }
@@ -384,118 +390,120 @@ class ImportBlock extends Command
                             $this->error('File already exists at ' . $newFilePath);
                         }
 
-                        $budString = null;
-                        $rootName = null;
+                        if ($type !== self::TYPE_VIEW) {
+                            $budString = null;
+                            $rootName = null;
 
-                        switch ($type) {
-                            case self::TYPE_SCRIPT:
-                                $rootName = ltrim($filePath, $this->getScriptsDirectory());
-                                $rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
-                                $budString = sprintf('@scripts/%s', $rootName);
-                                break;
-                            case self::TYPE_STYLE:
-                                $rootName = ltrim($filePath, $this->getStylesDirectory());
-                                $rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
-                                $budString = sprintf('@styles/%s', $rootName);
-                                break;
-                            default:
-                                break;
+                            switch ($type) {
+                                case self::TYPE_SCRIPT:
+                                    $rootName = ltrim($filePath, $this->getScriptsDirectory());
+                                    $rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
+                                    $budString = sprintf('@scripts/%s', $rootName);
+                                    break;
+                                case self::TYPE_STYLE:
+                                    $rootName = ltrim($filePath, $this->getStylesDirectory());
+                                    $rootName = str_replace($fileName . '.' . $extension, $fileName, $rootName);
+                                    $budString = sprintf('@styles/%s', $rootName);
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            if (!isset($filesToCompilator[$rootName])) {
+                                $filesToCompilator[$rootName] = [self::TYPE_SCRIPT => [], self::TYPE_STYLE => []];
+                            }
+
+                            $filesToCompilator[$rootName][$type] = $budString;
                         }
+                    }
+                }
+            }
 
-                        if (!isset($filesToCompilator[$rootName])) {
-                            $filesToCompilator[$rootName] = [self::TYPE_SCRIPT => [], self::TYPE_STYLE => []];
-                        }
+            switch (true) {
+                case CompilationService::shouldUseVite():
+                    $this->appendFilesToVite($filesToCompilator);
+                    break;
+                default:
+                    $this->appendFilesToBud($filesToCompilator);
+                    break;
+            }
+        }
+    }
 
-						$filesToCompilator[$rootName][$type] = $budString;
-					}
-				}
-			}
+    private function appendFilesToVite(array $toHandle): void
+    {
+        if ($viteFilePath = $this->getViteConfigPath()) {
+            $this->newLine();
+            $this->info('Handling Vite file...');
 
-			switch (true) {
-				case CompilationService::shouldUseVite():
-					$this->appendFilesToVite($filesToCompilator);
-					break;
-				default:
-					$this->appendFilesToBud($filesToCompilator);
-					break;
-			}
-		}
-	}
+            foreach ($toHandle as $name => $assets) {
+                $paths = [];
 
-	private function appendFilesToVite(array $toHandle): void
-	{
-		if ($viteFilePath = $this->getViteConfigPath()) {
-			$this->newLine();
-			$this->info('Handling Vite file...');
+                if (!empty($assets[self::TYPE_SCRIPT])) {
+                    $paths[] = $assets[self::TYPE_SCRIPT];
+                }
 
-			foreach ($toHandle as $name => $assets) {
-				$paths = [];
+                if (!empty($assets[self::TYPE_STYLE])) {
+                    $paths[] = $assets[self::TYPE_STYLE];
+                }
 
-				if (!empty($assets[self::TYPE_SCRIPT])) {
-					$paths[] = $assets[self::TYPE_SCRIPT];
-				}
+                if (!empty($paths)) {
+                    $viteName = last(explode('/', $name));
 
-				if (!empty($assets[self::TYPE_STYLE])) {
-					$paths[] = $assets[self::TYPE_STYLE];
-				}
+                    $paths = array_map(function ($path) {
+                        return sprintf("'%s'", $path);
+                    }, $paths);
 
-				if (!empty($paths)) {
-					$viteName = last(explode('/', $name));
+                    $viteConfigContent = file_get_contents($viteFilePath);
 
-					$paths = array_map(function ($path) {
-						return sprintf("'%s'", $path);
-					}, $paths);
+                    if (!$viteConfigContent) {
+                        $this->error('Vite config file is empty');
+                    } else {
+                        $viteConfigContent = preg_replace_callback(
+                            '/laravel\(\s*{[^}]*?input:\s*\[([^\]]*)\]/s',
+                            function ($matches) use ($paths) {
+                                $inputBlock = $matches[1];
 
-					$viteConfigContent = file_get_contents($viteFilePath);
+                                // Détection de l'indentation de base (celle de `input: [`)
+                                preg_match('/^( *)(input:\s*\[)/m', $matches[0], $indentMatch);
+                                $baseIndent = $indentMatch[1] ?? '  '; // fallback à 2 espaces
+                                $itemIndent = $baseIndent . '  '; // indentation des items (ex: 2 niveaux)
 
-					if (!$viteConfigContent) {
-						$this->error('Vite config file is empty');
-					} else {
-						$viteConfigContent = preg_replace_callback(
-							'/laravel\(\s*{[^}]*?input:\s*\[([^\]]*)\]/s',
-							function ($matches) use ($paths) {
-								$inputBlock = $matches[1];
+                                // Nettoyage et normalisation
+                                $existingPaths = array_map('trim', explode(',', trim($inputBlock)));
+                                $existingPaths = array_filter($existingPaths); // supprime les lignes vides
 
-								// Détection de l'indentation de base (celle de `input: [`)
-								preg_match('/^( *)(input:\s*\[)/m', $matches[0], $indentMatch);
-								$baseIndent = $indentMatch[1] ?? '  '; // fallback à 2 espaces
-								$itemIndent = $baseIndent . '  '; // indentation des items (ex: 2 niveaux)
+                                // Remove indentation from existing paths
+                                $existingPaths = array_map(function ($path) {
+                                    return trim($path, "\n\r\t ");
+                                }, $existingPaths);
 
-								// Nettoyage et normalisation
-								$existingPaths = array_map('trim', explode(',', trim($inputBlock)));
-								$existingPaths = array_filter($existingPaths); // supprime les lignes vides
+                                // Ajout des nouveaux chemins s'ils ne sont pas déjà présents
+                                foreach ($paths as $newPath) {
+                                    if (!in_array(trim($newPath, "'\""), array_map(fn($p) => trim($p, "'\""), $existingPaths))) {
+                                        $existingPaths[] = trim($newPath, "\n\r\t ");
+                                    }
+                                }
 
-								// Remove indentation from existing paths
-								$existingPaths = array_map(function ($path) {
-									return trim($path, "\n\r\t ");
-								}, $existingPaths);
+                                // Reconstruction avec indentation propre
+                                $newInput = "input: [\n";
+                                foreach ($existingPaths as $i => $path) {
+                                    $comma = $i === array_key_last($existingPaths) ? '' : ',';
+                                    $newInput .= $itemIndent . $path . $comma . "\n";
+                                }
+                                $newInput .= $baseIndent . ']';
 
-								// Ajout des nouveaux chemins s'ils ne sont pas déjà présents
-								foreach ($paths as $newPath) {
-									if (!in_array(trim($newPath, "'\""), array_map(fn($p) => trim($p, "'\""), $existingPaths))) {
-										$existingPaths[] = trim($newPath, "\n\r\t ");
-									}
-								}
+                                return preg_replace('/input:\s*\[[^\]]*\]/s', $newInput, $matches[0]);
+                            },
+                            $viteConfigContent,
+                        );
 
-								// Reconstruction avec indentation propre
-								$newInput = "input: [\n";
-								foreach ($existingPaths as $i => $path) {
-									$comma = $i === array_key_last($existingPaths) ? '' : ',';
-									$newInput .= $itemIndent . $path . $comma . "\n";
-								}
-								$newInput .= $baseIndent . "]";
+                        FileService::filePutContentsAndCreateMissingDirectories($viteFilePath, $viteConfigContent);
 
-								return preg_replace('/input:\s*\[[^\]]*\]/s', $newInput, $matches[0]);
-							},
-							$viteConfigContent
-						);
-
-						FileService::filePutContentsAndCreateMissingDirectories($viteFilePath, $viteConfigContent);
-
-						$this->info(sprintf('Added Vite line for %s', $viteName));
-					}
-				}
-			}
+                        $this->info(sprintf('Added Vite line for %s', $viteName));
+                    }
+                }
+            }
         }
     }
 
@@ -551,14 +559,14 @@ class ImportBlock extends Command
     }
 
     private function getViteConfigPath(): string
-	{
-		return $this->getTemplatePath() . '/vite.config.js';
-	}
+    {
+        return $this->getTemplatePath() . '/vite.config.js';
+    }
 
-	private function getImagesDirectory(): string
-	{
-		return '/resources/images/';
-	}
+    private function getImagesDirectory(): string
+    {
+        return '/resources/images/';
+    }
 
     private function getBlockImagesDirectory(): string
     {
