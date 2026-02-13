@@ -166,7 +166,11 @@ class HorizonBlockService
             ],
             HeroPostBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
-                self::ASSET_FILES => [],
+                self::ASSET_FILES => [
+                    'resources/views/share/email-share-page.blade.php',
+                    'resources/views/share/sms-share-page.blade.php',
+                    'resources/views/share/whatsapp-share-page.blade.php',
+                ],
                 self::LIVEWIRE_COMPONENTS => [ShareButton::class],
                 self::COMPONENTS => [Breadcrumbs::class, ShareButtons::class],
             ],
