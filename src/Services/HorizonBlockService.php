@@ -23,6 +23,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\TitleTextBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\WysiwygBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroBlock;
 use Adeliom\HorizonBlocks\Blocks\Hero\HeroForm;
+use Adeliom\HorizonBlocks\Blocks\Hero\HeroPostBlock;
 use Adeliom\HorizonBlocks\Blocks\Listing\ListingBlock;
 use Adeliom\HorizonBlocks\Blocks\Listing\SearchEngineResultsBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\CustomerReviewBlock;
@@ -30,8 +31,11 @@ use Adeliom\HorizonBlocks\Blocks\Reassurance\KeyFigureBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\LogosBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\QuoteBlock;
 use Adeliom\HorizonBlocks\Blocks\Reassurance\ReinsuranceBlock;
+use Adeliom\HorizonBlocks\Livewire\Action\ShareButton;
 use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 use Adeliom\HorizonBlocks\Livewire\Listing\SearchEngineResults;
+use Adeliom\HorizonBlocks\View\Components\Action\ShareButtons;
+use Adeliom\HorizonBlocks\View\Components\Breadcrumbs;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardPrice;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
@@ -159,6 +163,12 @@ class HorizonBlockService
                 self::ASSET_FILES => [],
                 self::LIVEWIRE_COMPONENTS => [],
                 self::COMPONENTS => [Offer::class],
+            ],
+            HeroPostBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [ShareButton::class],
+                self::COMPONENTS => [Breadcrumbs::class, ShareButtons::class],
             ],
             FormBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
