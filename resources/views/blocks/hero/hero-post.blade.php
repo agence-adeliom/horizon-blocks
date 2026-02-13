@@ -1,3 +1,7 @@
+@php
+    use Adeliom\HorizonTools\Services\ShareService;
+@endphp
+
 <div class="z-100 relative" x-data="initHeroPostSlider">
     <div class="fixed top-[144px] z-[1000] h-2 w-full bg-neutral-300" x-ref="progressContainer">
         <div class="bg-primary h-full w-[0px]" x-ref="progressBar"></div>
@@ -38,10 +42,12 @@
                         </div>
                     @endif
                 </div>
-                <div class="mt-4 flex flex-wrap items-center gap-2">
-                    <p>Partagez</p>
-                    <x-action.share-buttons :icon-only="true" />
-                </div>
+                @if (ShareService::hasAtLeastOneShareOption())
+                    <div class="mt-4 flex flex-wrap items-center gap-2">
+                        <p>Partagez</p>
+                        <x-action.share-buttons :icon-only="true" />
+                    </div>
+                @endif
             </div>
             <div class="relative col-span-full h-full min-h-[260px] lg:col-span-6">
                 {!! wp_get_attachment_image($context['img'], 'full', false, ['class' => 'w-full absolute h-full object-cover']) !!}
