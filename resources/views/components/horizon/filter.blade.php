@@ -7,6 +7,9 @@
     if (!isset($withEmpty) || (isset($value['hasChoiceAll']) && $value['hasChoiceAll'])) {
         $withEmpty = true;
     }
+
+    $withReinitButtons = $withReinitButtons ?? true;
+    $withDisplayButtons = $withDisplayButtons ?? true;
 @endphp
 
 @if($value && isset($value['isSearch'])&& $value['isSearch'])
@@ -119,10 +122,16 @@
                                     @endforeach
                                 @endisset
                             </div>
-                            <div class="bottom">
-                                <p wire:click="resetFilter('{{ $model }}')">Réinitialiser</p>
-                                <p>Afficher</p>
-                            </div>
+                            @if($withReinitButtons || $withDisplayButtons)
+                                <div class="bottom">
+                                    @if($withReinitButtons)
+                                        <p wire:click="resetFilter('{{ $model }}')">Réinitialiser</p>
+                                    @endif
+                                    @if($withDisplayButtons)
+                                        <p>Afficher</p>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -186,10 +195,16 @@
                                     @endforeach
                                 @endisset
                             </div>
-                            <div class="bottom">
-                                <p wire:click="resetFilter('{{$model}}')">Réinitialiser</p>
-                                <p>Afficher</p>
-                            </div>
+                            @if($withReinitButtons || $withDisplayButtons)
+                                <div class="bottom">
+                                    @if($withReinitButtons)
+                                        <p wire:click="resetFilter('{{$model}}')">Réinitialiser</p>
+                                    @endif
+                                    @if($withDisplayButtons)
+                                        <p>Afficher</p>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
