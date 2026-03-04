@@ -7,35 +7,35 @@
 
 <x-block :fields="$fields">
 
-    @if(!empty($fields['main_image']['sizes']['large']))
+    @isset($fields['main_image']['sizes']['large'])
         <x-media.img :image="$fields['main_image']" class="cover-full" size="full" container-class="w-full" />
         <div @class([
             'absolute-full bg-gradient-to-b lg:bg-gradient-to-r',
             'from-white to-[rgba(255,255,255,0.25)]' => !$fields['dark_mode'],
             'from-black to-[rgba(0,0,0,0.25)]' => $fields['dark_mode'],
         ])></div>
-    @endif
+    @endisset
 
     <div class="relative z-10 lg:grid-12">
         <div class="lg:col-span-6">
             <x-breadcrumbs />
-            @if(!empty($fields['uptitle']))
+            @isset($fields['uptitle'])
                 <x-typography.uptitle :content="$fields['uptitle']" class="mb-headline-title-desktop" />
-            @endif
+            @endisset
 
-            @if(!empty($fields['title']))
+            @isset($fields['title'])
                 <x-typography.heading :fields="$fields['title']" size="2" />
-            @endif
+            @endisset
 
-            @if(!empty($fields['wysiwyg']))
+            @isset($fields['wysiwyg'])
                 <div class="wysiwyg mt-title-text-desktop">
                     {!! $fields['wysiwyg'] !!}
                 </div>
-            @endif
+            @endisset
 
-            @if(!empty($fields['buttons']))
+            @isset($fields['buttons'])
                 <x-action.buttons class="mt-8" :buttons="$fields['buttons']" />
-            @endif
+            @endisset
         </div>
     </div>
 </x-block>

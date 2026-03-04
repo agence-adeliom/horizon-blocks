@@ -36,7 +36,7 @@
     }
     }
 
-    if (!empty($fields['postType'])) {
+    if (isset($fields['postType'])) {
         $postType = $fields['postType'];
     }
 
@@ -50,17 +50,17 @@
 @endphp
 
 <x-block :fields="$fields" :block="$block" class="listing-block">
-    @if(!empty($fields['uptitle']))
+    @isset($fields['uptitle'])
         <x-typography.uptitle :content="$fields['uptitle']"/>
-    @endif
+    @endisset
 
-    @if(!empty($fields['title']))
+    @isset($fields['title'])
         <x-typography.heading :fields="$fields['title']"/>
-    @endif
+    @endisset
 
-        @if(!empty($fields['wysiwyg']))
+        @isset($fields['wysiwyg'])
             <x-typography.text :content="$fields['wysiwyg']"/>
-        @endif
+        @endisset
 
     <livewire:listing.listing :post-type="$postType" :per-page="$perPage" :filters="$filters"
                               :secondary-filters="$hasSecondaryFilters ? $secondaryFilters : null"
