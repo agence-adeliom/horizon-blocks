@@ -19,17 +19,17 @@
                     'basis-full md:basis-1/2 items-center' => $hasDataAndTitle,
                     'basis-1/2 items-baseline' => !$hasDataAndTitle,
                 ])>
-                    @if (@isset($item['icon']) && $item['icon'])
+                    @if (!empty($item['icon']) && $item['icon'])
                         <x-ui.icon :icon="$item['icon']" class="icon-24 text-primary" />
                     @endif
 
-                    @if (@isset($item['data']) && $item['data'])
+                    @if (!empty($item['data']) && $item['data'])
                         <div class="heading-4">
                             {{ $item['data'] }}
                         </div>
                     @endif
 
-                    @if (@isset($item['title']) && $item['title'])
+                    @if (!empty($item['title']) && $item['title'])
                         <div class="text-large text-text-secondary">
                             {{ $item['title'] }}
                         </div>

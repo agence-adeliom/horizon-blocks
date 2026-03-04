@@ -7,17 +7,17 @@
 
     <x-block :fields="$fields" :block="$block">
         <div class="flex flex-col items-center text-center mb-8 lg:mb-10">
-            @isset($fields['uptitle'])
+            @if(!empty($fields['uptitle']))
                 <x-typography.uptitle :content="$fields['uptitle']" />
-            @endisset
+            @endif
 
-            @isset($fields['title'])
+            @if(!empty($fields['title']))
                 <x-typography.heading :fields="$fields['title']" :size="3" />
-            @endisset
+            @endif
 
-            @isset($fields['wysiwyg'])
+            @if(!empty($fields['wysiwyg']))
                 <x-typography.text :content="$fields['wysiwyg']" class="mt-4 text-large" />
-            @endisset
+            @endif
         </div>
 
         <div @class([
@@ -34,17 +34,17 @@
                     'bg-neutral-100' => $framed,
                     'p-xlarge' => $framed || $withBg,
                 ])>
-                    @if (@isset($item['icon']) && $item['icon'])
+                    @if (!empty($item['icon']) && $item['icon'])
                         <x-ui.icon :icon="$item['icon']" class="icon-24 text-primary lg:w-10 lg:h-10" />
                     @endif
 
-                    @if (@isset($item['data']) && $item['data'])
+                    @if (!empty($item['data']) && $item['data'])
                         <div @class(['heading text-3xlarge md:text-4xlarge lg:text-6xlarge'])>
                             {{ $item['data'] }}
                         </div>
                     @endif
 
-                    @if (@isset($item['title']) && $item['title'])
+                    @if (!empty($item['title']) && $item['title'])
                         <div class="text-large text-text-secondary">
                             {{ $item['title'] }}
                         </div>
