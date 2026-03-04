@@ -1,7 +1,7 @@
 @php
     $bgType = $fields['bg']['bg-type'] ?? 'bg-color-type';
-    $bgColor = ($bgType  === "bg-color-type" && isset($fields['bg']['bg-color'])) ? $fields['bg']['bg-color'] : "";
-    $bgImage = ($bgType === "bg-image-type" && isset($fields['bg']['bg-image'])) ? $fields['bg']['bg-image']['sizes']['large'] : "";
+    $bgColor = ($bgType  === "bg-color-type" && !empty($fields['bg']['bg-color'])) ? $fields['bg']['bg-color'] : "";
+    $bgImage = ($bgType === "bg-image-type" && !empty($fields['bg']['bg-image'])) ? $fields['bg']['bg-image']['sizes']['large'] : "";
 @endphp
 
 

@@ -30,7 +30,7 @@
         
         </div>
         <div class="lg:col-span-7 flex flex-col gap-medium">
-            @if (@isset($fields['questions']) && $fields['questions'])
+            @if (!empty($fields['questions']) && $fields['questions'])
                 @foreach ($fields['questions'] as $question)
                     <x-cards.card-faq :question="$question" />
                 @endforeach

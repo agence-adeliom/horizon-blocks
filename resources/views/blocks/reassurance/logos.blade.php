@@ -4,23 +4,23 @@
 
             <div class="grid-12">
                 <div class="flex flex-col items-center text-center lg:col-span-8 lg:col-start-3">
-                    @isset($fields['uptitle'])
+                    @if(!empty($fields['uptitle']))
                         <x-typography.uptitle :content="$fields['uptitle']" />
-                    @endisset
+                    @endif
 
-                    @isset($fields['title'])
+                    @if(!empty($fields['title']))
                         <x-typography.heading :fields="$fields['title']" size="3"
                             class="mt-headline-title-mobile lg:mt-headline-title-desktop" />
-                    @endisset
+                    @endif
 
-                    @isset($fields['wysiwyg'])
+                    @if(!empty($fields['wysiwyg']))
                         <x-typography.text :content="$fields['wysiwyg']" class="mt-title-text-mobile lg:mt-title-text-desktop" />
-                    @endisset
+                    @endif
                 </div>
             </div>
 
 
-            @isset($fields['logos'])
+            @if(!empty($fields['logos']))
                 <div class="relative w-full px-12 lg:px-16">
                     <div class="swiper w-full" x-ref="swiperContainer">
                         <div class="swiper-wrapper">
@@ -31,7 +31,7 @@
                                     $index = $loop->index;
                                     $containerClass = 'p-4 transition-opacity duration-300 ease-in-out md:p-6 lg:px-10';
                                 @endphp
-                                @if (@isset($logoImg) && $logoImg)
+                                @if (!empty($logoImg) && $logoImg)
                                     <div class="swiper-slide rounded-card bg-white">
                                         @if (!empty($logoLink))
                                             <a href="{{ $logoLink['url'] }}" target="{{ $logoLink['target'] }}"
@@ -82,7 +82,7 @@
         <x-fas-angle-right />
     </x-action.button>
     </div>
-@endisset
+@endif
 </div>
 </x-block>
 @endif

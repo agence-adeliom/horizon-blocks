@@ -3,25 +3,25 @@
         <div class="flex w-full flex-col gap-8 lg:gap-10">
             <div class="grid-12">
                 <div class="col-span-full flex flex-col items-center text-center lg:col-span-8 lg:col-start-3">
-                    @isset($fields['uptitle'])
+                    @if(!empty($fields['uptitle']))
                         <x-typography.uptitle :content="$fields['uptitle']" class="mb-1" />
-                    @endisset
+                    @endif
 
-                    @isset($fields['title'])
+                    @if(!empty($fields['title']))
                         <x-typography.heading :fields="$fields['title']" size="3" />
-                    @endisset
+                    @endif
 
-                    @isset($fields['wysiwyg'])
+                    @if(!empty($fields['wysiwyg']))
                         <x-typography.text :content="$fields['wysiwyg']" class="mt-2 lg:mt-4" />
-                    @endisset
+                    @endif
 
-                    @if (@isset($context['global-rating']) || @isset($context['btn-reviews']))
+                    @if (!empty($context['global-rating']) || !empty($context['btn-reviews']))
                         <div class="mt-2 flex flex-col items-center gap-4 lg:mt-4 lg:flex-row lg:gap-6">
-                            @if (@isset($context['global-rating']) && $context['global-rating'])
+                            @if (!empty($context['global-rating']) && $context['global-rating'])
                                 <x-ui.rating :score="$context['global-rating']" showScore />
                             @endif
 
-                            @if (@isset($context['btn-reviews']) && $context['btn-reviews']['link'])
+                            @if (!empty($context['btn-reviews']) && $context['btn-reviews']['link'])
                                 <x-action.button :fields="$context['btn-reviews']" icon="fas-arrow-right" type="tertiary" />
                             @endif
                         </div>
@@ -32,7 +32,7 @@
             <div class="col-span-full" x-data="initReviewsSlider()">
                 <div class="swiper w-full overflow-visible" x-ref="swiperContainer">
                     <div class="swiper-wrapper cursor-grab">
-                        @if (isset($fields['reviews']) && $fields['reviews'])
+                        @if (!empty($fields['reviews']) && $fields['reviews'])
                             @foreach ($fields['reviews'] as $review)
                                 @if (is_object($review) && property_exists($review, 'ID'))
                                     <x-cards.card-customer-review :review="get_fields($review->ID)" class="swiper-slide" />

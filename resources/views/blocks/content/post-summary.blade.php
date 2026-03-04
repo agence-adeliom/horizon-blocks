@@ -3,7 +3,7 @@
     use App\Blocks\Content\PostSummaryBlock;
 @endphp
 
-@if(isset($fields[PostSummaryBlock::FIELD_IS_TOP]))
+@if(!empty($fields[PostSummaryBlock::FIELD_IS_TOP]))
     @if($fields[PostSummaryBlock::FIELD_IS_TOP] && BlogPostService::hasClosingTag())
         @php($titles = BlogPostService::getPostTitles())
 
@@ -14,7 +14,7 @@
         <div class="post-content grid grid-cols-12">
             <div class="summary col-span-4">
                 <div class="summary-container sticky top-20">
-                    @if(isset($fields[PostSummaryBlock::FIELD_TITLE])&&$fields[PostSummaryBlock::FIELD_TITLE])
+                    @if(!empty($fields[PostSummaryBlock::FIELD_TITLE])&&$fields[PostSummaryBlock::FIELD_TITLE])
                         <p>{{$fields[PostSummaryBlock::FIELD_TITLE]}}</p>
                     @endif
 
