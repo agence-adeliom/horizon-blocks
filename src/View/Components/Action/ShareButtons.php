@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Adeliom\HorizonBlocks\View\Components\Action;
+namespace App\View\Components\Action;
 
 use Adeliom\HorizonTools\Admin\ShareOptionsAdmin;
 use Adeliom\HorizonTools\Services\ShareService;
@@ -18,6 +18,10 @@ class ShareButtons extends Component
     public bool $hasSms = false;
     public bool $hasWhatsApp = false;
     public bool $hasMessenger = false;
+    public bool $hasFacebook = false;
+    public bool $hasInstagram = false;
+    public bool $hasLinkedIn = false;
+    public bool $hasX = false;
     public bool $hasChatGPT = false;
     public bool $hasClaude = false;
     public bool $hasPerplexity = false;
@@ -48,6 +52,18 @@ class ShareButtons extends Component
                             break;
                         case ShareOptionsAdmin::FIELD_SHARE_ENABLE_MESSENGER:
                             $this->hasMessenger = true;
+                            break;
+                        case ShareOptionsAdmin::FIELD_SHARE_ENABLE_FACEBOOK:
+                            $this->hasFacebook = true;
+                            break;
+                        case ShareOptionsAdmin::FIELD_SHARE_ENABLE_INSTAGRAM:
+                            $this->hasInstagram = true;
+                            break;
+                        case ShareOptionsAdmin::FIELD_SHARE_ENABLE_LINKEDIN:
+                            $this->hasLinkedIn = true;
+                            break;
+                        case ShareOptionsAdmin::FIELD_SHARE_ENABLE_X:
+                            $this->hasX = true;
                             break;
                         case ShareOptionsAdmin::FIELD_SHARE_ENABLE_CHATGPT:
                             $this->hasChatGPT = $this->withLlm;
