@@ -14,6 +14,7 @@ class HeroPostBlock extends AbstractBlock
 {
     public static ?string $slug = 'hero-post';
     public static ?string $title = 'Haut de page - Article';
+    public static ?string $description = "Affiche les informations principales d'un article : titre, extrait, catégories, date de publication, temps de lecture et image à la une.";
     public static ?string $mode = 'preview';
     public static ?string $icon = 'editor-aligncenter';
 
