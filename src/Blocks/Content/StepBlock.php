@@ -23,10 +23,10 @@ class StepBlock extends AbstractBlock
 	public static ?string $title = 'Étapes';
 	public static ?string $icon = 'list-view';
 
-	final public const string FIELDS_STEPS = 'steps';
-	final public const string FIELDS_STEP_TITLE = 'title';
-	final public const string FIELDS_STEP_CONTENT = 'content';
-	final public const string FIELDS_STEP_IMG = 'img';
+	public const string FIELD_STEPS = 'steps';
+	public const string FIELD_STEP_TITLE = 'title';
+	public const string FIELD_STEP_CONTENT = 'content';
+	public const string FIELD_STEP_IMG = 'img';
 
 	public function getFields(): ?iterable
 	{
@@ -34,15 +34,15 @@ class StepBlock extends AbstractBlock
 			UptitleField::make(),
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			ButtonField::make(),
-			Repeater::make("Étapes", self::FIELDS_STEPS)
+			Repeater::make("Étapes", self::FIELD_STEPS)
 				->fields([
 					UptitleField::make()->required(),
-					Text::make("Titre de l'étape", self::FIELDS_STEP_TITLE)->required(),
-					WysiwygField::minimal("Contenu de l'étape", self::FIELDS_STEP_CONTENT)->required(),
-					Image::make("Image de l'étape", self::FIELDS_STEP_IMG)
+					Text::make("Titre de l'étape", self::FIELD_STEP_TITLE)->required(),
+					WysiwygField::minimal("Contenu de l'étape", self::FIELD_STEP_CONTENT)->required(),
+					Image::make("Image de l'étape", self::FIELD_STEP_IMG)
 						->required(),
 				])
-				->collapsed(self::FIELDS_STEP_TITLE)
+				->collapsed(self::FIELD_STEP_TITLE)
 				->layout('block')
 				->minRows(3)
 				->maxRows(3),

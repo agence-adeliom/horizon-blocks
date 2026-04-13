@@ -21,12 +21,12 @@ class CatchphraseBlock extends AbstractBlock
     public static ?string $mode = 'preview';
 
 
-    final public const string FIELD_BG = 'bg';
-    final public const string FIELD_BG_TYPE = 'bg-type';
-    final public const string FIELD_BG_IMAGE = 'bg-image';
-    final public const string FIELD_BG_COLOR = 'bg-color';
-    final public const string BG_COLOR_TYPE = "bg-color-type";
-    final public const string BG_IMAGE_TYPE = "bg-image-type";
+    public const string FIELD_BG = 'bg';
+    public const string FIELD_BG_TYPE = 'bg-type';
+    public const string FIELD_BG_IMAGE = 'bg-image';
+    public const string FIELD_BG_COLOR = 'bg-color';
+    public const string BG_COLOR_TYPE = "bg-color-type";
+    public const string BG_IMAGE_TYPE = "bg-image-type";
 
     public function getFields(): ?iterable
     {

@@ -24,18 +24,18 @@ class FaqBlock extends AbstractBlock
 	public static ?string $description = "Présente des questions souvent posées par les utilisateurices, ainsi que des réponses rapides.";
 	public static ?string $icon = 'editor-help';
 
-	public const string FIELDS_IMG = 'img';
-	public const string FIELDS_QUESTIONS = 'questions';
+	public const string FIELD_IMG = 'img';
+	public const string FIELD_QUESTIONS = 'questions';
 
 	public function getFields(): ?iterable
 	{
 		yield from ContentTab::make()->fields([
-			Image::make(__('Petite image'), self::FIELDS_IMG),
+			Image::make(__('Petite image'), self::FIELD_IMG),
 			UptitleField::make(),
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			WysiwygField::minimal(),
 			ButtonField::group(),
-			Relationship::make(__('Liste de questions'), self::FIELDS_QUESTIONS)
+			Relationship::make(__('Liste de questions'), self::FIELD_QUESTIONS)
 				->minPosts(2)
 				->maxPosts(5)
 				->postTypes([FAQ::$slug]),
@@ -78,8 +78,8 @@ class FaqBlock extends AbstractBlock
 		$fields = get_fields();
 		$structuredData = [];
 
-		if (SeoService::isCurrentPageIndexed() && !empty($fields[self::FIELDS_QUESTIONS])) {
-			foreach ($fields[self::FIELDS_QUESTIONS] as $questionPost) {
+		if (SeoService::isCurrentPageIndexed() && !empty($fields[self::FIELD_QUESTIONS])) {
+			foreach ($fields[self::FIELD_QUESTIONS] as $questionPost) {
 				if ($questionFields = get_fields($questionPost)) {
 					if (!empty($questionFields[FAQ::FIELD_QUESTION]) && !empty($questionFields[FAQ::FIELD_ANSWER])) {
 						$question = $questionFields[FAQ::FIELD_QUESTION];

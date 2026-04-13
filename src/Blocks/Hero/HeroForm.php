@@ -17,7 +17,7 @@ use Extended\ACF\Fields\Text;
 class HeroForm extends AbstractBlock
 {
 	public const string FORM_TITLE = "form-title";
-	final public const string FIELD_DESC = "desc";
+	public const string FIELD_DESC = "desc";
 	public static ?string $slug = 'hero-form';
 	public static ?string $title = 'Haut de page avec formulaire';
 	public static ?string $mode = 'preview';

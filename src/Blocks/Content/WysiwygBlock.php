@@ -21,10 +21,10 @@ class WysiwygBlock extends AbstractBlock
 	public static ?string $mode = 'preview';
 	public static ?string $icon = 'text';
 
-	public const FIELD_ALIGNMENT = 'alignment';
-	public const VALUE_ALIGNMENT_CENTER = 'center';
-	public const VALUE_ALIGNMENT_LEFT = 'left';
-	public const VALUE_ALIGNMENT_RIGHT = 'right';
+	public const string FIELD_ALIGNMENT = 'alignment';
+	public const string VALUE_ALIGNMENT_CENTER = 'center';
+	public const string VALUE_ALIGNMENT_LEFT = 'left';
+	public const string VALUE_ALIGNMENT_RIGHT = 'right';
 
 	public function getFields(): ?iterable
 	{

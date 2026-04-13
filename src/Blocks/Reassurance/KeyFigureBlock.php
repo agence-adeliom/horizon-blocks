@@ -18,11 +18,11 @@ use Extended\ACF\Fields\Text;
 
 class KeyFigureBlock extends AbstractBlock
 {
-    final public const string FIELD_ITEMS = 'items';
-    final public const string FIELD_ICON = 'icon';
-    final public const string FIELD_TITLE = 'title';
-    final public const string FIELD_DATA = 'data';
-    final public const FIELD_TYPE = 'type';
+    public const string FIELD_ITEMS = 'items';
+    public const string FIELD_ICON = 'icon';
+    public const string FIELD_TITLE = 'title';
+    public const string FIELD_DATA = 'data';
+    public const string FIELD_TYPE = 'type';
     private const int TITLE_MAX_LENGTH = 100;
     public static ?string $slug = 'key-figure';
     public static ?string $title = 'Chiffres clés';

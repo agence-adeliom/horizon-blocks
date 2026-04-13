@@ -18,9 +18,9 @@ use Extended\ACF\Fields\Repeater;
 
 class LogosBlock extends AbstractBlock
 {
-    final public const string FIELD_LOGOS = 'logos';
-    final public const string FIELD_LOGO = 'logo';
-    final public const string FIELD_LINK = 'link';
+    public const string FIELD_LOGOS = 'logos';
+    public const string FIELD_LOGO = 'logo';
+    public const string FIELD_LINK = 'link';
     public static ?string $slug = 'logos';
     public static ?string $title = 'Logos';
     public static ?string $description = "Affiche une série de logos comme des clients, partenaires ou certifications.";
