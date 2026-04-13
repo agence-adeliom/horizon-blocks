@@ -14,7 +14,7 @@ use Extended\ACF\Fields\Group;
 use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\RadioButton;
 
-class Catchphrase extends AbstractBlock
+class CatchphraseBlock extends AbstractBlock
 {
     public static ?string $slug = 'catchphrase';
     public static ?string $title = 'Accroche';
