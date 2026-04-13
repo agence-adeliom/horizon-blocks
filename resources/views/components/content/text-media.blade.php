@@ -13,9 +13,9 @@
             <x-typography.text :content="$content" class="mt-title-text-mobile lg:mt-title-text-desktop" />
         @endif
 
-        @isset($buttons)
+        @if (!empty($buttons))
             <x-action.buttons :buttons="$buttons" class="mt-button-text-mobile max-md:w-full lg:mt-button-text-desktop" />
-        @endisset
+        @endif
     </div>
 
     <div @class(['relative', $mediaClass]) @if ($videoUrl) x-data="initLightbox()" @endif>

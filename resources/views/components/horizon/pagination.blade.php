@@ -54,25 +54,26 @@
             $last = $value;
         }
 
-        if(!isset($extraHandleParamsFirst)||!is_bool($extraHandleParamsFirst)) {
-            $extraHandleParamsFirst=false;
+        $extraHandleParamsFirst = $extraHandleParamsFirst ?? false;
+        if (!is_bool($extraHandleParamsFirst)) {
+            $extraHandleParamsFirst = false;
         }
 
-        if(isset($extraHandleParams)) {
+        if (!empty($extraHandleParams)) {
             $extraHandleParams = sprintf('%s', implode(', ', array_map(function($param){
-                if(is_string($param)) {
+                if (is_string($param)) {
                     return "'$param'";
                 }
 
                 return $param;
             }, $extraHandleParams)));
 
-            if($extraHandleParamsFirst){
+            if ($extraHandleParamsFirst) {
                 $extraHandleParams = $extraHandleParams.', ';
-            }else {
+            } else {
                 $extraHandleParams = ', '.$extraHandleParams;
             }
-        }else {
+        } else {
             $extraHandleParams = '';
         }
     @endphp

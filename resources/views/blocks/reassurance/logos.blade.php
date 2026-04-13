@@ -1,4 +1,4 @@
-@if ($fields)
+@if (!empty($fields))
     <x-block :fields="$fields" :block="$block" class="overflow-hidden">
         <div class="flex flex-col gap-text-image-mobile lg:gap-text-image-desktop" x-data="initLogosSlider()">
 
@@ -31,7 +31,7 @@
                                     $index = $loop->index;
                                     $containerClass = 'p-4 transition-opacity duration-300 ease-in-out md:p-6 lg:px-10';
                                 @endphp
-                                @if (!empty($logoImg) && $logoImg)
+                                @if (!empty($logoImg))
                                     <div class="swiper-slide rounded-card bg-white">
                                         @if (!empty($logoLink))
                                             <a href="{{ $logoLink['url'] }}" target="{{ $logoLink['target'] }}"

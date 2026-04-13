@@ -3,22 +3,22 @@
     'relative overflow-hidden rounded-card bg-primary',
     $attributes['class'],
 ])>
-    @isset($step['img'])
+    @if (!empty($step['img']))
         <x-media.img :image="$step['img']" class="cover-full" size="medium" container-class="aspect-[1.5] relative w-full" />
-    @endisset
+    @endif
     <div class="relative z-10 bg-primary p-card">
         <div class="awc-theme-dark flex w-full flex-col items-start">
-            @isset($step['uptitle'])
+            @if (!empty($step['uptitle']))
                 <x-typography.heading :content="$step['uptitle']" size="headline" />
-            @endisset
+            @endif
 
-            @isset($step['title'])
+            @if (!empty($step['title']))
                 <x-typography.heading :content="$step['title']" size="5" />
-            @endisset
+            @endif
 
-            @isset($step['content'])
+            @if (!empty($step['content']))
                 <x-typography.text :content="$step['content']" class="mt-card" />
-            @endisset
+            @endif
         </div>
     </div>
 </div>

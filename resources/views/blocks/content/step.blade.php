@@ -16,7 +16,7 @@
                 <x-fas-angle-right />
             </x-action.button>
             <div class="swiper-wrapper">
-                @if (!empty($fields['steps']) && $fields['steps'])
+                @if (!empty($fields['steps']))
                     @foreach ($fields['steps'] as $step)
                         <x-cards.card-step :step="$step" class="swiper-slide h-auto" />
                     @endforeach
@@ -27,7 +27,7 @@
     </div>
 
     <div class="mt-text-image-mobile flex justify-center lg:mt-text-image-desktop">
-        @if (!empty($fields['button']) && $fields['button']['link'])
+        @if (!empty($fields['button']) && !empty($fields['button']['link']))
             <x-action.button :fields="$fields['button']" class="max-md:w-full" />
         @endif
     </div>

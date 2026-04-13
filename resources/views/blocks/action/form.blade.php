@@ -10,7 +10,7 @@
 @endphp
 
 <x-block :fields="$fields" :block="$block" class="{{ $bgColor }} relative" background="none">
-    @if ($bgImage)
+    @if (!empty($bgImage))
         <x-media.img :image="$bgImage" class="cover-full" size="full" container-class="absolute-full"/>
     @endif
 
@@ -18,20 +18,20 @@
         <div class="grid-12">
             <div class="lg:col-span-8 {{ $positionClass }}">
                 <div class="bg-white rounded-card p-6 lg:p-10">
-                    @if ($fields['title'])
+                    @if (!empty($fields['title']))
                         <x-typography.heading :fields="$fields['title']" size="5"/>
                     @endif
 
-                    @if ($fields['desc'])
+                    @if (!empty($fields['desc']))
                         <x-typography.text :content="$fields['desc']"
                                            class="mt-title-text-mobile lg:mt-title-text-desktop"/>
                     @endif
 
-                    @if ($fields['offer'] && $fields['offer']['enable'])
+                    @if (!empty($fields['offer']) && !empty($fields['offer']['enable']))
                         <x-offer :fields="$fields['offer']" class="mt-3xlarge"/>
                     @endif
 
-                    @if ($fields['form_id'])
+                    @if (!empty($fields['form_id']))
                         <div class="mt-button-text-mobile lg:mt-button-text-desktop">
                             @php
                                 echo do_shortcode(

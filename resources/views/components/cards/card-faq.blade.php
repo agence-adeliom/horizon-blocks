@@ -1,11 +1,11 @@
-@if (isset($question) && $question)
+@if (!empty($question))
     <div x-data="{ open: false }" @class([
         'faq-item',
         'rounded-card bg-color-03-50 p-medium',
         $attributes['class'],
     ])>
         <div @click="open = !open" class="flex justify-between items-center cursor-pointer">
-            @if (isset($question['question']) || isset($title))
+            @if (!empty($question['question']) || !empty($title))
                 <x-typography.text :content="$question['question'] ?? $title" class="font-semibold transition-all "
                     x-bind:class="{ 'text-primary': open }" />
             @endif
@@ -15,7 +15,7 @@
             </svg>
         </div>
         <div x-show="open" x-collapse class="pt-medium">
-            @if (isset($question['answer']) || isset($answer))
+            @if (!empty($question['answer']) || !empty($answer))
                 <x-typography.text :content="$question['answer'] ?? $answer" />
             @endif
         </div>

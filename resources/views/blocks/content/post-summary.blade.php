@@ -9,7 +9,7 @@
 @endphp
 
 @if(!empty($fields[PostSummaryBlock::FIELD_IS_TOP]))
-    @if($fields[PostSummaryBlock::FIELD_IS_TOP] && BlogPostService::hasClosingTag())
+    @if(BlogPostService::hasClosingTag())
         @php($titles = BlogPostService::getPostTitles(retrieveOnly: $retrieveOnly, useHtml: $useHtml, hierarchical: $hierarchical, useCache: false))
 
         @if(is_admin())
@@ -20,7 +20,7 @@
             <div
                 class="summary bg-color-01-50 col-span-full lg:col-span-10 lg:col-start-2 rounded p-6 trans-default lg:hover:bg-color-01-200">
                 <div class="summary-container is-open" js-summary-container @if($useHtml) html-based @endif>
-                    @if(!empty($fields[PostSummaryBlock::FIELD_TITLE])&&$fields[PostSummaryBlock::FIELD_TITLE])
+                    @if(!empty($fields[PostSummaryBlock::FIELD_TITLE]))
                         <button js-toggle-summary aria-label="Fermer le sommaire"
                                 class="cursor-pointer items-center w-full flex gap-2 justify-between">
                             <p class="font-semibold text-large">{{$fields[PostSummaryBlock::FIELD_TITLE]}}</p>

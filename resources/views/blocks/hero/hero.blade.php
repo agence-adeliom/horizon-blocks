@@ -11,8 +11,8 @@
         <x-media.img :image="$fields['main_image']" class="cover-full" size="full" container-class="w-full" />
         <div @class([
             'absolute-full bg-gradient-to-b lg:bg-gradient-to-r',
-            'from-white to-[rgba(255,255,255,0.25)]' => !$fields['dark_mode'],
-            'from-black to-[rgba(0,0,0,0.25)]' => $fields['dark_mode'],
+            'from-white to-[rgba(255,255,255,0.25)]' => empty($fields['dark_mode']),
+            'from-black to-[rgba(0,0,0,0.25)]' => !empty($fields['dark_mode']),
         ])></div>
     @endif
 

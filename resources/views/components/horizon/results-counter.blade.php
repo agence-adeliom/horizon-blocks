@@ -1,16 +1,11 @@
 @php
     use Adeliom\HorizonTools\Services\StringService;
 
-	if (!isset($singular)) {
-        $singular = 'résultat';
-    }
-
-    if (!isset($plural)) {
-        $plural = 'résultats';
-    }
+    $singular = $singular ?? 'résultat';
+    $plural = $plural ?? 'résultats';
 @endphp
 
-@if (isset($value['total']))
+@if (is_array($value ?? null) && array_key_exists('total', $value))
     <p class="flex gap-2 text-text-secondary">
         <span class="font-semibold">
             {{ $value['total'] }}

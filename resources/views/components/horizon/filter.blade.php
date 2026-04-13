@@ -4,24 +4,22 @@
 
     $name = $value["label"] ?? null;
 
-    if (! isset($withEmpty) || (isset($value["hasChoiceAll"]) && $value["hasChoiceAll"])) {
-        $withEmpty = true;
-    }
+    $withEmpty = ($withEmpty ?? true) || !empty($value["hasChoiceAll"]);
 
     $withReinitButton = $withReinitButton ?? true;
     $withDisplayButton = $withDisplayButton ?? true;
     $withIndicator = $withIndicator ?? true;
 @endphp
 
-@if ($value && isset($value["isSearch"]) && $value["isSearch"])
+@if (!empty($value) && !empty($value["isSearch"]))
     <div class="select-group">
         <label for="{{ $model }}">
             {{ $name }}
         </label>
 
-        <input type="text" @if($model) wire:model="{{ $model }}" @endif placeholder="{{ $name }}" />
+        <input type="text" @if (!empty($model)) wire:model="{{ $model }}" @endif placeholder="{{ $name }}" />
     </div>
-@elseif ($value && isset($value["appearance"], $value["choices"]))
+@elseif (!empty($value) && !empty($value["appearance"]) && !empty($value["choices"]))
     <div class="select-group">
         <label for="{{ $model }}">
             {{ $name }}
@@ -29,7 +27,7 @@
 
         @switch($value["appearance"])
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_SELECT)
-                <select class="select" id="{{ $model }}" name="{{ $model }}" @if ($model) wire:model="{{ $model }}" @endif>
+                <select class="select" id="{{ $model }}" name="{{ $model }}" @if (!empty($model)) wire:model="{{ $model }}" @endif>
                     @if ($withEmpty)
                         <option value="" selected>
                             {{ $name ?? "Sélectionner" }}
@@ -45,28 +43,28 @@
 
                 @break
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX)
-                @isset($value["choices"])
+                @if (!empty($value["choices"]))
                     @foreach ($value["choices"] as $key => $choice)
                         <div>
                             <input
                                 type="checkbox"
                                 id="{{ $model }}_{{ $key }}"
                                 name="{{ $model }}.{{ $choice["slug"] }}"
-                                @if($model) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif
-                                @isset($values[$value["name"]][$choice["slug"]])
+                                @if (!empty($model)) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif
+                                @if (!empty($values[$value["name"]][$choice["slug"]]))
                                     @if ($values[$value["name"]][$choice["slug"]] == "true")
                                         checked="checked"
                                     @endif
-                                @endisset
+                                @endif
                             />
                             <label for="{{ $model }}_{{ $key }}">{{ $choice["name"] }}</label>
                         </div>
                     @endforeach
-                @endisset
+                @endif
 
                 @break
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_RADIO)
-                @isset($value["choices"])
+                @if (!empty($value["choices"]))
                     @foreach ($value["choices"] as $key => $choice)
                         <div>
                             <input
@@ -74,25 +72,25 @@
                                 id="{{ $model }}_{{ $key }}"
                                 name="{{ $model }}"
                                 value="{{ $choice["slug"] }}"
-                                @if($model) wire:model="{{ $model }}" @endif
-                                @isset($values[$value["name"]][$choice["slug"]])
+                                @if (!empty($model)) wire:model="{{ $model }}" @endif
+                                @if (!empty($values[$value["name"]][$choice["slug"]]))
                                     @if ($values[$value["name"]][$choice["slug"]] == "true")
                                         checked="checked"
                                     @endif
-                                @endisset
-                                @if ((empty($values) || empty($values[$value["name"]])) && $withEmpty && ! empty($value["choiceAllValue"]) && $choice["slug"] === $value["choiceAllValue"])
+                                @endif
+                                @if ((empty($values) || empty($values[$value["name"]])) && $withEmpty && !empty($value["choiceAllValue"]) && $choice["slug"] === $value["choiceAllValue"])
                                     checked="checked"
                                 @endif
                             />
                             <label for="{{ $model }}_{{ $key }}">{{ $choice["name"] }}</label>
                         </div>
                     @endforeach
-                @endisset
+                @endif
 
                 @break
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_TEXT)
                 <div>
-                    <input type="text" id="{{ $model }}" @if($model) wire:model="{{ $model }}" @endif />
+                    <input type="text" id="{{ $model }}" @if (!empty($model)) wire:model="{{ $model }}" @endif />
                 </div>
 
                 @break
@@ -101,9 +99,9 @@
                     <div>
                         @if ($withIndicator)
                             <p class="indicator">
-                                @if (isset($values[$value["name"]]) && $values[$value["name"]])
+                                @if (!empty($values[$value["name"]]))
                                     @foreach ($value["choices"] as $choiceKey => $choice)
-                                        @if (isset($choice["slug"]) && $choice["slug"] === $values[$value["name"]])
+                                        @if (!empty($choice["slug"]) && $choice["slug"] === $values[$value["name"]])
                                             <span class="label">{{ $choice["name"] }}</span>
 
                                             @break
@@ -117,7 +115,7 @@
 
                         <div class="dropdown">
                             <div class="values">
-                                @isset($value["choices"])
+                                @if (!empty($value["choices"]))
                                     @foreach ($value["choices"] as $key => $choice)
                                         <div wire:key="{{ $key }}">
                                             <input
@@ -125,17 +123,17 @@
                                                 id="{{ $model }}_{{ $key }}"
                                                 name="{{ $model }}"
                                                 value="{{ $choice["slug"] }}"
-                                                @if($model) wire:model="{{ $model }}" @endif
-                                                @isset($values[$value["name"]][$choice["slug"]])
+                                                @if (!empty($model)) wire:model="{{ $model }}" @endif
+                                                @if (!empty($values[$value["name"]][$choice["slug"]]))
                                                     @if ($values[$value["name"]][$choice["slug"]] == "true")
                                                         checked="checked"
                                                     @endif
-                                                @endisset
+                                                @endif
                                             />
                                             <label for="{{ $model }}_{{ $key }}">{{ $choice["name"] }}</label>
                                         </div>
                                     @endforeach
-                                @endisset
+                                @endif
                             </div>
                             @if ($withReinitButton || $withDisplayButton)
                                 <div class="bottom">
@@ -160,12 +158,12 @@
 
                     $selectedOptions = [];
 
-                    if ($baseName && isset($values[$baseName])) {
+                    if ($baseName && !empty($values[$baseName])) {
                         foreach ($values[$baseName] as $fieldName => $fieldValue) {
                             if ((is_bool($fieldValue) && $fieldValue) || (is_string($fieldValue) && $fieldValue === "true")) {
                                 if (
                                     $associatedOption = array_find($value["choices"], function ($option) use ($fieldName) {
-                                        return isset($option[Listing::KEY_SLUG], $option[Listing::KEY_NAME]) && $option["slug"] === $fieldName;
+                                        return !empty($option[Listing::KEY_SLUG]) && !empty($option[Listing::KEY_NAME]) && $option["slug"] === $fieldName;
                                     })
                                 ) {
                                     $selectedOptions[] = $associatedOption;
@@ -198,24 +196,24 @@
 
                         <div class="dropdown">
                             <div class="values">
-                                @isset($value["choices"])
+                                @if (!empty($value["choices"]))
                                     @foreach ($value["choices"] as $key => $choice)
                                         <div wire:key="{{ $key }}">
                                             <input
                                                 type="checkbox"
                                                 id="{{ $model }}_{{ $key }}"
                                                 name="{{ $model }}.{{ $choice["slug"] }}"
-                                                @if($model) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif
-                                                @isset($values[$value["name"]][$choice["slug"]])
+                                                @if (!empty($model)) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif
+                                                @if (!empty($values[$value["name"]][$choice["slug"]]))
                                                     @if ($values[$value["name"]][$choice["slug"]] == "true")
                                                         checked="checked"
                                                     @endif
-                                                @endisset
+                                                @endif
                                             />
                                             <label for="{{ $model }}_{{ $key }}">{{ $choice["name"] }}</label>
                                         </div>
                                     @endforeach
-                                @endisset
+                                @endif
                             </div>
                             @if ($withReinitButton || $withDisplayButton)
                                 <div class="bottom">

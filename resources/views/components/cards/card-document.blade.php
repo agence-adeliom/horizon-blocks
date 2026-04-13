@@ -1,4 +1,4 @@
-@if ($document['file'])
+@if (!empty($document['file']))
     @php
         $filesizeInBytes = $document['file']['filesize'];
 

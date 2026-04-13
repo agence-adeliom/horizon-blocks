@@ -1,4 +1,4 @@
-@if ($fields && $fields['items'])
+@if (!empty($fields) && !empty($fields['items']))
     @php
         $type = $fields['type'] ?? 'default';
         $withBg = $type === 'with_bg';
@@ -34,17 +34,17 @@
                     'bg-neutral-100' => $framed,
                     'p-xlarge' => $framed || $withBg,
                 ])>
-                    @if (!empty($item['icon']) && $item['icon'])
+                    @if (!empty($item['icon']))
                         <x-ui.icon :icon="$item['icon']" class="icon-24 text-primary lg:w-10 lg:h-10" />
                     @endif
 
-                    @if (!empty($item['data']) && $item['data'])
+                    @if (!empty($item['data']))
                         <div @class(['heading text-3xlarge md:text-4xlarge lg:text-6xlarge'])>
                             {{ $item['data'] }}
                         </div>
                     @endif
 
-                    @if (!empty($item['title']) && $item['title'])
+                    @if (!empty($item['title']))
                         <div class="text-large text-text-secondary">
                             {{ $item['title'] }}
                         </div>

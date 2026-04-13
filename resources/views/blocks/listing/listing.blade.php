@@ -6,7 +6,7 @@
     $filters = $fields['filters'] ?? [];
     $secondaryFilters = $fields['secondaryFilters'] ?? [];
     $secondaryFiltersLabel = $fields['secondaryFiltersButtonLabel'] ?? 'Filtres avancés';
-    $hasSecondaryFilters = !empty($secondaryFilters) && $fields['withSecondaryFilters'];
+    $hasSecondaryFilters = !empty($secondaryFilters) && !empty($fields['withSecondaryFilters']);
     $secondaryFiltersTitle = $fields['secondaryFiltersTitle'] ?? null;
     $forcedFilters = $fields['forcedFilters'] ?? [];
     $innerCards = [];

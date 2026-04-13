@@ -7,25 +7,25 @@
 
     <div class="grid-12">
         <div class="lg:col-span-5 lg:mr-12">
-            @isset($fields['img'])
+            @if (!empty($fields['img']))
                 <x-media.img :image="$fields['img']" class="w-20 mb-3" size="thumbnail" />
-            @endisset
+            @endif
 
-            @isset($fields['uptitle'])
+            @if (!empty($fields['uptitle']))
                 <x-typography.uptitle :content="$fields['uptitle']" />
-            @endisset
+            @endif
 
-            @isset($fields['title'])
+            @if (!empty($fields['title']))
                 <x-typography.heading :fields="$fields['title']" size="3" />
-            @endisset
+            @endif
 
-            @isset($fields['wysiwyg'])
+            @if (!empty($fields['wysiwyg']))
                 <x-typography.text :content="$fields['wysiwyg']" class="pt-medium" />
-            @endisset
+            @endif
 
         </div>
         <div class="lg:col-span-7 flex flex-col gap-medium">
-            @if (!empty($fields['questions']) && $fields['questions'])
+            @if (!empty($fields['questions']))
                 @foreach ($fields['questions'] as $question)
                     <x-cards.card-faq :question="$question" />
                 @endforeach

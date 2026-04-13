@@ -1,4 +1,4 @@
-@if ($fields)
+@if (!empty($fields))
     <x-block :fields="$fields" :block="$block" class="overflow-hidden">
         <div class="flex w-full flex-col gap-8 lg:gap-10">
             <div class="grid-12">
@@ -17,11 +17,11 @@
 
                     @if (!empty($context['global-rating']) || !empty($context['btn-reviews']))
                         <div class="mt-2 flex flex-col items-center gap-4 lg:mt-4 lg:flex-row lg:gap-6">
-                            @if (!empty($context['global-rating']) && $context['global-rating'])
+                            @if (!empty($context['global-rating']))
                                 <x-ui.rating :score="$context['global-rating']" showScore />
                             @endif
 
-                            @if (!empty($context['btn-reviews']) && $context['btn-reviews']['link'])
+                            @if (!empty($context['btn-reviews']) && !empty($context['btn-reviews']['link']))
                                 <x-action.button :fields="$context['btn-reviews']" icon="fas-arrow-right" type="tertiary" />
                             @endif
                         </div>
@@ -32,7 +32,7 @@
             <div class="col-span-full" x-data="initReviewsSlider()">
                 <div class="swiper w-full overflow-visible" x-ref="swiperContainer">
                     <div class="swiper-wrapper cursor-grab">
-                        @if (!empty($fields['reviews']) && $fields['reviews'])
+                        @if (!empty($fields['reviews']))
                             @foreach ($fields['reviews'] as $review)
                                 @if (is_object($review) && property_exists($review, 'ID'))
                                     <x-cards.card-customer-review :review="get_fields($review->ID)" class="swiper-slide" />

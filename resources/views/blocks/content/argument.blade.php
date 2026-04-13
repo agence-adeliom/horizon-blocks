@@ -13,19 +13,21 @@
             </div>
 
             <div class="lg:hidden">
-                @foreach ($fields['args'] as $arg)
-                    <div class="mt-6 flex flex-col gap-4">
-                        <div class="flex flex-col gap-2">
-                            <h3 class="step-title{{ $loop->index }} text-md font-semibold">
-                                {{ $arg['arg_title'] }}</h3>
-                            <p class="p step-desc{{ $loop->index }}">{{ $arg['arg_desc'] }}</p>
-                            <x-typography.text x-ref="stepTitle" :content="$arg['arg_desc']" />
+                @if (!empty($fields['args']))
+                    @foreach ($fields['args'] as $arg)
+                        <div class="mt-6 flex flex-col gap-4">
+                            <div class="flex flex-col gap-2">
+                                <h3 class="step-title{{ $loop->index }} text-md font-semibold">
+                                    {{ $arg['arg_title'] }}</h3>
+                                <p class="p step-desc{{ $loop->index }}">{{ $arg['arg_desc'] }}</p>
+                                <x-typography.text x-ref="stepTitle" :content="$arg['arg_desc']" />
+                            </div>
+                            @if(!empty($arg['arg_img']))
+                                <x-media.img ratio="aspect-square" container-class="max-w-[500px]" :image="$arg['arg_img']" />
+                            @endif
                         </div>
-                        @if(!empty($arg['arg_img']))
-                            <x-media.img ratio="aspect-square" container-class="max-w-[500px]" :image="$arg['arg_img']" />
-                        @endif
-                    </div>
-                @endforeach
+                    @endforeach
+                @endif
             </div>
             <div class="mt-8 flex items-center justify-between">
                 @if(!empty($fields['button']))
@@ -45,13 +47,15 @@
 
         <div class="swiper-container max-lg:hidden lg:col-span-6 lg:col-start-7" x-ref="swiperContainer">
             <div class="swiper-wrapper">
-                @foreach ($fields['args'] as $arg)
-                    @if(!empty($arg['arg_img']))
-                        <div class="swiper-slide">
-                            <x-media.img ratio="aspect-square" container-class="" :image="$arg['arg_img']" />
-                        </div>
-                    @endif
-                @endforeach
+                @if (!empty($fields['args']))
+                    @foreach ($fields['args'] as $arg)
+                        @if(!empty($arg['arg_img']))
+                            <div class="swiper-slide">
+                                <x-media.img ratio="aspect-square" container-class="" :image="$arg['arg_img']" />
+                            </div>
+                        @endif
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

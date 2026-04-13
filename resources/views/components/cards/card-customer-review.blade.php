@@ -1,4 +1,4 @@
-@if (isset($review) && $review)
+@if (!empty($review))
     <div @class([
         'card-customer-review',
         'relative flex flex-col gap-card rounded-card border-card p-card',
@@ -9,16 +9,16 @@
             $reviewer = $review['reviewer'] ?? null;
         @endphp
 
-        @isset($reviewInfo['rating'])
+        @if (!empty($reviewInfo['rating']))
             <x-ui.rating :score="$reviewInfo['rating']" />
-        @endisset
+        @endif
 
-        @isset($reviewInfo['review'])
+        @if (!empty($reviewInfo['review']))
             <p>{{ $reviewInfo['review'] }}</p>
-        @endisset
+        @endif
 
         <div class="flex items-center gap-small">
-            @if (@isset($reviewer['avatar']) && $reviewer['avatar'] !== false)
+            @if (!empty($reviewer['avatar']))
                 <x-media.img :image="$reviewer['avatar']" class="h-10 w-10 flex-none rounded-pill" size="thumbnail" />
             @else
                 <div
