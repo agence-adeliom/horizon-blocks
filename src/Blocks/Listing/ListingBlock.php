@@ -325,6 +325,9 @@ class ListingBlock extends AbstractBlock
 
 	private function filterFields(): iterable
 	{
+		$availableFields = $this->getAvailableFilterChoices();
+		$availableTaxonomies = $this->getAvailableTaxonomies();
+
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
 			$fields = [
 				Repeater::make(__('Filtres primaires'), self::FIELD_FILTERS)
