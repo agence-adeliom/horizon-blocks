@@ -24,6 +24,7 @@ class CardsBlock extends AbstractBlock
 	public static ?string $icon = 'grid-view';
 
 	public const string FIELD_CARDS = 'cards';
+	public const string FIELD_CARD_IMAGE = 'img';
 
 	public function getFields(): ?iterable
 	{
@@ -36,7 +37,7 @@ class CardsBlock extends AbstractBlock
 					HeadingField::make(),
 					WysiwygField::minimal(),
 					ButtonField::make()->required(),
-					Image::make("Image", "img")->required(),
+					Image::make("Image", self::FIELD_CARD_IMAGE)->required(),
 				])
 				->layout('row')
 				->collapsed(HeadingField::NAME)

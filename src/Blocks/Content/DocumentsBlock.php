@@ -22,6 +22,8 @@ class DocumentsBlock extends AbstractBlock
     public static ?string $mode = 'preview';
 
     public const string FIELD_DOCUMENTS = 'documents';
+    public const string FIELD_DOCUMENT_TITLE = 'title';
+    public const string FIELD_DOCUMENT_FILE = 'file';
 
     public function getFields(): ?iterable
     {
@@ -31,8 +33,8 @@ class DocumentsBlock extends AbstractBlock
             WysiwygField::minimal(),
             Repeater::make("Documents", self::FIELD_DOCUMENTS)
                 ->fields([
-                    Text::make("Titre du document", "title")->required(),
-                    File::make("Document", "file")->required()
+                    Text::make("Titre du document", self::FIELD_DOCUMENT_TITLE)->required(),
+                    File::make("Document", self::FIELD_DOCUMENT_FILE)->required()
                 ])
                 ->layout('row')
                 ->collapsed(HeadingField::NAME)
