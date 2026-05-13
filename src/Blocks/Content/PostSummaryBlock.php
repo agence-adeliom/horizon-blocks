@@ -38,7 +38,9 @@ class PostSummaryBlock extends AbstractBlock
 
         $titlesOverride = null;
 
-        $currentPostId = is_admin() ? $_GET['post'] ?? ($_POST['post_id'] ?? null) : get_the_ID();
+        $currentPostId = is_admin()
+            ? absint(wp_unslash($_GET['post'] ?? $_POST['post_id'] ?? 0))
+            : get_the_ID();
 
         if ($currentPostId) {
             $query = <<<EOF
