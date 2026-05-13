@@ -23,7 +23,7 @@
 			@endif
 		</div>
 		@if(!empty($fields[GalleryBlock::FIELD_GALLERY]))
-			<div class="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 {{ count($fields['gallery']) % 4 === 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }}"
+			<div class="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 {{ count($fields[GalleryBlock::FIELD_GALLERY]) % 4 === 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }}"
 			     x-data="initGallery()">
 				{{-- Grille des images --}}
 				@foreach ($fields[GalleryBlock::FIELD_GALLERY] as $item)
@@ -51,7 +51,7 @@
 							<x-far-xmark />
 						</x-action.button>
 						<div class="swiper-wrapper">
-							@foreach ($fields['gallery'] as $item)
+							@foreach ($fields[GalleryBlock::FIELD_GALLERY] as $item)
 								<div class="swiper-slide w-full h-full">
 									<x-media.img :image="$item" class=" max-w-full max-h-full object-contain"
 									             size="full"
