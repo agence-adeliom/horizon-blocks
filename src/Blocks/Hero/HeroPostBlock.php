@@ -25,7 +25,7 @@ class HeroPostBlock extends AbstractBlock
 
     public function getFields(): ?iterable
     {
-        return null;
+        yield from [];
     }
 
     public function addToContext(): array
