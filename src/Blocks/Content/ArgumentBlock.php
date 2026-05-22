@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Blocks\Content;
 
+use Adeliom\HorizonBlocks\Concerns\EnqueuesBlockAssets;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Buttons\ButtonField;
 use Adeliom\HorizonTools\Fields\Layout\LayoutField;
@@ -12,13 +13,14 @@ use Adeliom\HorizonTools\Fields\Tabs\ContentTab;
 use Adeliom\HorizonTools\Fields\Tabs\LayoutTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
-use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Text;
 use Extended\ACF\Fields\Textarea;
 
 class ArgumentBlock extends AbstractBlock
 {
+    use EnqueuesBlockAssets;
+
     public const string FIELD_ARGS = "args";
     public const string FIELD_ARG_TITLE = "arg_title";
     public const string FIELD_ARG_DESC = "arg_desc";
@@ -56,14 +58,6 @@ class ArgumentBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-		switch (true) {
-			case CompilationService::shouldUseBud():
-				CompilationService::getAsset('arguments.js')?->enqueue();
-				CompilationService::getAsset('arguments.css')?->enqueue();
-				break;
-			default:
-				CompilationService::getAsset('resources/scripts/blocks/arguments.ts')?->enqueueAll();
-				break;
-		}
+        $this->enqueueBlockScript('arguments', withCss: true);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Blocks\Listing;
 
+use Adeliom\HorizonBlocks\Concerns\EnqueuesBlockAssets;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Enum\FilterTypesEnum;
 use Adeliom\HorizonTools\Fields\Select\PostTypeSelectField;
@@ -14,7 +15,6 @@ use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
 use Adeliom\HorizonTools\Services\ClassService;
-use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Adeliom\HorizonTools\Services\FileService;
 use Adeliom\HorizonTools\Services\PostService;
 use Adeliom\HorizonTools\Taxonomies\AbstractTaxonomy;
@@ -35,6 +35,8 @@ use Illuminate\Support\Facades\Cache;
 
 class ListingBlock extends AbstractBlock
 {
+	use EnqueuesBlockAssets;
+
 	public static ?string $slug = 'listing';
 	public static ?string $title = 'Liste d’éléments';
 	public static ?string $mode = 'preview';
@@ -385,14 +387,7 @@ class ListingBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		switch (true) {
-			case CompilationService::shouldUseBud():
-				CompilationService::getAsset('listing.js')?->enqueue();
-				break;
-			default:
-				CompilationService::getAsset('resources/scripts/blocks/listing.ts')?->enqueue();
-				break;
-		}
+		$this->enqueueBlockScript('listing');
 	}
 
 	private function getAvailableFilterChoices(int $level = 1): array

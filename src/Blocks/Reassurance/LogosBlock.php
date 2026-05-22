@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Blocks\Reassurance;
 
+use Adeliom\HorizonBlocks\Concerns\EnqueuesBlockAssets;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Layout\LayoutField;
 use Adeliom\HorizonTools\Fields\Tabs\ContentTab;
@@ -11,13 +12,14 @@ use Adeliom\HorizonTools\Fields\Tabs\LayoutTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
-use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\Link;
 use Extended\ACF\Fields\Repeater;
 
 class LogosBlock extends AbstractBlock
 {
+    use EnqueuesBlockAssets;
+
     public const string FIELD_LOGOS = 'logos';
     public const string FIELD_LOGO = 'logo';
     public const string FIELD_LINK = 'link';
@@ -55,14 +57,6 @@ class LogosBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-		switch (true) {
-			case CompilationService::shouldUseBud():
-				CompilationService::getAsset('logos.js')?->enqueue();
-				CompilationService::getAsset('logos.css')?->enqueue();
-				break;
-			default:
-				CompilationService::getAsset('resources/scripts/blocks/logos.ts')?->enqueueAll();
-				break;
-		}
+        $this->enqueueBlockScript('logos', withCss: true);
     }
 }

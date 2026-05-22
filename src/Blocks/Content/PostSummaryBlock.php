@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Blocks\Content;
 
+use Adeliom\HorizonBlocks\Concerns\EnqueuesBlockAssets;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Choices\TrueFalseField;
 use Adeliom\HorizonTools\Services\BlogPostService;
-use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use App\Admin\Post\PostSummaryAdmin;
 use Extended\ACF\ConditionalLogic;
 use Extended\ACF\Fields\Text;
 
 class PostSummaryBlock extends AbstractBlock
 {
+    use EnqueuesBlockAssets;
+
     public static ?string $slug = 'post-summary';
     public static ?string $title = 'Sommaire article';
     public static ?string $mode = 'preview';
@@ -96,14 +98,7 @@ class PostSummaryBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-        switch (true) {
-            case CompilationService::shouldUseBud():
-                CompilationService::getAsset('post-summary.js')?->enqueue();
-                break;
-            default:
-                CompilationService::getAsset('resources/scripts/blocks/post-summary.ts')?->enqueue();
-                break;
-        }
+        $this->enqueueBlockScript('post-summary');
     }
 
     public function getPostTypes(): ?array

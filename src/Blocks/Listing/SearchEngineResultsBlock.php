@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Blocks\Listing;
 
+use Adeliom\HorizonBlocks\Concerns\EnqueuesBlockAssets;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
-use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Adeliom\HorizonTools\Services\SearchEngineService;
 use Extended\ACF\Fields\Message;
 
 class SearchEngineResultsBlock extends AbstractBlock
 {
+	use EnqueuesBlockAssets;
+
 	public static ?string $slug = 'search-engine-results';
 	public static ?string $title = 'Résultats du moteur de recherche';
 	public static ?string $mode = 'preview';
@@ -30,13 +32,6 @@ class SearchEngineResultsBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		switch (true) {
-			case CompilationService::shouldUseBud():
-				CompilationService::getAsset('search-engine-results.css')?->enqueue();
-				break;
-			default:
-				CompilationService::getAsset('resources/styles/blocks/search-engine-results.css')?->enqueue();
-				break;
-		}
+		$this->enqueueBlockStyle('search-engine-results');
 	}
 }

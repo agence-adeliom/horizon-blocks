@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Blocks\Content;
 
+use Adeliom\HorizonBlocks\Concerns\EnqueuesBlockAssets;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Buttons\ButtonField;
 use Adeliom\HorizonTools\Fields\Layout\LayoutField;
@@ -13,12 +14,13 @@ use Adeliom\HorizonTools\Fields\Tabs\MediaTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
-use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 use Extended\ACF\Fields\Gallery;
 
 
 class GalleryBlock extends AbstractBlock
 {
+    use EnqueuesBlockAssets;
+
     public const string FIELD_GALLERY = "gallery";
     public static ?string $slug = 'gallery';
     public static ?string $title = 'Galerie';
@@ -51,13 +53,6 @@ class GalleryBlock extends AbstractBlock
 
     public function renderBlockCallback(): void
     {
-		switch (true) {
-			case CompilationService::shouldUseBud():
-				CompilationService::getAsset('gallery.js')?->enqueue();
-				break;
-			default:
-				CompilationService::getAsset('resources/scripts/blocks/gallery.ts')?->enqueue();
-				break;
-		}
+        $this->enqueueBlockScript('gallery');
     }
 }
