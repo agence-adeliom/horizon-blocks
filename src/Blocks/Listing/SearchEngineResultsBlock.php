@@ -35,7 +35,7 @@ class SearchEngineResultsBlock extends AbstractBlock
 				CompilationService::getAsset('search-engine-results.css')?->enqueue();
 				break;
 			default:
-				CompilationService::getAsset('resources/styles/components/blocks/search-engine-results.css')?->enqueue();
+				CompilationService::getAsset('resources/styles/blocks/search-engine-results.css')?->enqueue();
 				break;
 		}
 	}

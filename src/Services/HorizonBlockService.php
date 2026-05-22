@@ -78,7 +78,7 @@ class HorizonBlockService
             ],
             SearchEngineResultsBlock::class => [
                 self::REQUIRES_LIVEWIRE => true,
-                self::ASSET_FILES => ['resources/styles/components/blocks/search-engine-results.css'],
+                self::ASSET_FILES => ['resources/styles/blocks/search-engine-results.css'],
                 self::LIVEWIRE_COMPONENTS => [SearchEngineResults::class],
                 self::COMPONENTS => [MergedResults::class, SeparatedResults::class],
             ],
