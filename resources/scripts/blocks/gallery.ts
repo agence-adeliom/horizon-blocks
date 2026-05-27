@@ -36,8 +36,33 @@ document.addEventListener('alpine:init', () => {
                 };
                 this.swiper = new Swiper(this.$refs.swiperContainer, swiperParams);
 
+                if (this.$refs.horizontalContainer) {
+                    const horizontalParams = {
+                        modules: [Navigation],
+                        slidesPerView: 1.2,
+                        spaceBetween: 16,
+                        loop: false,
+                        mousewheel: true,
+                        navigation: {
+                            nextEl: this.$refs.horizontalNext,
+                            prevEl: this.$refs.horizontalPrev,
+                            disabledClass: 'opacity-50 pointer-events-none',
+                        },
+                        breakpoints: {
+                            1024: {
+                                slidesPerView: 3.2,
+                                spaceBetween: 24,
+                            },
+                        },
+                    };
+                    this.horizontalSwiper = new Swiper(this.$refs.horizontalContainer, horizontalParams);
+                }
+
                 this.$nextTick(() => {
                     this.swiper.init();
+                    if (this.horizontalSwiper) {
+                        this.horizontalSwiper.init();
+                    }
                 });
             },
         };

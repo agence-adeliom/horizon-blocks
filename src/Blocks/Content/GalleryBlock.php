@@ -14,6 +14,7 @@ use Adeliom\HorizonTools\Fields\Tabs\MediaTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
+use Extended\ACF\Fields\ButtonGroup;
 use Extended\ACF\Fields\Gallery;
 
 
@@ -22,6 +23,9 @@ class GalleryBlock extends AbstractBlock
     use EnqueuesBlockAssets;
 
     public const string FIELD_GALLERY = "gallery";
+    public const string FIELD_DISPLAY_TYPE = "display_type";
+    public const string VALUE_DISPLAY_MOSAIC = "mosaic";
+    public const string VALUE_DISPLAY_SLIDER = "slider";
     public static ?string $slug = 'gallery';
     public static ?string $title = 'Galerie';
     public static ?string $mode = 'preview';
@@ -42,6 +46,12 @@ class GalleryBlock extends AbstractBlock
         ]);
 
         yield from LayoutTab::make()->fields([
+            ButtonGroup::make(__('Affichage'), self::FIELD_DISPLAY_TYPE)
+                ->default(self::VALUE_DISPLAY_MOSAIC)
+                ->choices([
+                    self::VALUE_DISPLAY_MOSAIC => __('Mosaïque'),
+                    self::VALUE_DISPLAY_SLIDER => __('Slider horizontal'),
+                ]),
             LayoutField::margin(),
         ]);
     }
