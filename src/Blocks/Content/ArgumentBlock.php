@@ -27,6 +27,8 @@ class ArgumentBlock extends AbstractBlock
     public const string FIELD_ARG_IMG = "arg_img";
     public static ?string $slug = 'argument';
     public static ?string $title = 'Arguments';
+    public static ?string $icon = 'editor-ul';
+    public static ?string $description = "Présente une liste d'arguments ou bénéfices sous forme de points clés.";
 
     public function getFields(): ?iterable
     {

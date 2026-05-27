@@ -20,6 +20,7 @@ class WysiwygBlock extends AbstractBlock
 	public static ?string $title = 'Texte simple';
 	public static ?string $mode = 'preview';
 	public static ?string $icon = 'text';
+	public static ?string $description = 'Affiche un texte enrichi avec sur-titre, titre et boutons optionnels.';
 
 	public const string FIELD_ALIGNMENT = 'alignment';
 	public const string VALUE_ALIGNMENT_CENTER = 'center';

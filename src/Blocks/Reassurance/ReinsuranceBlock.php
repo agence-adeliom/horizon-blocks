@@ -23,6 +23,7 @@ class ReinsuranceBlock extends AbstractBlock
     public static ?string $slug = 'reinsurance';
     public static ?string $title = 'Réassurance';
     public static string $category = 'reassurance';
+    public static ?string $icon = 'shield';
     public static ?string $description = "Éléments visuels et textuels destinés à renforcer la confiance.";
 
     public function getFields(): ?iterable

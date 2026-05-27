@@ -19,6 +19,8 @@ class CatchphraseBlock extends AbstractBlock
     public static ?string $slug = 'catchphrase';
     public static ?string $title = 'Accroche';
     public static ?string $mode = 'preview';
+    public static ?string $icon = 'format-quote';
+    public static ?string $description = "Met en avant une phrase d'accroche pour capter l'attention.";
 
 
     public const string FIELD_BG = 'bg';

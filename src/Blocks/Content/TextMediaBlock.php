@@ -19,6 +19,7 @@ class TextMediaBlock extends AbstractBlock
 {
 	public static ?string $slug = 'text-media';
 	public static ?string $title = 'Texte + média';
+	public static ?string $icon = 'align-pull-left';
 	public static ?string $description = 'Combine contenu texte et élément visuel (image ou vidéo) pour apporter de l’information.';
 	public static ?string $mode = 'preview';
 

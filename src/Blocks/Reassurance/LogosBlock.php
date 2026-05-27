@@ -25,6 +25,7 @@ class LogosBlock extends AbstractBlock
     public const string FIELD_LINK = 'link';
     public static ?string $slug = 'logos';
     public static ?string $title = 'Logos';
+    public static ?string $icon = 'images-alt2';
     public static ?string $description = "Affiche une série de logos comme des clients, partenaires ou certifications.";
 
     public function getFields(): ?iterable

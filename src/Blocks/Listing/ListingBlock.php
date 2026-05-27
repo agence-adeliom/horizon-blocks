@@ -41,6 +41,7 @@ class ListingBlock extends AbstractBlock
 	public static ?string $title = 'Liste d’éléments';
 	public static ?string $mode = 'preview';
 	public static ?string $icon = 'list-view';
+	public static ?string $description = "Affiche une liste filtrable et paginée d'articles ou de contenus.";
 
 	private array $treatedFields = [];
 

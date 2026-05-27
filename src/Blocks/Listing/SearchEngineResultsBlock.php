@@ -16,6 +16,8 @@ class SearchEngineResultsBlock extends AbstractBlock
 	public static ?string $slug = 'search-engine-results';
 	public static ?string $title = 'Résultats du moteur de recherche';
 	public static ?string $mode = 'preview';
+	public static ?string $icon = 'search';
+	public static ?string $description = 'Affiche les résultats de la recherche du site avec pagination.';
 
 	public function getFields(): ?iterable
 	{

@@ -19,6 +19,7 @@ class PostSummaryBlock extends AbstractBlock
     public static ?string $slug = 'post-summary';
     public static ?string $title = 'Sommaire article';
     public static ?string $mode = 'preview';
+    public static ?string $icon = 'excerpt-view';
     public static ?string $description = 'Donne un aperçu des sections de l’article afin de faciliter la navigation.';
 
     public const string FIELD_IS_TOP = 'top';

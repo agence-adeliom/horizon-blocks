@@ -23,6 +23,7 @@ class CustomerReviewBlock extends AbstractBlock
     public const string FIELD_REVIEWS = 'reviews';
     public static ?string $slug = 'customer-review';
     public static ?string $title = 'Avis clients';
+    public static ?string $icon = 'star-filled';
     public static ?string $description = 'Affiche une série de témoignages clients, ainsi que la note globale attribuée.';
 
     public function getFields(): ?iterable

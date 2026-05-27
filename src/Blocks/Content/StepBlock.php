@@ -24,6 +24,7 @@ class StepBlock extends AbstractBlock
 	public static ?string $slug = 'step';
 	public static ?string $title = 'Étapes';
 	public static ?string $icon = 'list-view';
+	public static ?string $description = "Présente un processus ou une progression sous forme d'étapes numérotées.";
 
 	public const string FIELD_STEPS = 'steps';
 	public const string FIELD_STEP_TITLE = 'title';

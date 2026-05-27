@@ -23,6 +23,8 @@ class PricesBlock extends AbstractBlock
 	public static ?string $slug = 'prices';
 	public static ?string $title = 'Tarifs';
 	public static ?string $mode = 'preview';
+	public static ?string $icon = 'money-alt';
+	public static ?string $description = 'Présente différentes formules tarifaires sous forme de cartes comparatives.';
 
 	public const string FIELD_PRICES = 'prices';
 	public const string FIELD_PRICE_TITLE = 'title';

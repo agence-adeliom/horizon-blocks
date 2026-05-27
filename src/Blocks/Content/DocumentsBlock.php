@@ -20,6 +20,8 @@ class DocumentsBlock extends AbstractBlock
     public static ?string $slug = 'documents';
     public static ?string $title = 'Documents';
     public static ?string $mode = 'preview';
+    public static ?string $icon = 'media-document';
+    public static ?string $description = 'Affiche une liste de documents téléchargeables.';
 
     public const string FIELD_DOCUMENTS = 'documents';
     public const string FIELD_DOCUMENT_TITLE = 'title';

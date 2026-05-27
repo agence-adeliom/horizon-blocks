@@ -26,6 +26,7 @@ class KeyFigureBlock extends AbstractBlock
     private const int TITLE_MAX_LENGTH = 100;
     public static ?string $slug = 'key-figure';
     public static ?string $title = 'Chiffres clés';
+    public static ?string $icon = 'chart-bar';
     public static ?string $description = "Chiffres percutants destinés à renforcer la crédibilité ou souligner des données marquantes.";
 
     public function getFields(): ?iterable
