@@ -47,7 +47,7 @@ class StepBlock extends AbstractBlock
 				->collapsed(self::FIELD_STEP_TITLE)
 				->layout('block')
 				->minRows(3)
-				->maxRows(3),
+				->maxRows(4),
 		]);
 
 		yield from LayoutTab::make()->fields([
