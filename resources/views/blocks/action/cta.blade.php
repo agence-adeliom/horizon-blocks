@@ -1,5 +1,5 @@
 @php
-    $isFullWidth = !empty($fields['appearance']) && $fields['appearance'] == 'full-width';
+    $isFullWidth = !empty($fields['appearance']) && $fields['appearance'] == 'fullWidth';
 @endphp
 <x-block :fields="$fields" :block="$block" background="{{ $isFullWidth ? 'primary' : '' }}" padding="none">
     <div

@@ -14,8 +14,8 @@
             @endif
         </div>
         <div class="bg-background p-5xlarge rounded-card lg:col-span-6">
-            @if (!empty($fields['form-title']))
-                <x-typography.heading :fields="$fields['form-title']" size="5" />
+            @if (!empty($fields['formTitle']))
+                <x-typography.heading :fields="$fields['formTitle']" size="5" />
             @endif
 
             @if (!empty($fields['desc']))

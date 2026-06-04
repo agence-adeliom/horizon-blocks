@@ -17,7 +17,7 @@ use Extended\ACF\Fields\Image;
 
 class HighlightBlock extends AbstractBlock
 {
-    public const string FIELD_MAIN_IMAGE = "main_image";
+    public const string FIELD_MAIN_IMAGE = "mainImage";
     public static ?string $slug = 'highlight';
     public static ?string $icon = 'lightbulb';
     public static ?string $title = 'Mise en avant';

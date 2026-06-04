@@ -27,10 +27,10 @@ class FormBlock extends AbstractBlock
 	public const string FIELD_POSITION = "position";
 	public const string FIELD_POS_LEFT = "left";
 	public const string FIELD_POS_CENTER = "center";
-	public const string FIELD_BG_TYPE = 'bg-type';
-	public const string FIELD_BG_IMAGE = 'bg-image';
-	public const string BG_COLOR_TYPE = "bg-color-type";
-	public const string BG_IMAGE_TYPE = "bg-image-type";
+	public const string FIELD_BG_TYPE = 'bgType';
+	public const string FIELD_BG_IMAGE = 'bgImage';
+	public const string BG_COLOR_TYPE = "bgColorType";
+	public const string BG_IMAGE_TYPE = "bgImageType";
 
 	public function getFields(): ?iterable
 	{

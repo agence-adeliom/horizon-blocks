@@ -17,7 +17,7 @@ use Extended\ACF\Fields\Image;
 
 class HeroBlock extends AbstractBlock
 {
-    public const string FIELD_MAIN_IMAGE = "main_image";
+    public const string FIELD_MAIN_IMAGE = "mainImage";
     public static ?string $slug = 'hero';
     public static ?string $title = 'Haut de page';
     public static ?string $icon = 'admin-home';

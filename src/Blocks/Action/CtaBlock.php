@@ -22,7 +22,7 @@ class CtaBlock extends AbstractBlock
 
 	public const string FIELD_APPARENCE = "appearance";
 	public const string FIELD_APPARENCE_DEFAULT = "default";
-	public const string FIELD_APPARENCE_FULL_WIDTH = "full-width";
+	public const string FIELD_APPARENCE_FULL_WIDTH = "fullWidth";
 
 	public function getFields(): ?iterable
 	{

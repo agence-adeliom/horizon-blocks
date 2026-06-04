@@ -18,12 +18,12 @@
                         <div class="mt-6 flex flex-col gap-4">
                             <div class="flex flex-col gap-2">
                                 <h3 class="step-title{{ $loop->index }} text-md font-semibold">
-                                    {{ $arg['arg_title'] }}</h3>
-                                <p class="p step-desc{{ $loop->index }}">{{ $arg['arg_desc'] }}</p>
-                                <x-typography.text x-ref="stepTitle" :content="$arg['arg_desc']" />
+                                    {{ $arg['argTitle'] }}</h3>
+                                <p class="p step-desc{{ $loop->index }}">{{ $arg['argDesc'] }}</p>
+                                <x-typography.text x-ref="stepTitle" :content="$arg['argDesc']" />
                             </div>
-                            @if(!empty($arg['arg_img']))
-                                <x-media.img ratio="aspect-square" container-class="max-w-[500px]" :image="$arg['arg_img']" />
+                            @if(!empty($arg['argImg']))
+                                <x-media.img ratio="aspect-square" container-class="max-w-[500px]" :image="$arg['argImg']" />
                             @endif
                         </div>
                     @endforeach
@@ -49,9 +49,9 @@
             <div class="swiper-wrapper">
                 @if (!empty($fields['args']))
                     @foreach ($fields['args'] as $arg)
-                        @if(!empty($arg['arg_img']))
+                        @if(!empty($arg['argImg']))
                             <div class="swiper-slide">
-                                <x-media.img ratio="aspect-square" container-class="" :image="$arg['arg_img']" />
+                                <x-media.img ratio="aspect-square" container-class="" :image="$arg['argImg']" />
                             </div>
                         @endif
                     @endforeach

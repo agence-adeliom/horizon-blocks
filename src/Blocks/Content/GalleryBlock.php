@@ -23,7 +23,7 @@ class GalleryBlock extends AbstractBlock
     use EnqueuesBlockAssets;
 
     public const string FIELD_GALLERY = "gallery";
-    public const string FIELD_DISPLAY_TYPE = "display_type";
+    public const string FIELD_DISPLAY_TYPE = "displayType";
     public const string VALUE_DISPLAY_MOSAIC = "mosaic";
     public const string VALUE_DISPLAY_SLIDER = "slider";
     public static ?string $slug = 'gallery';

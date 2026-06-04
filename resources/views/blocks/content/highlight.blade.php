@@ -19,7 +19,7 @@
 			@endif
 		</div>
 		<div class="col-span-full lg:col-span-4 xl:col-span-5 relative max-lg:aspect-[4/3]">
-			<x-media.img :image="$fields['main_image']" class="cover-full" size="full" container-class="w-full" />
+			<x-media.img :image="$fields['mainImage']" class="cover-full" size="full" container-class="w-full" />
 		</div>
 	</div>
 </x-block>

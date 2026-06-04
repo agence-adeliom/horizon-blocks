@@ -22,9 +22,9 @@ class ArgumentBlock extends AbstractBlock
     use EnqueuesBlockAssets;
 
     public const string FIELD_ARGS = "args";
-    public const string FIELD_ARG_TITLE = "arg_title";
-    public const string FIELD_ARG_DESC = "arg_desc";
-    public const string FIELD_ARG_IMG = "arg_img";
+    public const string FIELD_ARG_TITLE = "argTitle";
+    public const string FIELD_ARG_DESC = "argDesc";
+    public const string FIELD_ARG_IMG = "argImg";
     public static ?string $slug = 'argument';
     public static ?string $title = 'Arguments';
     public static ?string $icon = 'editor-ul';

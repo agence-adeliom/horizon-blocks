@@ -4,9 +4,9 @@
       default => '',
     };
 
-    $bgType = $fields['bg-type'] ?? 'bg-color-type';
-    $bgColor = $bgType === 'bg-color-type' ? 'bg-color-02-50' : '';
-    $bgImage = $bgType === 'bg-image-type' && !empty($fields['bg-image']) ? $fields['bg-image'] : '';
+    $bgType = $fields['bgType'] ?? 'bgColorType';
+    $bgColor = $bgType === 'bgColorType' ? 'bg-color-02-50' : '';
+    $bgImage = $bgType === 'bgImageType' && !empty($fields['bgImage']) ? $fields['bgImage'] : '';
 @endphp
 
 <x-block :fields="$fields" :block="$block" class="{{ $bgColor }} relative" background="none">
