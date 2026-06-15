@@ -15,6 +15,7 @@ use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\GalleryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\HighlightBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\PhotoCarouselBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\PostSummaryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\PricesBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\StepBlock;
@@ -139,6 +140,11 @@ class HorizonBlockService
             GalleryBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
                 self::ASSET_FILES => ['resources/scripts/blocks/gallery.ts'],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            PhotoCarouselBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => ['resources/scripts/blocks/photo-carousel.ts'],
                 self::LIVEWIRE_COMPONENTS => [],
             ],
             QuoteBlock::class => [
