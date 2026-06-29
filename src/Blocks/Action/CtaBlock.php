@@ -16,9 +16,17 @@ use Extended\ACF\Fields\RadioButton;
 class CtaBlock extends AbstractBlock
 {
 	public static ?string $slug = 'cta';
-	public static ?string $title = "Section call-to-action";
-	public static ?string $description = "Incite l'utilisateur à effectuer une action spécifique dans un objectif de conversion.";
 	public static ?string $icon = 'megaphone';
+
+	public static function getTitle(): ?string
+	{
+		return __("Section call-to-action", 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __("Incite l'utilisateur à effectuer une action spécifique dans un objectif de conversion.", 'horizon-blocks');
+	}
 
 	public const string FIELD_APPARENCE = "appearance";
 	public const string FIELD_APPARENCE_DEFAULT = "default";
@@ -28,16 +36,16 @@ class CtaBlock extends AbstractBlock
 	{
 		yield from ContentTab::make()->fields([
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
-			WysiwygField::minimal()->helperText("1 ou 2 phrases maximum recommandées."),
+			WysiwygField::minimal()->helperText(__("1 ou 2 phrases maximum recommandées.", 'horizon-blocks')),
 			ButtonField::types(),
 		]);
 
 		yield from LayoutTab::make()->fields([
 			LayoutField::margin(),
-			RadioButton::make(__("Apparence"), self::FIELD_APPARENCE)
+			RadioButton::make(__("Apparence", 'horizon-blocks'), self::FIELD_APPARENCE)
 				->choices([
-					self::FIELD_APPARENCE_DEFAULT => "Défaut",
-					self::FIELD_APPARENCE_FULL_WIDTH => "Pleine largeur",
+					self::FIELD_APPARENCE_DEFAULT => __("Défaut", 'horizon-blocks'),
+					self::FIELD_APPARENCE_FULL_WIDTH => __("Pleine largeur", 'horizon-blocks'),
 				])
 				->default("default")
 				->required(),

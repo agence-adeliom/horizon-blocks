@@ -24,9 +24,17 @@ class LogosBlock extends AbstractBlock
     public const string FIELD_LOGO = 'logo';
     public const string FIELD_LINK = 'link';
     public static ?string $slug = 'logos';
-    public static ?string $title = 'Logos';
     public static ?string $icon = 'images-alt2';
-    public static ?string $description = "Affiche une série de logos comme des clients, partenaires ou certifications.";
+
+    public static function getTitle(): ?string
+    {
+        return __('Logos', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Affiche une série de logos comme des clients, partenaires ou certifications.", 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
@@ -34,14 +42,14 @@ class LogosBlock extends AbstractBlock
             UptitleField::make(),
             HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
             WysiwygField::minimal(),
-            Repeater::make(__('Logos'), self::FIELD_LOGOS)
+            Repeater::make(__('Logos', 'horizon-blocks'), self::FIELD_LOGOS)
                 ->minRows(2)
                 ->maxRows(8)
                 ->layout('block')
                 ->collapsed(self::FIELD_LINK)
                 ->fields([
-                    Image::make(__('Logo'), self::FIELD_LOGO)->required(),
-                    Link::make(__('Lien sur le logo'), self::FIELD_LINK),
+                    Image::make(__('Logo', 'horizon-blocks'), self::FIELD_LOGO)->required(),
+                    Link::make(__('Lien sur le logo', 'horizon-blocks'), self::FIELD_LINK),
                 ]),
 
         ]);

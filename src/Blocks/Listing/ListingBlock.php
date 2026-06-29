@@ -38,10 +38,18 @@ class ListingBlock extends AbstractBlock
 	use EnqueuesBlockAssets;
 
 	public static ?string $slug = 'listing';
-	public static ?string $title = 'Liste d’éléments';
 	public static ?string $mode = 'preview';
 	public static ?string $icon = 'list-view';
-	public static ?string $description = "Affiche une liste filtrable et paginée d'articles ou de contenus.";
+
+	public static function getTitle(): ?string
+	{
+		return __('Liste d’éléments', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __("Affiche une liste filtrable et paginée d’articles ou de contenus.", 'horizon-blocks');
+	}
 
 	private array $treatedFields = [];
 
@@ -105,7 +113,7 @@ class ListingBlock extends AbstractBlock
 		});
 
 		if (self::USE_FIELDS_TO_DEFINE_FILTERS) {
-			$postTypeField->helperText('Enregistrez la page après modification de ce champ pour afficher les bonnes valeurs dans les filtres.');
+			$postTypeField->helperText(__('Enregistrez la page après modification de ce champ pour afficher les bonnes valeurs dans les filtres.', 'horizon-blocks'));
 		}
 
 		yield from ContentTab::make()->fields([
@@ -116,21 +124,21 @@ class ListingBlock extends AbstractBlock
 		]);
 
 		$layoutFields = [
-			Number::make(__('Nombre d’éléments par page'), self::FIELD_PER_PAGE)
+			Number::make(__('Nombre d’éléments par page', 'horizon-blocks'), self::FIELD_PER_PAGE)
 				->max(24)
 				->min(3)
 				->step(3),
-			TrueFalse::make(__('Afficher le tri'), self::FIELD_DISPLAY_SORT)
+			TrueFalse::make(__('Afficher le tri', 'horizon-blocks'), self::FIELD_DISPLAY_SORT)
 				->default(true)
 				->stylized(),
-			TrueFalse::make(__('Afficher le nombre de résultats'), self::FIELD_DISPLAY_NUMBER_OF_RESULTS)
+			TrueFalse::make(__('Afficher le nombre de résultats', 'horizon-blocks'), self::FIELD_DISPLAY_NUMBER_OF_RESULTS)
 				->default(true)
 				->stylized(),
-			Text::make(__('Nom des éléments au singulier'), self::FIELD_ELEMENTS_LABEL_SINGULAR)
-				->placeholder('élément')
+			Text::make(__('Nom des éléments au singulier', 'horizon-blocks'), self::FIELD_ELEMENTS_LABEL_SINGULAR)
+				->placeholder(__('élément', 'horizon-blocks'))
 				->wrapper(['width' => 50]),
-			Text::make(__('Nom des éléments au pluriel'), self::FIELD_ELEMENTS_LABEL_PLURAL)
-				->placeholder('éléments')
+			Text::make(__('Nom des éléments au pluriel', 'horizon-blocks'), self::FIELD_ELEMENTS_LABEL_PLURAL)
+				->placeholder(__('éléments', 'horizon-blocks'))
 				->wrapper(['width' => 50])
 		];
 
@@ -149,32 +157,32 @@ class ListingBlock extends AbstractBlock
 			}
 
 			if (!empty($listingCardChoices)) {
-				$layoutFields[] = Repeater::make(__('Cards internes'), self::FIELD_INNER_CARDS)
-					->helperText(__('Les cards internes sont des cards qui peuvent être insérées dans le listing, soit sur la première page, soit sur toutes les pages.'))
+				$layoutFields[] = Repeater::make(__('Cards internes', 'horizon-blocks'), self::FIELD_INNER_CARDS)
+					->helperText(__('Les cards internes sont des cards qui peuvent être insérées dans le listing, soit sur la première page, soit sur toutes les pages.', 'horizon-blocks'))
 					->layout('block')->fields([
-						Select::make(__('Card à afficher'), self::FIELD_INNER_CARD_CLASS)
+						Select::make(__('Card à afficher', 'horizon-blocks'), self::FIELD_INNER_CARD_CLASS)
 							->stylized()
 							->nullable()
 							->choices($listingCardChoices),
-						Number::make(__('Position de la card'), self::FIELD_INNER_CARD_POSITION)
+						Number::make(__('Position de la card', 'horizon-blocks'), self::FIELD_INNER_CARD_POSITION)
 							->required()
 							->conditionalLogic([
 								ConditionalLogic::where(self::FIELD_INNER_CARD_CLASS, '!=', '')
 							]),
-						RadioButton::make(__('Pages'), self::FIELD_INNER_CARD_PAGES)
+						RadioButton::make(__('Pages', 'horizon-blocks'), self::FIELD_INNER_CARD_PAGES)
 							->choices([
-								self::VALUE_INNER_CARD_PAGES_ALL => __('Toutes'),
-								self::VALUE_INNER_CARD_PAGES_FIRST => __('Première'),
-								self::VALUE_INNER_CARD_PAGES_ODD => __('Impaires'),
-								self::VALUE_INNER_CARD_PAGES_EVEN => __('Paires'),
-								self::VALUE_INNER_CARD_PAGES_CUSTOM => __('Personnalisées')
+								self::VALUE_INNER_CARD_PAGES_ALL => __('Toutes', 'horizon-blocks'),
+								self::VALUE_INNER_CARD_PAGES_FIRST => __('Première', 'horizon-blocks'),
+								self::VALUE_INNER_CARD_PAGES_ODD => __('Impaires', 'horizon-blocks'),
+								self::VALUE_INNER_CARD_PAGES_EVEN => __('Paires', 'horizon-blocks'),
+								self::VALUE_INNER_CARD_PAGES_CUSTOM => __('Personnalisées', 'horizon-blocks')
 							])
 							->conditionalLogic([
 								ConditionalLogic::where(self::FIELD_INNER_CARD_CLASS, '!=', '')
 							]),
-						Text::make(__('Pages'), self::FIELD_INNER_CARD_CUSTOM_PAGES)
+						Text::make(__('Pages', 'horizon-blocks'), self::FIELD_INNER_CARD_CUSTOM_PAGES)
 							->required()
-							->helperText(__('Indiquez les numéros de pages séparés par des virgules (ex: 1,2,3)'))
+							->helperText(__('Indiquez les numéros de pages séparés par des virgules (ex: 1,2,3)', 'horizon-blocks'))
 							->conditionalLogic([
 								ConditionalLogic::where(self::FIELD_INNER_CARD_CLASS, '!=', '')
 									->and(self::FIELD_INNER_CARD_PAGES, '==', self::VALUE_INNER_CARD_PAGES_CUSTOM)
@@ -193,23 +201,23 @@ class ListingBlock extends AbstractBlock
 	private function getMetaAppearanceChoices(): array
 	{
 		return [
-			self::VALUE_FILTER_APPEARANCE_SELECT => __('Sélection'),
-			self::VALUE_FILTER_APPEARANCE_CHECKBOX => __('Cases à cocher'),
-			self::VALUE_FILTER_APPEARANCE_RADIO => __('Choix unique'),
-			self::VALUE_FILTER_APPEARANCE_TEXT => __('Champ libre'),
-			self::VALUE_FILTER_APPEARANCE_MULTISELECT => __('Sélection multiple'),
-			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => __('Sélection unique'),
+			self::VALUE_FILTER_APPEARANCE_SELECT => __('Sélection', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_CHECKBOX => __('Cases à cocher', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_RADIO => __('Choix unique', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_TEXT => __('Champ libre', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_MULTISELECT => __('Sélection multiple', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => __('Sélection unique', 'horizon-blocks'),
 		];
 	}
 
 	private function getTaxonomyAppearanceChoices(): array
 	{
 		return [
-			self::VALUE_FILTER_APPEARANCE_SELECT => __('Sélection'),
-			self::VALUE_FILTER_APPEARANCE_CHECKBOX => __('Cases à cocher'),
-			self::VALUE_FILTER_APPEARANCE_RADIO => __('Choix unique'),
-			self::VALUE_FILTER_APPEARANCE_MULTISELECT => __('Sélection multiple'),
-			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => __('Sélection unique'),
+			self::VALUE_FILTER_APPEARANCE_SELECT => __('Sélection', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_CHECKBOX => __('Cases à cocher', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_RADIO => __('Choix unique', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_MULTISELECT => __('Sélection multiple', 'horizon-blocks'),
+			self::VALUE_FILTER_APPEARANCE_SINGLESELECT => __('Sélection unique', 'horizon-blocks'),
 		];
 	}
 
@@ -231,58 +239,58 @@ class ListingBlock extends AbstractBlock
 
 		if ($hasMeta) {
 			if (!empty($availableFields) || self::ALWAYS_DISPLAY_FILTERS) {
-				$typeChoices[FilterTypesEnum::META->value] = __('Méta');
+				$typeChoices[FilterTypesEnum::META->value] = __('Méta', 'horizon-blocks');
 			}
 		}
 
 		if ($hasTaxonomy) {
 			if (!empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
-				$typeChoices[FilterTypesEnum::TAXONOMY->value] = __('Taxonomie');
+				$typeChoices[FilterTypesEnum::TAXONOMY->value] = __('Taxonomie', 'horizon-blocks');
 			}
 		}
 
 		if ($hasSearch) {
-			$typeChoices[FilterTypesEnum::SEARCH->value] = __('Recherche');
+			$typeChoices[FilterTypesEnum::SEARCH->value] = __('Recherche', 'horizon-blocks');
 		}
 
-		$filterFields[] = ButtonGroup::make(__('Type'), self::FIELD_FILTERS_TYPE)
+		$filterFields[] = ButtonGroup::make(__('Type', 'horizon-blocks'), self::FIELD_FILTERS_TYPE)
 			->required()
 			->choices($typeChoices);
 
 		if ($hasSearch) {
-			$filterFields[] = Message::make(__('Recherche'), 'searchinfo')
-				->body(__('Actuellement, seule la recherche dans le titre et dans le contenu de l’élément sont prises en charge.'))
+			$filterFields[] = Message::make(__('Recherche', 'horizon-blocks'), 'searchinfo')
+				->body(__('Actuellement, seule la recherche dans le titre et dans le contenu de l’élément sont prises en charge.', 'horizon-blocks'))
 				->conditionalLogic([
 					ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::SEARCH->value)
 				]);
 		}
 
 		if ($withFilterName) {
-			$filterFields[] = Text::make(__('Nom du filtre'), self::FIELD_FILTERS_NAME)->required();
+			$filterFields[] = Text::make(__('Nom du filtre', 'horizon-blocks'), self::FIELD_FILTERS_NAME)->required();
 		}
 
 		if ($withDefaultText) {
-			$filterFields[] = Text::make(__('Texte par défaut du filtre'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Si non renseigné, le nom sera utilisé'));
+			$filterFields[] = Text::make(__('Texte par défaut du filtre', 'horizon-blocks'), self::FIELD_FILTERS_PLACEHOLDER)->helperText(__('Si non renseigné, le nom sera utilisé', 'horizon-blocks'));
 		}
 
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
 			if ($hasMeta) {
 				if ($withAppearance) {
-					$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_META_APPEARANCE)
+					$filterFields[] = RadioButton::make(__('Apparence du filtre', 'horizon-blocks'), self::FIELD_FILTERS_META_APPEARANCE)
 						->choices($this->getMetaAppearanceChoices())
 						->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
 
-					$filterFields[] = Text::make(__('Choix "Tous"'), self::FIELD_FILTERS_META_CHOICE_ALL)
-						->helperText(__('Laisser vide pour ne pas afficher le choix "Tous"'))
+					$filterFields[] = Text::make(__('Choix "Tous"', 'horizon-blocks'), self::FIELD_FILTERS_META_CHOICE_ALL)
+						->helperText(__('Laisser vide pour ne pas afficher le choix "Tous"', 'horizon-blocks'))
 						->conditionalLogic([
 							ConditionalLogic::where(self::FIELD_FILTERS_META_APPEARANCE, '==', self::VALUE_FILTER_APPEARANCE_RADIO),
 						]);
 				}
 
-				$filterFields[] = Select::make(__('Champ'), self::FIELD_FILTERS_FIELD)
+				$filterFields[] = Select::make(__('Champ', 'horizon-blocks'), self::FIELD_FILTERS_FIELD)
 					->stylized()
-					->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.'))
+					->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.', 'horizon-blocks'))
 					->choices($availableFields)
 					->lazyLoad()
 					->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::META->value)]);
@@ -291,21 +299,21 @@ class ListingBlock extends AbstractBlock
 
 		if ($hasTaxonomy) {
 			if ($withAppearance) {
-				$filterFields[] = RadioButton::make(__('Apparence du filtre'), self::FIELD_FILTERS_TAX_APPEARANCE)
+				$filterFields[] = RadioButton::make(__('Apparence du filtre', 'horizon-blocks'), self::FIELD_FILTERS_TAX_APPEARANCE)
 					->choices($this->getTaxonomyAppearanceChoices())
 					->default(self::VALUE_FILTER_APPEARANCE_SELECT)
 					->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
 
-				$filterFields[] = Text::make(__('Choix "Tous"'), self::FIELD_FILTERS_TAX_CHOICE_ALL)
-					->helperText(__('Laisser vide pour ne pas afficher le choix "Tous"'))
+				$filterFields[] = Text::make(__('Choix "Tous"', 'horizon-blocks'), self::FIELD_FILTERS_TAX_CHOICE_ALL)
+					->helperText(__('Laisser vide pour ne pas afficher le choix "Tous"', 'horizon-blocks'))
 					->conditionalLogic([
 						ConditionalLogic::where(self::FIELD_FILTERS_TAX_APPEARANCE, '==', self::VALUE_FILTER_APPEARANCE_RADIO),
 					]);
 			}
 
-			$filterFields[] = Select::make(__('Taxonomie'), self::FIELD_FILTERS_TAXONOMY)
+			$filterFields[] = Select::make(__('Taxonomie', 'horizon-blocks'), self::FIELD_FILTERS_TAXONOMY)
 				->stylized()
-				->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.'))
+				->helperText(__('Si aucune option n’est sélectionnée, le filtre ne s’affichera pas.', 'horizon-blocks'))
 				->choices($availableTaxonomies)
 				->lazyLoad()
 				->conditionalLogic([ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::TAXONOMY->value)]);
@@ -333,9 +341,9 @@ class ListingBlock extends AbstractBlock
 
 		if (!empty($availableFields) || !empty($availableTaxonomies) || self::ALWAYS_DISPLAY_FILTERS) {
 			$fields = [
-				Repeater::make(__('Filtres primaires'), self::FIELD_FILTERS)
-					->helperText(__('Les filtres primaires sont les filtres affichés par défaut au-dessus du listing'))
-					->button(__('Ajouter un filtre'))
+				Repeater::make(__('Filtres primaires', 'horizon-blocks'), self::FIELD_FILTERS)
+					->helperText(__('Les filtres primaires sont les filtres affichés par défaut au-dessus du listing', 'horizon-blocks'))
+					->button(__('Ajouter un filtre', 'horizon-blocks'))
 					->collapsed(self::FIELD_FILTERS_NAME)
 					->layout('block')
 					->minRows(0)
@@ -345,19 +353,19 @@ class ListingBlock extends AbstractBlock
 
 			if (self::ENABLE_SECONDARY_FILTERS) {
 				$fields = array_merge($fields, [
-					TrueFalse::make(__('Activer les filtres secondaires'), self::FIELD_WITH_SECONDARY_FILTERS)
-						->helperText(__('Les filtres secondaires sont des filtres que l’on peut afficher au clic sur un bouton'))
+					TrueFalse::make(__('Activer les filtres secondaires', 'horizon-blocks'), self::FIELD_WITH_SECONDARY_FILTERS)
+						->helperText(__('Les filtres secondaires sont des filtres que l’on peut afficher au clic sur un bouton', 'horizon-blocks'))
 						->stylized(),
-					Text::make(__('Label du bouton'), self::FIELD_SECONDARY_FILTERS_BUTTON_LABEL)
-						->helperText(__('Texte affiché sur le bouton pour afficher les filtres secondaires'))
-						->placeholder('Filtres avancés')
+					Text::make(__('Label du bouton', 'horizon-blocks'), self::FIELD_SECONDARY_FILTERS_BUTTON_LABEL)
+						->helperText(__('Texte affiché sur le bouton pour afficher les filtres secondaires', 'horizon-blocks'))
+						->placeholder(__('Filtres avancés', 'horizon-blocks'))
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
-					Text::make(__('Titre des filtres secondaires'), self::FIELD_SECONDARY_FILTERS_TITLE)
-						->helperText(__('Titre affiché au-dessus des filtres secondaires'))
-						->placeholder('Filtres avancés')
+					Text::make(__('Titre des filtres secondaires', 'horizon-blocks'), self::FIELD_SECONDARY_FILTERS_TITLE)
+						->helperText(__('Titre affiché au-dessus des filtres secondaires', 'horizon-blocks'))
+						->placeholder(__('Filtres avancés', 'horizon-blocks'))
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
-					Repeater::make(__('Filtres secondaires'), self::FIELD_SECONDARY_FILTERS)
-						->button(__('Ajouter un filtre secondaire'))
+					Repeater::make(__('Filtres secondaires', 'horizon-blocks'), self::FIELD_SECONDARY_FILTERS)
+						->button(__('Ajouter un filtre secondaire', 'horizon-blocks'))
 						->layout('block')
 						->fields($this->getFilterRepeaterFields(level: 2))
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_SECONDARY_FILTERS, '==', 1)]),
@@ -366,11 +374,11 @@ class ListingBlock extends AbstractBlock
 
 			if (self::ENABLED_FORCED_FILTERS) {
 				$fields = array_merge($fields, [
-					TrueFalse::make(__('Activer les filtres forcés'), self::FIELD_WITH_FORCED_FILTERS)
-						->helperText(__('Les filtres forcés sont des filtres qui seront toujours appliqués et qu’il n’est pas possible de désélectionner'))
+					TrueFalse::make(__('Activer les filtres forcés', 'horizon-blocks'), self::FIELD_WITH_FORCED_FILTERS)
+						->helperText(__('Les filtres forcés sont des filtres qui seront toujours appliqués et qu’il n’est pas possible de désélectionner', 'horizon-blocks'))
 						->stylized(),
-					Repeater::make(__('Filtres forcés'), self::FIELD_FORCED_FILTERS)
-						->button(__('Ajouter un filtre forcé'))
+					Repeater::make(__('Filtres forcés', 'horizon-blocks'), self::FIELD_FORCED_FILTERS)
+						->button(__('Ajouter un filtre forcé', 'horizon-blocks'))
 						->layout('block')
 						->fields($this->getFilterRepeaterFields(excludedTypes: [FilterTypesEnum::META, FilterTypesEnum::SEARCH], withFilterName: false, withDefaultText: false, withAppearance: false, withTaxonomyValue: true))
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_FORCED_FILTERS, '==', 1)])
@@ -430,7 +438,7 @@ class ListingBlock extends AbstractBlock
 
 		switch ($postType) {
 			case 'post':
-				$taxonomyChoices['category'] = __('Catégories');
+				$taxonomyChoices['category'] = __('Catégories', 'horizon-blocks');
 				break;
 			case 'page':
 			default:

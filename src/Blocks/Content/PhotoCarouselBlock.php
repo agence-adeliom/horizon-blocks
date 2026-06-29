@@ -23,10 +23,18 @@ class PhotoCarouselBlock extends AbstractBlock
 
     public const string FIELD_GALLERY = "gallery";
     public static ?string $slug = 'photo-carousel';
-    public static ?string $title = 'Carrousel photo';
     public static ?string $mode = 'preview';
     public static ?string $icon = 'format-image';
-    public static ?string $description = "Présente une série de photos dans un carrousel plein cadre, avec légende et navigation.";
+
+    public static function getTitle(): ?string
+    {
+        return __('Carrousel photo', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Présente une série de photos dans un carrousel plein cadre, avec légende et navigation.", 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
@@ -38,7 +46,7 @@ class PhotoCarouselBlock extends AbstractBlock
         ]);
 
         yield from MediaTab::make()->fields([
-            Gallery::make("Photos", self::FIELD_GALLERY)->required(),
+            Gallery::make(__("Photos", 'horizon-blocks'), self::FIELD_GALLERY)->required(),
         ]);
 
         yield from LayoutTab::make()->fields([

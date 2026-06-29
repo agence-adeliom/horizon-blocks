@@ -11,11 +11,19 @@ use Adeliom\HorizonTools\Fields\Text\HeadingField;
 class QuoteBlock extends AbstractBlock
 {
 	public static ?string $slug = 'quote';
-	public static ?string $title = 'Citation';
-	public static ?string $description = "Mise en avant d'une citation, un témoignage ou un extrait de texte.";
 	public static ?string $mode = 'preview';
 	public static string $category = 'reassurance';
 	public static ?string $icon = 'format-quote';
+
+	public static function getTitle(): ?string
+	{
+		return __('Citation', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __("Mise en avant d'une citation, un témoignage ou un extrait de texte.", 'horizon-blocks');
+	}
 
 	public function getFields(): ?iterable
 	{

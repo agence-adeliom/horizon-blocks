@@ -26,24 +26,32 @@ class ArgumentBlock extends AbstractBlock
     public const string FIELD_ARG_DESC = "argDesc";
     public const string FIELD_ARG_IMG = "argImg";
     public static ?string $slug = 'argument';
-    public static ?string $title = 'Arguments';
     public static ?string $icon = 'editor-ul';
-    public static ?string $description = "Présente une liste d'arguments ou bénéfices sous forme de points clés.";
+
+    public static function getTitle(): ?string
+    {
+        return __('Arguments', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Présente une liste d'arguments ou bénéfices sous forme de points clés.", 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
         yield from ContentTab::make()->fields([
             UptitleField::make(),
             HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
-            Repeater::make(__("Liste d'arguments"), self::FIELD_ARGS)
+            Repeater::make(__("Liste d'arguments", 'horizon-blocks'), self::FIELD_ARGS)
                 ->fields([
-                    Text::make(__("Titre de l'argument"), self::FIELD_ARG_TITLE)->maxLength(100)->helperText(__("Maximum 100 caractères"))->required(),
-                    Textarea::make(__("Description de l'argument"), self::FIELD_ARG_DESC)->maxLength(220)->helperText(__("Maximum 220 caractères"))->required(),
-                    ImageField::make(__("Image de l'argument"), self::FIELD_ARG_IMG)->ratio(1000, 1000)->required(),
+                    Text::make(__("Titre de l'argument", 'horizon-blocks'), self::FIELD_ARG_TITLE)->maxLength(100)->helperText(__("Maximum 100 caractères", 'horizon-blocks'))->required(),
+                    Textarea::make(__("Description de l'argument", 'horizon-blocks'), self::FIELD_ARG_DESC)->maxLength(220)->helperText(__("Maximum 220 caractères", 'horizon-blocks'))->required(),
+                    ImageField::make(__("Image de l'argument", 'horizon-blocks'), self::FIELD_ARG_IMG)->ratio(1000, 1000)->required(),
                 ])
                 ->collapsed(self::FIELD_ARG_TITLE)
                 ->minRows(3)
-                ->button(__("Ajouter un argument")),
+                ->button(__("Ajouter un argument", 'horizon-blocks')),
 
             ButtonField::make()->required(),
         ]);

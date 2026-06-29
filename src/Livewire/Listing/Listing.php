@@ -74,15 +74,19 @@ class Listing extends Component
     public const string KEY_NAME = 'name';
     public const string KEY_SLUG = 'slug';
 
-    public array $sortOptions = [
-        'date.DESC' => 'Plus récent',
-        'date.ASC' => 'Plus ancien',
-    ];
+    public array $sortOptions = [];
 
     private const array MANUAL_POST_TYPES = ['post', 'page'];
 
     public function mount(): void
     {
+        if (empty($this->sortOptions)) {
+            $this->sortOptions = [
+                'date.DESC' => __('Plus récent', 'horizon-blocks'),
+                'date.ASC' => __('Plus ancien', 'horizon-blocks'),
+            ];
+        }
+
         if ($this->perPage !== -1 && $this->perPage <= 0) {
             $this->perPage = self::DEFAULT_PER_PAGE;
         }

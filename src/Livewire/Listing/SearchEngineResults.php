@@ -193,7 +193,7 @@ class SearchEngineResults extends Component
 	 */
 	private function initData(): void
 	{
-		$this->typeChoices[self::VALUE_ALL_TYPE] = 'Tous les résultats';
+		$this->typeChoices[self::VALUE_ALL_TYPE] = __('Tous les résultats', 'horizon-blocks');
 
 		foreach ($this->types as $typeSlug) {
 			if ($label = PostService::getPostPrettyNameBySlug($typeSlug)) {

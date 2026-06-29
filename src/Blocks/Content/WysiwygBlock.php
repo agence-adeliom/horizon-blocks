@@ -17,10 +17,18 @@ use Extended\ACF\Fields\ButtonGroup;
 class WysiwygBlock extends AbstractBlock
 {
 	public static ?string $slug = 'wysiwyg';
-	public static ?string $title = 'Texte simple';
 	public static ?string $mode = 'preview';
 	public static ?string $icon = 'text';
-	public static ?string $description = 'Affiche un texte enrichi avec sur-titre, titre et boutons optionnels.';
+
+	public static function getTitle(): ?string
+	{
+		return __('Texte simple', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __('Affiche un texte enrichi avec sur-titre, titre et boutons optionnels.', 'horizon-blocks');
+	}
 
 	public const string FIELD_ALIGNMENT = 'alignment';
 	public const string VALUE_ALIGNMENT_CENTER = 'center';
@@ -37,12 +45,12 @@ class WysiwygBlock extends AbstractBlock
 		]);
 
 		yield from LayoutTab::make()->fields([
-			ButtonGroup::make(__('Alignement'), self::FIELD_ALIGNMENT)
+			ButtonGroup::make(__('Alignement', 'horizon-blocks'), self::FIELD_ALIGNMENT)
 				->default(self::VALUE_ALIGNMENT_CENTER)
 				->choices([
-					self::VALUE_ALIGNMENT_LEFT => __('Gauche'),
-					self::VALUE_ALIGNMENT_CENTER => __('Centre'),
-					self::VALUE_ALIGNMENT_RIGHT => __('Droite'),
+					self::VALUE_ALIGNMENT_LEFT => __('Gauche', 'horizon-blocks'),
+					self::VALUE_ALIGNMENT_CENTER => __('Centre', 'horizon-blocks'),
+					self::VALUE_ALIGNMENT_RIGHT => __('Droite', 'horizon-blocks'),
 				]),
 			LayoutField::margin(),
 		]);

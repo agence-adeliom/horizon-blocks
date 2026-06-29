@@ -18,10 +18,18 @@ use Extended\ACF\Fields\Text;
 class DocumentsBlock extends AbstractBlock
 {
     public static ?string $slug = 'documents';
-    public static ?string $title = 'Documents';
     public static ?string $mode = 'preview';
     public static ?string $icon = 'media-document';
-    public static ?string $description = 'Affiche une liste de documents téléchargeables.';
+
+    public static function getTitle(): ?string
+    {
+        return __('Documents', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __('Affiche une liste de documents téléchargeables.', 'horizon-blocks');
+    }
 
     public const string FIELD_DOCUMENTS = 'documents';
     public const string FIELD_DOCUMENT_TITLE = 'title';
@@ -33,10 +41,10 @@ class DocumentsBlock extends AbstractBlock
             UptitleField::make(),
             HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2'),
             WysiwygField::minimal(),
-            Repeater::make("Documents", self::FIELD_DOCUMENTS)
+            Repeater::make(__("Documents", 'horizon-blocks'), self::FIELD_DOCUMENTS)
                 ->fields([
-                    Text::make("Titre du document", self::FIELD_DOCUMENT_TITLE)->required(),
-                    File::make("Document", self::FIELD_DOCUMENT_FILE)->required()
+                    Text::make(__("Titre du document", 'horizon-blocks'), self::FIELD_DOCUMENT_TITLE)->required(),
+                    File::make(__("Document", 'horizon-blocks'), self::FIELD_DOCUMENT_FILE)->required()
                 ])
                 ->layout('row')
                 ->collapsed(HeadingField::NAME)

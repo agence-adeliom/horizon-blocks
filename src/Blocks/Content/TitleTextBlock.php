@@ -16,9 +16,17 @@ use Adeliom\HorizonTools\Fields\Text\WysiwygField;
 class TitleTextBlock extends AbstractBlock
 {
 	public static ?string $slug = 'title-text';
-	public static ?string $title = 'Titre texte';
 	public static ?string $icon = 'editor-textcolor';
-	public static ?string $description = "Affiche un titre accompagné d'un texte explicatif.";
+
+	public static function getTitle(): ?string
+	{
+		return __('Titre texte', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __("Affiche un titre accompagné d'un texte explicatif.", 'horizon-blocks');
+	}
 
 	public function getFields(): ?iterable
 	{
