@@ -19,9 +19,17 @@ use Extended\ACF\Fields\Text;
 class FormBlock extends AbstractBlock
 {
 	public static ?string $slug = 'form';
-	public static ?string $title = 'Formulaire';
-	public static ?string $description = "Peut servir de formulaire de contact, d'inscription, demande de devis ou encore d'information.";
 	public static ?string $icon = 'feedback';
+
+	public static function getTitle(): ?string
+	{
+		return __('Formulaire', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __("Peut servir de formulaire de contact, d'inscription, demande de devis ou encore d'information.", 'horizon-blocks');
+	}
 
 	public const string FIELD_DESC = "desc";
 	public const string FIELD_POSITION = "position";
@@ -36,27 +44,27 @@ class FormBlock extends AbstractBlock
 	{
 		yield from ContentTab::make()->fields([
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
-			Text::make('Description', self::FIELD_DESC),
+			Text::make(__('Description', 'horizon-blocks'), self::FIELD_DESC),
 			OfferField::make(),
 			FormField::selectGravityForm(),
 		]);
 
 		yield from LayoutTab::make()->fields([
 			LayoutField::margin(),
-			RadioButton::make('Position', self::FIELD_POSITION)
+			RadioButton::make(__('Position', 'horizon-blocks'), self::FIELD_POSITION)
 				->choices([
-					self::FIELD_POS_LEFT => 'Gauche',
-					self::FIELD_POS_CENTER => 'Centre',
+					self::FIELD_POS_LEFT => __('Gauche', 'horizon-blocks'),
+					self::FIELD_POS_CENTER => __('Centre', 'horizon-blocks'),
 				])
 				->default(self::FIELD_POS_LEFT),
 
-			RadioButton::make("Type de fond", self::FIELD_BG_TYPE)
+			RadioButton::make(__("Type de fond", 'horizon-blocks'), self::FIELD_BG_TYPE)
 				->choices([
-					self::BG_COLOR_TYPE => 'Couleur',
-					self::BG_IMAGE_TYPE => 'Image',
+					self::BG_COLOR_TYPE => __('Couleur', 'horizon-blocks'),
+					self::BG_IMAGE_TYPE => __('Image', 'horizon-blocks'),
 				]),
 
-			Image::make("Image de fond", self::FIELD_BG_IMAGE)
+			Image::make(__("Image de fond", 'horizon-blocks'), self::FIELD_BG_IMAGE)
 				->conditionalLogic([
 					ConditionalLogic::where(self::FIELD_BG_TYPE, '==', self::BG_IMAGE_TYPE),
 				]),

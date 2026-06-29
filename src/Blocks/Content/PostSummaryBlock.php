@@ -17,10 +17,18 @@ class PostSummaryBlock extends AbstractBlock
     use EnqueuesBlockAssets;
 
     public static ?string $slug = 'post-summary';
-    public static ?string $title = 'Sommaire article';
     public static ?string $mode = 'preview';
     public static ?string $icon = 'excerpt-view';
-    public static ?string $description = 'Donne un aperçu des sections de l’article afin de faciliter la navigation.';
+
+    public static function getTitle(): ?string
+    {
+        return __('Sommaire article', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Donne un aperçu des sections de l’article afin de faciliter la navigation.", 'horizon-blocks');
+    }
 
     public const string FIELD_IS_TOP = 'top';
     public const string FIELD_TITLE = 'title';
@@ -30,9 +38,9 @@ class PostSummaryBlock extends AbstractBlock
 
     public function getFields(): ?iterable
     {
-        yield TrueFalseField::make(__('Est-ce la borne supérieure ?'), self::FIELD_IS_TOP)->default(true);
+        yield TrueFalseField::make(__('Est-ce la borne supérieure ?', 'horizon-blocks'), self::FIELD_IS_TOP)->default(true);
 
-        yield Text::make(__('Titre'), self::FIELD_TITLE)->conditionalLogic([ConditionalLogic::where(self::FIELD_IS_TOP, '==', 1)]);
+        yield Text::make(__('Titre', 'horizon-blocks'), self::FIELD_TITLE)->conditionalLogic([ConditionalLogic::where(self::FIELD_IS_TOP, '==', 1)]);
     }
 
     public function addToContext(): array

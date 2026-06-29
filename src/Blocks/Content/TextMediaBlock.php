@@ -18,10 +18,18 @@ use Adeliom\HorizonTools\Fields\Text\WysiwygField;
 class TextMediaBlock extends AbstractBlock
 {
 	public static ?string $slug = 'text-media';
-	public static ?string $title = 'Texte + média';
 	public static ?string $icon = 'align-pull-left';
-	public static ?string $description = 'Combine contenu texte et élément visuel (image ou vidéo) pour apporter de l’information.';
 	public static ?string $mode = 'preview';
+
+	public static function getTitle(): ?string
+	{
+		return __('Texte + média', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __('Combine contenu texte et élément visuel (image ou vidéo) pour apporter de l’information.', 'horizon-blocks');
+	}
 
 	public function getFields(): ?iterable
 	{

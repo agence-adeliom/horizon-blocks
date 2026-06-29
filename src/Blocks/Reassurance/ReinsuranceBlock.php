@@ -21,27 +21,35 @@ class ReinsuranceBlock extends AbstractBlock
     private const int TITLE_MAX_LENGTH = 100;
 
     public static ?string $slug = 'reinsurance';
-    public static ?string $title = 'Réassurance';
     public static string $category = 'reassurance';
     public static ?string $icon = 'shield';
-    public static ?string $description = "Éléments visuels et textuels destinés à renforcer la confiance.";
+
+    public static function getTitle(): ?string
+    {
+        return __('Réassurance', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Éléments visuels et textuels destinés à renforcer la confiance.", 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
         yield from ContentTab::make()->fields([
-            Repeater::make(__('Éléments'), self::FIELD_ITEMS)
+            Repeater::make(__('Éléments', 'horizon-blocks'), self::FIELD_ITEMS)
                 ->minRows(3)
                 ->maxRows(4)
                 ->layout('block')
                 ->collapsed(self::FIELD_TITLE)
-                ->helperText(__("Pour garantir une mise en page cohérente et harmonieuse sur le site, il est recommandé de remplir les mêmes champs pour chaque élément de ce bloc. Par exemple, si vous renseignez les champs 'Icône' et 'Donnée' pour un élément, assurez-vous de le faire pour tous les autres éléments. Cela permettra d'optimiser l'affichage de vos informations."))
+                ->helperText(__("Pour garantir une mise en page cohérente et harmonieuse sur le site, il est recommandé de remplir les mêmes champs pour chaque élément de ce bloc. Par exemple, si vous renseignez les champs 'Icône' et 'Donnée' pour un élément, assurez-vous de le faire pour tous les autres éléments. Cela permettra d'optimiser l'affichage de vos informations.", 'horizon-blocks'))
                 ->fields([
-                    FontAwesomeIcon::make(__('Icône'), self::FIELD_ICON)->required()->format('object'),
-                    Text::make(__('Donnée'), self::FIELD_DATA),
-                    Text::make(__('Titre'), self::FIELD_TITLE)
+                    FontAwesomeIcon::make(__('Icône', 'horizon-blocks'), self::FIELD_ICON)->required()->format('object'),
+                    Text::make(__('Donnée', 'horizon-blocks'), self::FIELD_DATA),
+                    Text::make(__('Titre', 'horizon-blocks'), self::FIELD_TITLE)
                         ->required()
                         ->maxLength(self::TITLE_MAX_LENGTH)
-                        ->helperText(__(sprintf('Maximum %s caractères', self::TITLE_MAX_LENGTH))),
+                        ->helperText(__(sprintf('Maximum %s caractères', self::TITLE_MAX_LENGTH), 'horizon-blocks')),
                 ]),
         ]);
 

@@ -20,9 +20,17 @@ class HighlightBlock extends AbstractBlock
     public const string FIELD_MAIN_IMAGE = "mainImage";
     public static ?string $slug = 'highlight';
     public static ?string $icon = 'lightbulb';
-    public static ?string $title = 'Mise en avant';
     public static ?string $mode = 'preview';
-    public static ?string $description = 'Valorise un contenu spécifique comme une offre, un produit ou une information, afin d’attirer l’attention et guider vers le bouton CTA.';
+
+    public static function getTitle(): ?string
+    {
+        return __('Mise en avant', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __('Valorise un contenu spécifique comme une offre, un produit ou une information, afin d’attirer l’attention et guider vers le bouton CTA.', 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
@@ -33,7 +41,7 @@ class HighlightBlock extends AbstractBlock
             ButtonField::group(),
         ]);
         yield from MediaTab::make()->fields([
-            Image::make("Image principale", self::FIELD_MAIN_IMAGE),
+            Image::make(__("Image principale", 'horizon-blocks'), self::FIELD_MAIN_IMAGE),
         ]);
 
         yield from LayoutTab::make()->fields([

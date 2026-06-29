@@ -22,9 +22,17 @@ class CustomerReviewBlock extends AbstractBlock
 
     public const string FIELD_REVIEWS = 'reviews';
     public static ?string $slug = 'customer-review';
-    public static ?string $title = 'Avis clients';
     public static ?string $icon = 'star-filled';
-    public static ?string $description = 'Affiche une série de témoignages clients, ainsi que la note globale attribuée.';
+
+    public static function getTitle(): ?string
+    {
+        return __('Avis clients', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __('Affiche une série de témoignages clients, ainsi que la note globale attribuée.', 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
@@ -32,9 +40,9 @@ class CustomerReviewBlock extends AbstractBlock
             UptitleField::make(),
             HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
             WysiwygField::default(),
-            Message::make("Information")
-                ->body("La note globale est gérée au niveau général de votre thème."),
-            Relationship::make("Avis clients", self::FIELD_REVIEWS)
+            Message::make(__("Information", 'horizon-blocks'))
+                ->body(__("La note globale est gérée au niveau général de votre thème.", 'horizon-blocks')),
+            Relationship::make(__("Avis clients", 'horizon-blocks'), self::FIELD_REVIEWS)
                 ->minPosts(2)
                 ->maxPosts(6)
                 ->postTypes([CustomerReview::$slug])->required(),

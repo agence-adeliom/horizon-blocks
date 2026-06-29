@@ -25,9 +25,17 @@ class KeyFigureBlock extends AbstractBlock
     public const string FIELD_TYPE = 'type';
     private const int TITLE_MAX_LENGTH = 100;
     public static ?string $slug = 'key-figure';
-    public static ?string $title = 'Chiffres clés';
     public static ?string $icon = 'chart-bar';
-    public static ?string $description = "Chiffres percutants destinés à renforcer la crédibilité ou souligner des données marquantes.";
+
+    public static function getTitle(): ?string
+    {
+        return __('Chiffres clés', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Chiffres percutants destinés à renforcer la crédibilité ou souligner des données marquantes.", 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
@@ -35,28 +43,28 @@ class KeyFigureBlock extends AbstractBlock
             UptitleField::make(),
             HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
             WysiwygField::minimal(),
-            Repeater::make(__('Éléments'), self::FIELD_ITEMS)
+            Repeater::make(__('Éléments', 'horizon-blocks'), self::FIELD_ITEMS)
                 ->minRows(3)
                 ->maxRows(4)
-                ->helperText(__("Pour garantir une mise en page cohérente et harmonieuse sur le site, il est recommandé de remplir les mêmes champs pour chaque élément de ce bloc. Par exemple, si vous renseignez les champs 'Icône' et 'Donnée' pour un élément, assurez-vous de le faire pour tous les autres éléments. Cela permettra d'optimiser l'affichage de vos informations."))
+                ->helperText(__("Pour garantir une mise en page cohérente et harmonieuse sur le site, il est recommandé de remplir les mêmes champs pour chaque élément de ce bloc. Par exemple, si vous renseignez les champs 'Icône' et 'Donnée' pour un élément, assurez-vous de le faire pour tous les autres éléments. Cela permettra d'optimiser l'affichage de vos informations.", 'horizon-blocks'))
                 ->layout('block')
                 ->collapsed(self::FIELD_TITLE)
                 ->fields([
-                    FontAwesomeIcon::make(__('Icône'), self::FIELD_ICON)->format('object'),
-                    Text::make(__('Donnée'), self::FIELD_DATA),
-                    Text::make(__('Titre'), self::FIELD_TITLE)
+                    FontAwesomeIcon::make(__('Icône', 'horizon-blocks'), self::FIELD_ICON)->format('object'),
+                    Text::make(__('Donnée', 'horizon-blocks'), self::FIELD_DATA),
+                    Text::make(__('Titre', 'horizon-blocks'), self::FIELD_TITLE)
                         ->maxLength(self::TITLE_MAX_LENGTH)
-                        ->helperText(__(sprintf('Maximum %s caractères', self::TITLE_MAX_LENGTH))),
+                        ->helperText(__(sprintf('Maximum %s caractères', self::TITLE_MAX_LENGTH), 'horizon-blocks')),
                 ]),
         ]);
 
         yield from LayoutTab::make()->fields([
             LayoutField::margin(),
-            ButtonGroup::make(__('Type'), self::FIELD_TYPE)
+            ButtonGroup::make(__('Type', 'horizon-blocks'), self::FIELD_TYPE)
                 ->choices([
-                    'default' => __('Par défaut'),
-                    'with_bg' => __('Avec fond'),
-                    'framed'  => __('Cartouches encadrées'),
+                    'default' => __('Par défaut', 'horizon-blocks'),
+                    'with_bg' => __('Avec fond', 'horizon-blocks'),
+                    'framed'  => __('Cartouches encadrées', 'horizon-blocks'),
                 ])
                 ->default('default'),
         ]);

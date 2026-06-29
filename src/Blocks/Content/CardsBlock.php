@@ -18,10 +18,18 @@ use Extended\ACF\Fields\Repeater;
 class CardsBlock extends AbstractBlock
 {
 	public static ?string $slug = 'cards';
-	public static ?string $title = 'Remontée de cartes';
-	public static ?string $description = 'Affiche deux cartes cliquables, menant chacune vers une page spécifique.';
 	public static string $category = 'content';
 	public static ?string $icon = 'grid-view';
+
+	public static function getTitle(): ?string
+	{
+		return __('Remontée de cartes', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __('Affiche deux cartes cliquables, menant chacune vers une page spécifique.', 'horizon-blocks');
+	}
 
 	public const string FIELD_CARDS = 'cards';
 	public const string FIELD_CARD_IMAGE = 'img';
@@ -32,12 +40,12 @@ class CardsBlock extends AbstractBlock
 			UptitleField::make(),
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2'),
 			WysiwygField::minimal(),
-			Repeater::make("Cartouches", self::FIELD_CARDS)
+			Repeater::make(__("Cartouches", 'horizon-blocks'), self::FIELD_CARDS)
 				->fields([
 					HeadingField::make(),
 					WysiwygField::minimal(),
 					ButtonField::make()->required(),
-					Image::make("Image", self::FIELD_CARD_IMAGE)->required(),
+					Image::make(__("Image", 'horizon-blocks'), self::FIELD_CARD_IMAGE)->required(),
 				])
 				->layout('row')
 				->collapsed(HeadingField::NAME)

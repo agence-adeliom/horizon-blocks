@@ -21,10 +21,18 @@ use Extended\ACF\Fields\Text;
 class PricesBlock extends AbstractBlock
 {
 	public static ?string $slug = 'prices';
-	public static ?string $title = 'Tarifs';
 	public static ?string $mode = 'preview';
 	public static ?string $icon = 'money-alt';
-	public static ?string $description = 'Présente différentes formules tarifaires sous forme de cartes comparatives.';
+
+	public static function getTitle(): ?string
+	{
+		return __('Tarifs', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __('Présente différentes formules tarifaires sous forme de cartes comparatives.', 'horizon-blocks');
+	}
 
 	public const string FIELD_PRICES = 'prices';
 	public const string FIELD_PRICE_TITLE = 'title';
@@ -45,39 +53,39 @@ class PricesBlock extends AbstractBlock
 			UptitleField::make(),
 			HeadingField::make()->required(),
 			WysiwygField::default(),
-			Repeater::make(__('Tarifs'), self::FIELD_PRICES)
+			Repeater::make(__('Tarifs', 'horizon-blocks'), self::FIELD_PRICES)
 				->minRows(1)
 				->maxRows(3)
-				->button(__('Ajouter un tarif'))
+				->button(__('Ajouter un tarif', 'horizon-blocks'))
 				->layout('block')
 				->fields([
-					Text::make(__('Titre'), self::FIELD_PRICE_TITLE),
-					Text::make(__('Sous-titre'), self::FIELD_PRICE_SUBTITLE),
-					Group::make(__('Prix'), self::FIELD_PRICE_VALUE)->fields([
-						Number::make(__('Prix'), self::FIELD_PRICE_VALUE)
-							->helperText(__('Le prix sera automatiquement formaté')),
-						Text::make(__('Suffixe du prix'), self::FIELD_PRICE_VALUE_SUFFIX),
+					Text::make(__('Titre', 'horizon-blocks'), self::FIELD_PRICE_TITLE),
+					Text::make(__('Sous-titre', 'horizon-blocks'), self::FIELD_PRICE_SUBTITLE),
+					Group::make(__('Prix', 'horizon-blocks'), self::FIELD_PRICE_VALUE)->fields([
+						Number::make(__('Prix', 'horizon-blocks'), self::FIELD_PRICE_VALUE)
+							->helperText(__('Le prix sera automatiquement formaté', 'horizon-blocks')),
+						Text::make(__('Suffixe du prix', 'horizon-blocks'), self::FIELD_PRICE_VALUE_SUFFIX),
 					]),
-					Group::make(__('Sous-prix'), self::FIELD_PRICE_SUB_VALUE)
+					Group::make(__('Sous-prix', 'horizon-blocks'), self::FIELD_PRICE_SUB_VALUE)
 						->fields([
-							Text::make(__('Préfixe du sous-prix'), self::FIELD_PRICE_SUB_VALUE_PREFIX),
-							Number::make(__('Sous-prix'), self::FIELD_PRICE_SUB_VALUE)
-								->helperText(__('Le prix sera automatiquement formaté')),
-							Text::make(__('Suffixe du sous-prix'), self::FIELD_PRICE_SUB_VALUE_SUFFIX),
+							Text::make(__('Préfixe du sous-prix', 'horizon-blocks'), self::FIELD_PRICE_SUB_VALUE_PREFIX),
+							Number::make(__('Sous-prix', 'horizon-blocks'), self::FIELD_PRICE_SUB_VALUE)
+								->helperText(__('Le prix sera automatiquement formaté', 'horizon-blocks')),
+							Text::make(__('Suffixe du sous-prix', 'horizon-blocks'), self::FIELD_PRICE_SUB_VALUE_SUFFIX),
 						]),
 
 					ButtonField::types(),
 
-					Repeater::make(__('Caractéristiques'), self::FIELD_PRICE_CHARACTERISTICS)
+					Repeater::make(__('Caractéristiques', 'horizon-blocks'), self::FIELD_PRICE_CHARACTERISTICS)
 						->layout('block')
-						->button(__('Ajouter un groupe'))
+						->button(__('Ajouter un groupe', 'horizon-blocks'))
 						->fields([
 							IconField::make()->format("object"),
-							Text::make(__('Titre'), self::FIELD_PRICE_CHARACTERISTIC_TITLE),
-							Repeater::make(__('Éléments'), self::FIELD_PRICE_CHARACTERISTIC_ITEMS)
-								->button(__('Ajouter une caractéristique'))
+							Text::make(__('Titre', 'horizon-blocks'), self::FIELD_PRICE_CHARACTERISTIC_TITLE),
+							Repeater::make(__('Éléments', 'horizon-blocks'), self::FIELD_PRICE_CHARACTERISTIC_ITEMS)
+								->button(__('Ajouter une caractéristique', 'horizon-blocks'))
 								->fields([
-									Text::make(__('Titre'), self::FIELD_PRICE_CHARACTERISTIC_ITEM_TITLE)
+									Text::make(__('Titre', 'horizon-blocks'), self::FIELD_PRICE_CHARACTERISTIC_ITEM_TITLE)
 								])
 						])
 				])
@@ -98,4 +106,3 @@ class PricesBlock extends AbstractBlock
 		return;
 	}
 }
-

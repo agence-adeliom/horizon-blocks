@@ -19,10 +19,18 @@ class HeroBlock extends AbstractBlock
 {
     public const string FIELD_MAIN_IMAGE = "mainImage";
     public static ?string $slug = 'hero';
-    public static ?string $title = 'Haut de page';
     public static ?string $icon = 'admin-home';
-    public static ?string $description = "Premier élément de la page, offrant une introduction percutante.";
     public static string $category = 'hero';
+
+    public static function getTitle(): ?string
+    {
+        return __('Haut de page', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Premier élément de la page, offrant une introduction percutante.", 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
@@ -34,7 +42,7 @@ class HeroBlock extends AbstractBlock
         ]);
 
         yield from MediaTab::make()->fields([
-            Image::make("Image principale", self::FIELD_MAIN_IMAGE),
+            Image::make(__("Image principale", 'horizon-blocks'), self::FIELD_MAIN_IMAGE),
         ]);
 
         yield from LayoutTab::make()->fields([

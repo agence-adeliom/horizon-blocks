@@ -27,10 +27,18 @@ class GalleryBlock extends AbstractBlock
     public const string VALUE_DISPLAY_MOSAIC = "mosaic";
     public const string VALUE_DISPLAY_SLIDER = "slider";
     public static ?string $slug = 'gallery';
-    public static ?string $title = 'Galerie';
     public static ?string $mode = 'preview';
     public static ?string $icon = 'format-gallery';
-    public static ?string $description = "Présente des photos ou visuels organisés sous forme de galerie.";
+
+    public static function getTitle(): ?string
+    {
+        return __('Galerie', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Présente des photos ou visuels organisés sous forme de galerie.", 'horizon-blocks');
+    }
 
     public function getFields(): ?iterable
     {
@@ -42,15 +50,15 @@ class GalleryBlock extends AbstractBlock
         ]);
 
         yield from MediaTab::make()->fields([
-            Gallery::make("Image principale", self::FIELD_GALLERY),
+            Gallery::make(__("Image principale", 'horizon-blocks'), self::FIELD_GALLERY),
         ]);
 
         yield from LayoutTab::make()->fields([
-            ButtonGroup::make(__('Affichage'), self::FIELD_DISPLAY_TYPE)
+            ButtonGroup::make(__('Affichage', 'horizon-blocks'), self::FIELD_DISPLAY_TYPE)
                 ->default(self::VALUE_DISPLAY_MOSAIC)
                 ->choices([
-                    self::VALUE_DISPLAY_MOSAIC => __('Mosaïque'),
-                    self::VALUE_DISPLAY_SLIDER => __('Slider horizontal'),
+                    self::VALUE_DISPLAY_MOSAIC => __('Mosaïque', 'horizon-blocks'),
+                    self::VALUE_DISPLAY_SLIDER => __('Slider horizontal', 'horizon-blocks'),
                 ]),
             LayoutField::margin(),
         ]);

@@ -22,9 +22,17 @@ class StepBlock extends AbstractBlock
 	use EnqueuesBlockAssets;
 
 	public static ?string $slug = 'step';
-	public static ?string $title = 'Étapes';
 	public static ?string $icon = 'list-view';
-	public static ?string $description = "Présente un processus ou une progression sous forme d'étapes numérotées.";
+
+	public static function getTitle(): ?string
+	{
+		return __('Étapes', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __("Présente un processus ou une progression sous forme d'étapes numérotées.", 'horizon-blocks');
+	}
 
 	public const string FIELD_STEPS = 'steps';
 	public const string FIELD_STEP_TITLE = 'title';
@@ -37,12 +45,12 @@ class StepBlock extends AbstractBlock
 			UptitleField::make(),
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			ButtonField::make(),
-			Repeater::make("Étapes", self::FIELD_STEPS)
+			Repeater::make(__("Étapes", 'horizon-blocks'), self::FIELD_STEPS)
 				->fields([
 					UptitleField::make()->required(),
-					Text::make("Titre de l'étape", self::FIELD_STEP_TITLE)->required(),
-					WysiwygField::minimal("Contenu de l'étape", self::FIELD_STEP_CONTENT)->required(),
-					Image::make("Image de l'étape", self::FIELD_STEP_IMG)
+					Text::make(__("Titre de l'étape", 'horizon-blocks'), self::FIELD_STEP_TITLE)->required(),
+					WysiwygField::minimal(__("Contenu de l'étape", 'horizon-blocks'), self::FIELD_STEP_CONTENT)->required(),
+					Image::make(__("Image de l'étape", 'horizon-blocks'), self::FIELD_STEP_IMG)
 						->required(),
 				])
 				->collapsed(self::FIELD_STEP_TITLE)

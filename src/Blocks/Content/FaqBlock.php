@@ -20,9 +20,17 @@ use Extended\ACF\Fields\Relationship;
 class FaqBlock extends AbstractBlock
 {
 	public static ?string $slug = 'faq';
-	public static ?string $title = 'FAQ';
-	public static ?string $description = "Présente des questions souvent posées par les utilisateurices, ainsi que des réponses rapides.";
 	public static ?string $icon = 'editor-help';
+
+	public static function getTitle(): ?string
+	{
+		return __('FAQ', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __("Présente des questions souvent posées par les utilisateurices, ainsi que des réponses rapides.", 'horizon-blocks');
+	}
 
 	public const string FIELD_IMG = 'img';
 	public const string FIELD_QUESTIONS = 'questions';
@@ -30,12 +38,12 @@ class FaqBlock extends AbstractBlock
 	public function getFields(): ?iterable
 	{
 		yield from ContentTab::make()->fields([
-			Image::make(__('Petite image'), self::FIELD_IMG),
+			Image::make(__('Petite image', 'horizon-blocks'), self::FIELD_IMG),
 			UptitleField::make(),
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			WysiwygField::minimal(),
 			ButtonField::group(),
-			Relationship::make(__('Liste de questions'), self::FIELD_QUESTIONS)
+			Relationship::make(__('Liste de questions', 'horizon-blocks'), self::FIELD_QUESTIONS)
 				->minPosts(2)
 				->maxPosts(5)
 				->postTypes([FAQ::$slug]),

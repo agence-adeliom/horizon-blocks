@@ -19,11 +19,19 @@ class HeroForm extends AbstractBlock
 	public const string FORM_TITLE = "formTitle";
 	public const string FIELD_DESC = "desc";
 	public static ?string $slug = 'hero-form';
-	public static ?string $title = 'Haut de page avec formulaire';
 	public static ?string $mode = 'preview';
 	public static string $category = 'hero';
 	public static ?string $icon = 'forms';
-	public static ?string $description = 'Haut de page combinant une introduction et un formulaire pour favoriser la conversion.';
+
+	public static function getTitle(): ?string
+	{
+		return __('Haut de page avec formulaire', 'horizon-blocks');
+	}
+
+	public static function getDescription(): ?string
+	{
+		return __('Haut de page combinant une introduction et un formulaire pour favoriser la conversion.', 'horizon-blocks');
+	}
 
 	public function getFields(): ?iterable
 	{
@@ -31,8 +39,8 @@ class HeroForm extends AbstractBlock
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h1')->required(),
 			WysiwygField::make(),
 			OfferField::make(),
-			HeadingField::make("Titre au dessus du formulaire", self::FORM_TITLE)->required(),
-			Text::make("Description du formulaire", self::FIELD_DESC),
+			HeadingField::make(__("Titre au dessus du formulaire", 'horizon-blocks'), self::FORM_TITLE)->required(),
+			Text::make(__("Description du formulaire", 'horizon-blocks'), self::FIELD_DESC),
 			FormField::selectGravityForm(),
 		]);
 

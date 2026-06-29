@@ -17,11 +17,18 @@ use Extended\ACF\Fields\RadioButton;
 class CatchphraseBlock extends AbstractBlock
 {
     public static ?string $slug = 'catchphrase';
-    public static ?string $title = 'Accroche';
     public static ?string $mode = 'preview';
     public static ?string $icon = 'format-quote';
-    public static ?string $description = "Met en avant une phrase d'accroche pour capter l'attention.";
 
+    public static function getTitle(): ?string
+    {
+        return __('Accroche', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Met en avant une phrase d'accroche pour capter l'attention.", 'horizon-blocks');
+    }
 
     public const string FIELD_BG = 'bg';
     public const string FIELD_BG_TYPE = 'bgType';
@@ -37,23 +44,23 @@ class CatchphraseBlock extends AbstractBlock
         ]);
 
         yield from LayoutTab::make()->fields([
-            Group::make("Fond", self::FIELD_BG)
+            Group::make(__("Fond", 'horizon-blocks'), self::FIELD_BG)
                 ->fields([
-                    RadioButton::make("Type de fond", self::FIELD_BG_TYPE)
+                    RadioButton::make(__("Type de fond", 'horizon-blocks'), self::FIELD_BG_TYPE)
                         ->choices([
-                            self::BG_COLOR_TYPE => 'Couleur',
-                            self::BG_IMAGE_TYPE => 'Image',
+                            self::BG_COLOR_TYPE => __('Couleur', 'horizon-blocks'),
+                            self::BG_IMAGE_TYPE => __('Image', 'horizon-blocks'),
                         ]),
 
-                    Image::make("Image de fond", self::FIELD_BG_IMAGE)
+                    Image::make(__("Image de fond", 'horizon-blocks'), self::FIELD_BG_IMAGE)
                         ->conditionalLogic([
                             ConditionalLogic::where(self::FIELD_BG_TYPE, '==', self::BG_IMAGE_TYPE),
                         ]),
 
-                    RadioButton::make("Couleur de fond", self::FIELD_BG_COLOR)
+                    RadioButton::make(__("Couleur de fond", 'horizon-blocks'), self::FIELD_BG_COLOR)
                         ->choices([
-                            'bg-neutral-100'  => 'Gris',
-                            'bg-color-01-100' => 'Couleur',
+                            'bg-neutral-100'  => __('Gris', 'horizon-blocks'),
+                            'bg-color-01-100' => __('Couleur', 'horizon-blocks'),
                         ])
                         ->conditionalLogic([
                             ConditionalLogic::where(self::FIELD_BG_TYPE, '==', self::BG_COLOR_TYPE),

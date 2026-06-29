@@ -13,10 +13,18 @@ use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 class HeroPostBlock extends AbstractBlock
 {
     public static ?string $slug = 'hero-post';
-    public static ?string $title = 'Haut de page - Article';
-    public static ?string $description = "Affiche les informations principales d'un article : titre, extrait, catégories, date de publication, temps de lecture et image à la une.";
     public static ?string $mode = 'preview';
     public static ?string $icon = 'editor-aligncenter';
+
+    public static function getTitle(): ?string
+    {
+        return __('Haut de page - Article', 'horizon-blocks');
+    }
+
+    public static function getDescription(): ?string
+    {
+        return __("Affiche les informations principales d'un article : titre, extrait, catégories, date de publication, temps de lecture et image à la une.", 'horizon-blocks');
+    }
 
     public function getPostTypes(): ?array
     {
