@@ -49,7 +49,7 @@ class ReinsuranceBlock extends AbstractBlock
                     Text::make(__('Titre', 'horizon-blocks'), self::FIELD_TITLE)
                         ->required()
                         ->maxLength(self::TITLE_MAX_LENGTH)
-                        ->helperText(__(sprintf('Maximum %s caractères', self::TITLE_MAX_LENGTH), 'horizon-blocks')),
+                        ->helperText(sprintf(__('Maximum %s caractères', 'horizon-blocks'), self::TITLE_MAX_LENGTH)),
                 ]),
         ]);
 
