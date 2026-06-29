@@ -76,11 +76,6 @@ class Listing extends Component
 
     public array $sortOptions = [];
 
-    private const array DEFAULT_SORT_OPTIONS = [
-        'date.DESC' => 'Plus récent',
-        'date.ASC' => 'Plus ancien',
-    ];
-
     private const array MANUAL_POST_TYPES = ['post', 'page'];
 
     public function mount(): void
