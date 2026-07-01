@@ -35,7 +35,7 @@ class ImportBlock extends Command
             $blockExtraData = $availableBlocks[$className];
 
             $fullNames[$className] = str_replace('Adeliom\\HorizonBlocks\\Blocks\\', '', $className);
-            $shortNames[$className] = $className::$title;
+            $shortNames[$className] = $className::getTitle();
 
             if (isset($blockExtraData[HorizonBlockService::REQUIRES_LIVEWIRE]) && $blockExtraData[HorizonBlockService::REQUIRES_LIVEWIRE]) {
                 $shortNames[$className] .= ' (Requires Livewire)';
