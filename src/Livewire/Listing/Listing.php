@@ -694,14 +694,17 @@ class Listing extends Component
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
-                                                // Single-value appearances only ever carry a scalar term slug.
-                                                // A non-scalar value can still reach this point when the URL
-                                                // holds a stale array shape (e.g. a legacy checkbox/multiselect
-                                                // link kept after the filter was switched to a single-value
-                                                // appearance); passing it through would build a nested `terms`
-                                                // array and make WP_Term_Query call preg_match() on an array.
-                                                if (is_scalar($value)) {
-                                                    $taxQuery->add($taxonomyName, [$value]);
+                                                // Single-value appearances resolve to a single term slug, but the
+                                                // incoming value isn't always a bare scalar: a Choices.js enhanced
+                                                // <select> bound with wire:model reports its change through
+                                                // Livewire as an object, so $value arrives as ['value' => 'slug'].
+                                                // Normalise both shapes to a scalar slug; passing the raw array to
+                                                // add() would build a nested `terms` array and make WP_Term_Query
+                                                // call preg_match() on an array (500). Anything else is skipped.
+                                                $termSlug = is_array($value) ? ($value['value'] ?? null) : $value;
+
+                                                if (is_scalar($termSlug) && '' !== $termSlug) {
+                                                    $taxQuery->add($taxonomyName, [$termSlug]);
                                                 }
                                                 break;
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
