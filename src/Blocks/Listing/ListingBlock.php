@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Adeliom\HorizonBlocks\Blocks\Listing;
 
 use Adeliom\HorizonBlocks\Concerns\EnqueuesBlockAssets;
+use Adeliom\HorizonBlocks\Enum\ListingPeriod;
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Enum\FilterTypesEnum;
 use Adeliom\HorizonTools\Fields\Select\PostTypeSelectField;
@@ -94,6 +95,7 @@ class ListingBlock extends AbstractBlock
 	public const string FIELD_FILTERS_TAX_CHOICE_ALL = self::FIELD_FILTERS_CHOICE_ALL . 'Tax';
 	public const string FIELD_FILTERS_NAME = 'name';
 	public const string FIELD_FILTERS_PLACEHOLDER = 'placeholder';
+	public const string FIELD_FILTERS_PERIODS = 'periods';
 
 	public const string VALUE_FILTER_APPEARANCE_SELECT = 'select';
 	public const string VALUE_FILTER_APPEARANCE_CHECKBOX = 'checkbox';
@@ -230,6 +232,7 @@ class ListingBlock extends AbstractBlock
 		$hasTaxonomy = !in_array(FilterTypesEnum::TAXONOMY, $excludedTypes);
 		$hasMeta = !in_array(FilterTypesEnum::META, $excludedTypes);
 		$hasSearch = !in_array(FilterTypesEnum::SEARCH, $excludedTypes);
+		$hasPeriod = !in_array(FilterTypesEnum::PERIOD, $excludedTypes);
 
 		if ($hasMeta) {
 			$availableFields = $this->getAvailableFilterChoices(level: $level);
@@ -253,6 +256,10 @@ class ListingBlock extends AbstractBlock
 			$typeChoices[FilterTypesEnum::SEARCH->value] = __('Recherche', 'horizon-blocks');
 		}
 
+		if ($hasPeriod) {
+			$typeChoices[FilterTypesEnum::PERIOD->value] = __('Période (date de publication)', 'horizon-blocks');
+		}
+
 		$filterFields[] = ButtonGroup::make(__('Type', 'horizon-blocks'), self::FIELD_FILTERS_TYPE)
 			->required()
 			->choices($typeChoices);
@@ -262,6 +269,17 @@ class ListingBlock extends AbstractBlock
 				->body(__('Actuellement, seule la recherche dans le titre et dans le contenu de l’élément sont prises en charge.', 'horizon-blocks'))
 				->conditionalLogic([
 					ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::SEARCH->value)
+				]);
+		}
+
+		if ($hasPeriod) {
+			$filterFields[] = Select::make(__('Périodes à afficher', 'horizon-blocks'), self::FIELD_FILTERS_PERIODS)
+				->stylized()
+				->multiple()
+				->helperText(__('Sélectionnez les périodes proposées dans le filtre. Le visiteur en choisira une pour filtrer par date de publication.', 'horizon-blocks'))
+				->choices(ListingPeriod::choices())
+				->conditionalLogic([
+					ConditionalLogic::where(self::FIELD_FILTERS_TYPE, '==', FilterTypesEnum::PERIOD->value),
 				]);
 		}
 
@@ -382,7 +400,7 @@ class ListingBlock extends AbstractBlock
 					Repeater::make(__('Filtres forcés', 'horizon-blocks'), self::FIELD_FORCED_FILTERS)
 						->button(__('Ajouter un filtre forcé', 'horizon-blocks'))
 						->layout('block')
-						->fields($this->getFilterRepeaterFields(excludedTypes: [FilterTypesEnum::META, FilterTypesEnum::SEARCH], withFilterName: false, withDefaultText: false, withAppearance: false, withTaxonomyValue: true))
+						->fields($this->getFilterRepeaterFields(excludedTypes: [FilterTypesEnum::META, FilterTypesEnum::SEARCH, FilterTypesEnum::PERIOD], withFilterName: false, withDefaultText: false, withAppearance: false, withTaxonomyValue: true))
 						->conditionalLogic([ConditionalLogic::where(self::FIELD_WITH_FORCED_FILTERS, '==', 1)])
 				]);
 			}
