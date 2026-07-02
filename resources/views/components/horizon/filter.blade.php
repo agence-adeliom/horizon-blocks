@@ -28,7 +28,8 @@
         @switch($value["appearance"])
             @case(ListingBlock::VALUE_FILTER_APPEARANCE_SELECT)
                 <select class="select" id="{{ $model }}" name="{{ $model }}" @if (!empty($model)) wire:model="{{ $model }}" @endif>
-                    @if ($withEmpty)
+                    {{-- When a "choice all" is configured it is prepended to $value["choices"] and acts as the neutral option, so the empty placeholder would be redundant. --}}
+                    @if ($withEmpty && empty($value["hasChoiceAll"]))
                         <option value="" selected>
                             {{ $name ?? "Sélectionner" }}
                         </option>
