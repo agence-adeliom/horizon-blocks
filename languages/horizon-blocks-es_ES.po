@@ -2,764 +2,886 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-02T14:24:39+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es_ES\n"
-"POT-Creation-Date: 2026-06-29T07:46:50+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: horizon-blocks\n"
 
-#: Blocks/Action/CtaBlock.php:23
+#: src/Blocks/Action/CtaBlock.php:23
 msgid "Section call-to-action"
 msgstr "Sección de llamada a la acción"
 
-#: Blocks/Action/CtaBlock.php:28
-msgid "Incite l'utilisateur à effectuer une action spécifique dans un objectif de conversion."
-msgstr "Anima al usuario a realizar una acción específica con el objetivo de conversión."
+#: src/Blocks/Action/CtaBlock.php:28
+msgid ""
+"Incite l'utilisateur à effectuer une action spécifique dans un objectif de "
+"conversion."
+msgstr ""
+"Anima al usuario a realizar una acción específica con el objetivo de "
+"conversión."
 
-#: Blocks/Action/CtaBlock.php:39
+#: src/Blocks/Action/CtaBlock.php:39
 msgid "1 ou 2 phrases maximum recommandées."
 msgstr "Se recomiendan 1 o 2 frases como máximo."
 
-#: Blocks/Action/CtaBlock.php:45
+#: src/Blocks/Action/CtaBlock.php:45
 msgid "Apparence"
 msgstr "Apariencia"
 
-#: Blocks/Action/CtaBlock.php:47
+#: src/Blocks/Action/CtaBlock.php:47
 msgid "Défaut"
 msgstr "Predeterminado"
 
-#: Blocks/Action/CtaBlock.php:48
+#: src/Blocks/Action/CtaBlock.php:48
 msgid "Pleine largeur"
 msgstr "Ancho completo"
 
-#: Blocks/Action/FormBlock.php:26
+#: src/Blocks/Action/FormBlock.php:26
 msgid "Formulaire"
 msgstr "Formulario"
 
-#: Blocks/Action/FormBlock.php:31
-msgid "Peut servir de formulaire de contact, d'inscription, demande de devis ou encore d'information."
-msgstr "Puede utilizarse como formulario de contacto, de inscripción, de presupuesto o de información."
+#: src/Blocks/Action/FormBlock.php:31
+msgid ""
+"Peut servir de formulaire de contact, d'inscription, demande de devis ou "
+"encore d'information."
+msgstr ""
+"Puede utilizarse como formulario de contacto, de inscripción, de presupuesto "
+"o de información."
 
-#: Blocks/Action/FormBlock.php:47
+#: src/Blocks/Action/FormBlock.php:47
 msgid "Description"
 msgstr "Descripción"
 
-#: Blocks/Action/FormBlock.php:54
+#: src/Blocks/Action/FormBlock.php:54
 msgid "Position"
 msgstr "Posición"
 
-#: Blocks/Action/FormBlock.php:56
-#: Blocks/Content/WysiwygBlock.php:51
+#: src/Blocks/Action/FormBlock.php:56 src/Blocks/Content/WysiwygBlock.php:51
 msgid "Gauche"
 msgstr "Izquierda"
 
-#: Blocks/Action/FormBlock.php:57
-#: Blocks/Content/WysiwygBlock.php:52
+#: src/Blocks/Action/FormBlock.php:57 src/Blocks/Content/WysiwygBlock.php:52
 msgid "Centre"
 msgstr "Centro"
 
-#: Blocks/Action/FormBlock.php:61
-#: Blocks/Content/CatchphraseBlock.php:49
+#: src/Blocks/Action/FormBlock.php:61
+#: src/Blocks/Content/CatchphraseBlock.php:49
 msgid "Type de fond"
 msgstr "Tipo de fondo"
 
-#: Blocks/Action/FormBlock.php:63
-#: Blocks/Content/CatchphraseBlock.php:51
-#: Blocks/Content/CatchphraseBlock.php:63
+#: src/Blocks/Action/FormBlock.php:63
+#: src/Blocks/Content/CatchphraseBlock.php:51
+#: src/Blocks/Content/CatchphraseBlock.php:63
 msgid "Couleur"
 msgstr "Color"
 
-#: Blocks/Action/FormBlock.php:64
-#: Blocks/Content/CardsBlock.php:48
-#: Blocks/Content/CatchphraseBlock.php:52
+#: src/Blocks/Action/FormBlock.php:64 src/Blocks/Content/CardsBlock.php:48
+#: src/Blocks/Content/CatchphraseBlock.php:52
 msgid "Image"
 msgstr "Imagen"
 
-#: Blocks/Action/FormBlock.php:67
-#: Blocks/Content/CatchphraseBlock.php:55
+#: src/Blocks/Action/FormBlock.php:67
+#: src/Blocks/Content/CatchphraseBlock.php:55
 msgid "Image de fond"
 msgstr "Imagen de fondo"
 
-#: Blocks/Action/FormConfirmationBlock.php:23
+#: src/Blocks/Action/FormConfirmationBlock.php:23
 msgid "Validation de formulaire"
 msgstr "Validación de formulario"
 
-#: Blocks/Action/FormConfirmationBlock.php:28
+#: src/Blocks/Action/FormConfirmationBlock.php:28
 msgid "S'affiche après la soumission d'un formulaire pour confirmer l'envoi."
 msgstr "Se muestra tras el envío de un formulario para confirmar la entrega."
 
-#: Blocks/Content/ArgumentBlock.php:33
+#: src/Blocks/Content/ArgumentBlock.php:33
 msgid "Arguments"
 msgstr "Argumentos"
 
-#: Blocks/Content/ArgumentBlock.php:38
+#: src/Blocks/Content/ArgumentBlock.php:38
 msgid "Présente une liste d'arguments ou bénéfices sous forme de points clés."
-msgstr "Presenta una lista de argumentos o beneficios en forma de puntos clave."
+msgstr ""
+"Presenta una lista de argumentos o beneficios en forma de puntos clave."
 
-#: Blocks/Content/ArgumentBlock.php:46
+#: src/Blocks/Content/ArgumentBlock.php:46
 msgid "Liste d'arguments"
 msgstr "Lista de argumentos"
 
-#: Blocks/Content/ArgumentBlock.php:48
+#: src/Blocks/Content/ArgumentBlock.php:48
 msgid "Titre de l'argument"
 msgstr "Título del argumento"
 
-#: Blocks/Content/ArgumentBlock.php:48
+#: src/Blocks/Content/ArgumentBlock.php:48
 msgid "Maximum 100 caractères"
 msgstr "Máximo 100 caracteres"
 
-#: Blocks/Content/ArgumentBlock.php:49
+#: src/Blocks/Content/ArgumentBlock.php:49
 msgid "Description de l'argument"
 msgstr "Descripción del argumento"
 
-#: Blocks/Content/ArgumentBlock.php:49
+#: src/Blocks/Content/ArgumentBlock.php:49
 msgid "Maximum 220 caractères"
 msgstr "Máximo 220 caracteres"
 
-#: Blocks/Content/ArgumentBlock.php:50
+#: src/Blocks/Content/ArgumentBlock.php:50
 msgid "Image de l'argument"
 msgstr "Imagen del argumento"
 
-#: Blocks/Content/ArgumentBlock.php:54
+#: src/Blocks/Content/ArgumentBlock.php:54
 msgid "Ajouter un argument"
 msgstr "Añadir un argumento"
 
-#: Blocks/Content/CardsBlock.php:26
+#: src/Blocks/Content/CardsBlock.php:26
 msgid "Remontée de cartes"
 msgstr "Carrusel de tarjetas"
 
-#: Blocks/Content/CardsBlock.php:31
-msgid "Affiche deux cartes cliquables, menant chacune vers une page spécifique."
-msgstr "Muestra dos tarjetas clicables, cada una dirigida a una página específica."
+#: src/Blocks/Content/CardsBlock.php:31
+msgid ""
+"Affiche deux cartes cliquables, menant chacune vers une page spécifique."
+msgstr ""
+"Muestra dos tarjetas clicables, cada una dirigida a una página específica."
 
-#: Blocks/Content/CardsBlock.php:43
+#: src/Blocks/Content/CardsBlock.php:43
 msgid "Cartouches"
 msgstr "Tarjetas"
 
-#: Blocks/Content/CatchphraseBlock.php:25
+#: src/Blocks/Content/CatchphraseBlock.php:25
 msgid "Accroche"
 msgstr "Eslogan"
 
-#: Blocks/Content/CatchphraseBlock.php:30
+#: src/Blocks/Content/CatchphraseBlock.php:30
 msgid "Met en avant une phrase d'accroche pour capter l'attention."
 msgstr "Destaca una frase de enganche para captar la atención."
 
-#: Blocks/Content/CatchphraseBlock.php:47
+#: src/Blocks/Content/CatchphraseBlock.php:47
 msgid "Fond"
 msgstr "Fondo"
 
-#: Blocks/Content/CatchphraseBlock.php:60
+#: src/Blocks/Content/CatchphraseBlock.php:60
 msgid "Couleur de fond"
 msgstr "Color de fondo"
 
-#: Blocks/Content/CatchphraseBlock.php:62
+#: src/Blocks/Content/CatchphraseBlock.php:62
 msgid "Gris"
 msgstr "Gris"
 
-#: Blocks/Content/DocumentsBlock.php:26
-#: Blocks/Content/DocumentsBlock.php:44
+#: src/Blocks/Content/DocumentsBlock.php:26
+#: src/Blocks/Content/DocumentsBlock.php:44
 msgid "Documents"
 msgstr "Documentos"
 
-#: Blocks/Content/DocumentsBlock.php:31
+#: src/Blocks/Content/DocumentsBlock.php:31
 msgid "Affiche une liste de documents téléchargeables."
 msgstr "Muestra una lista de documentos descargables."
 
-#: Blocks/Content/DocumentsBlock.php:46
+#: src/Blocks/Content/DocumentsBlock.php:46
 msgid "Titre du document"
 msgstr "Título del documento"
 
-#: Blocks/Content/DocumentsBlock.php:47
+#: src/Blocks/Content/DocumentsBlock.php:47
 msgid "Document"
 msgstr "Documento"
 
-#: Blocks/Content/FaqBlock.php:27
+#: src/Blocks/Content/FaqBlock.php:27
 msgid "FAQ"
 msgstr "FAQ"
 
-#: Blocks/Content/FaqBlock.php:32
-msgid "Présente des questions souvent posées par les utilisateurices, ainsi que des réponses rapides."
-msgstr "Presenta las preguntas frecuentes de los usuarios, junto con respuestas rápidas."
+#: src/Blocks/Content/FaqBlock.php:32
+msgid ""
+"Présente des questions souvent posées par les utilisateurices, ainsi que des "
+"réponses rapides."
+msgstr ""
+"Presenta las preguntas frecuentes de los usuarios, junto con respuestas "
+"rápidas."
 
-#: Blocks/Content/FaqBlock.php:41
+#: src/Blocks/Content/FaqBlock.php:41
 msgid "Petite image"
 msgstr "Imagen pequeña"
 
-#: Blocks/Content/FaqBlock.php:46
+#: src/Blocks/Content/FaqBlock.php:46
 msgid "Liste de questions"
 msgstr "Lista de preguntas"
 
-#: Blocks/Content/GalleryBlock.php:35
+#: src/Blocks/Content/GalleryBlock.php:35
 msgid "Galerie"
 msgstr "Galería"
 
-#: Blocks/Content/GalleryBlock.php:40
+#: src/Blocks/Content/GalleryBlock.php:40
 msgid "Présente des photos ou visuels organisés sous forme de galerie."
 msgstr "Presenta fotos o imágenes organizadas en forma de galería."
 
-#: Blocks/Content/GalleryBlock.php:53
-#: Blocks/Content/HighlightBlock.php:44
-#: Blocks/Hero/HeroBlock.php:45
+#: src/Blocks/Content/GalleryBlock.php:53
+#: src/Blocks/Content/HighlightBlock.php:44 src/Blocks/Hero/HeroBlock.php:45
 msgid "Image principale"
 msgstr "Imagen principal"
 
-#: Blocks/Content/GalleryBlock.php:57
+#: src/Blocks/Content/GalleryBlock.php:57
 msgid "Affichage"
 msgstr "Visualización"
 
-#: Blocks/Content/GalleryBlock.php:60
+#: src/Blocks/Content/GalleryBlock.php:60
 msgid "Mosaïque"
 msgstr "Mosaico"
 
-#: Blocks/Content/GalleryBlock.php:61
+#: src/Blocks/Content/GalleryBlock.php:61
 msgid "Slider horizontal"
 msgstr "Control deslizante horizontal"
 
-#: Blocks/Content/HighlightBlock.php:27
+#: src/Blocks/Content/HighlightBlock.php:27
 msgid "Mise en avant"
 msgstr "Destacado"
 
-#: Blocks/Content/HighlightBlock.php:32
-msgid "Valorise un contenu spécifique comme une offre, un produit ou une information, afin d’attirer l’attention et guider vers le bouton CTA."
-msgstr "Destaca un contenido específico como una oferta, un producto o una información, para atraer la atención y guiar hacia el botón CTA."
+#: src/Blocks/Content/HighlightBlock.php:32
+msgid ""
+"Valorise un contenu spécifique comme une offre, un produit ou une "
+"information, afin d’attirer l’attention et guider vers le bouton CTA."
+msgstr ""
+"Destaca un contenido específico como una oferta, un producto o una "
+"información, para atraer la atención y guiar hacia el botón CTA."
 
-#: Blocks/Content/PhotoCarouselBlock.php:31
+#: src/Blocks/Content/PhotoCarouselBlock.php:31
 msgid "Carrousel photo"
 msgstr "Carrusel de fotos"
 
-#: Blocks/Content/PhotoCarouselBlock.php:36
-msgid "Présente une série de photos dans un carrousel plein cadre, avec légende et navigation."
-msgstr "Presenta una serie de fotos en un carrusel de pantalla completa, con leyenda y navegación."
+#: src/Blocks/Content/PhotoCarouselBlock.php:36
+msgid ""
+"Présente une série de photos dans un carrousel plein cadre, avec légende et "
+"navigation."
+msgstr ""
+"Presenta una serie de fotos en un carrusel de pantalla completa, con leyenda "
+"y navegación."
 
-#: Blocks/Content/PhotoCarouselBlock.php:49
+#: src/Blocks/Content/PhotoCarouselBlock.php:49
 msgid "Photos"
 msgstr "Fotos"
 
-#: Blocks/Content/PostSummaryBlock.php:25
+#: src/Blocks/Content/PostSummaryBlock.php:25
 msgid "Sommaire article"
 msgstr "Sumario del artículo"
 
-#: Blocks/Content/PostSummaryBlock.php:30
-msgid "Donne un aperçu des sections de l’article afin de faciliter la navigation."
-msgstr "Ofrece un resumen de las secciones del artículo para facilitar la navegación."
+#: src/Blocks/Content/PostSummaryBlock.php:30
+msgid ""
+"Donne un aperçu des sections de l’article afin de faciliter la navigation."
+msgstr ""
+"Ofrece un resumen de las secciones del artículo para facilitar la navegación."
 
-#: Blocks/Content/PostSummaryBlock.php:41
+#: src/Blocks/Content/PostSummaryBlock.php:41
 msgid "Est-ce la borne supérieure ?"
 msgstr "¿Es el límite superior?"
 
-#: Blocks/Content/PostSummaryBlock.php:43
-#: Blocks/Content/PricesBlock.php:62
-#: Blocks/Content/PricesBlock.php:84
-#: Blocks/Content/PricesBlock.php:88
-#: Blocks/Reassurance/KeyFigureBlock.php:55
-#: Blocks/Reassurance/ReinsuranceBlock.php:49
+#: src/Blocks/Content/PostSummaryBlock.php:43
+#: src/Blocks/Content/PricesBlock.php:62 src/Blocks/Content/PricesBlock.php:84
+#: src/Blocks/Content/PricesBlock.php:88
+#: src/Blocks/Reassurance/KeyFigureBlock.php:55
+#: src/Blocks/Reassurance/ReinsuranceBlock.php:49
 msgid "Titre"
 msgstr "Título"
 
-#: Blocks/Content/PricesBlock.php:29
-#: Blocks/Content/PricesBlock.php:56
+#: src/Blocks/Content/PricesBlock.php:29 src/Blocks/Content/PricesBlock.php:56
 msgid "Tarifs"
 msgstr "Tarifas"
 
-#: Blocks/Content/PricesBlock.php:34
-msgid "Présente différentes formules tarifaires sous forme de cartes comparatives."
-msgstr "Presenta diferentes fórmulas tarifarias en forma de tarjetas comparativas."
+#: src/Blocks/Content/PricesBlock.php:34
+msgid ""
+"Présente différentes formules tarifaires sous forme de cartes comparatives."
+msgstr ""
+"Presenta diferentes fórmulas tarifarias en forma de tarjetas comparativas."
 
-#: Blocks/Content/PricesBlock.php:59
+#: src/Blocks/Content/PricesBlock.php:59
 msgid "Ajouter un tarif"
 msgstr "Añadir una tarifa"
 
-#: Blocks/Content/PricesBlock.php:63
+#: src/Blocks/Content/PricesBlock.php:63
 msgid "Sous-titre"
 msgstr "Subtítulo"
 
-#: Blocks/Content/PricesBlock.php:64
-#: Blocks/Content/PricesBlock.php:65
+#: src/Blocks/Content/PricesBlock.php:64 src/Blocks/Content/PricesBlock.php:65
 msgid "Prix"
 msgstr "Precio"
 
-#: Blocks/Content/PricesBlock.php:66
-#: Blocks/Content/PricesBlock.php:73
+#: src/Blocks/Content/PricesBlock.php:66 src/Blocks/Content/PricesBlock.php:73
 msgid "Le prix sera automatiquement formaté"
 msgstr "El precio se formateará automáticamente"
 
-#: Blocks/Content/PricesBlock.php:67
+#: src/Blocks/Content/PricesBlock.php:67
 msgid "Suffixe du prix"
 msgstr "Sufijo del precio"
 
-#: Blocks/Content/PricesBlock.php:69
-#: Blocks/Content/PricesBlock.php:72
+#: src/Blocks/Content/PricesBlock.php:69 src/Blocks/Content/PricesBlock.php:72
 msgid "Sous-prix"
 msgstr "Subprecio"
 
-#: Blocks/Content/PricesBlock.php:71
+#: src/Blocks/Content/PricesBlock.php:71
 msgid "Préfixe du sous-prix"
 msgstr "Prefijo del subprecio"
 
-#: Blocks/Content/PricesBlock.php:74
+#: src/Blocks/Content/PricesBlock.php:74
 msgid "Suffixe du sous-prix"
 msgstr "Sufijo del subprecio"
 
-#: Blocks/Content/PricesBlock.php:79
+#: src/Blocks/Content/PricesBlock.php:79
 msgid "Caractéristiques"
 msgstr "Características"
 
-#: Blocks/Content/PricesBlock.php:81
+#: src/Blocks/Content/PricesBlock.php:81
 msgid "Ajouter un groupe"
 msgstr "Añadir un grupo"
 
-#: Blocks/Content/PricesBlock.php:85
-#: Blocks/Reassurance/KeyFigureBlock.php:46
-#: Blocks/Reassurance/ReinsuranceBlock.php:40
+#: src/Blocks/Content/PricesBlock.php:85
+#: src/Blocks/Reassurance/KeyFigureBlock.php:46
+#: src/Blocks/Reassurance/ReinsuranceBlock.php:40
 msgid "Éléments"
 msgstr "Elementos"
 
-#: Blocks/Content/PricesBlock.php:86
+#: src/Blocks/Content/PricesBlock.php:86
 msgid "Ajouter une caractéristique"
 msgstr "Añadir una característica"
 
-#: Blocks/Content/StepBlock.php:29
-#: Blocks/Content/StepBlock.php:48
+#: src/Blocks/Content/StepBlock.php:29 src/Blocks/Content/StepBlock.php:48
 msgid "Étapes"
 msgstr "Pasos"
 
-#: Blocks/Content/StepBlock.php:34
-msgid "Présente un processus ou une progression sous forme d'étapes numérotées."
+#: src/Blocks/Content/StepBlock.php:34
+msgid ""
+"Présente un processus ou une progression sous forme d'étapes numérotées."
 msgstr "Presenta un proceso o una progresión en forma de pasos numerados."
 
-#: Blocks/Content/StepBlock.php:51
+#: src/Blocks/Content/StepBlock.php:51
 msgid "Titre de l'étape"
 msgstr "Título del paso"
 
-#: Blocks/Content/StepBlock.php:52
+#: src/Blocks/Content/StepBlock.php:52
 msgid "Contenu de l'étape"
 msgstr "Contenido del paso"
 
-#: Blocks/Content/StepBlock.php:53
+#: src/Blocks/Content/StepBlock.php:53
 msgid "Image de l'étape"
 msgstr "Imagen del paso"
 
-#: Blocks/Content/TextMediaBlock.php:26
+#: src/Blocks/Content/TextMediaBlock.php:26
 msgid "Texte + média"
 msgstr "Texto + contenido multimedia"
 
-#: Blocks/Content/TextMediaBlock.php:31
-msgid "Combine contenu texte et élément visuel (image ou vidéo) pour apporter de l’information."
-msgstr "Combina contenido de texto y elemento visual (imagen o vídeo) para aportar información."
+#: src/Blocks/Content/TextMediaBlock.php:31
+msgid ""
+"Combine contenu texte et élément visuel (image ou vidéo) pour apporter de "
+"l’information."
+msgstr ""
+"Combina contenido de texto y elemento visual (imagen o vídeo) para aportar "
+"información."
 
-#: Blocks/Content/TitleTextBlock.php:23
+#: src/Blocks/Content/TitleTextBlock.php:23
 msgid "Titre texte"
 msgstr "Título de texto"
 
-#: Blocks/Content/TitleTextBlock.php:28
+#: src/Blocks/Content/TitleTextBlock.php:28
 msgid "Affiche un titre accompagné d'un texte explicatif."
 msgstr "Muestra un título acompañado de un texto explicativo."
 
-#: Blocks/Content/WysiwygBlock.php:25
+#: src/Blocks/Content/WysiwygBlock.php:25
 msgid "Texte simple"
 msgstr "Texto simple"
 
-#: Blocks/Content/WysiwygBlock.php:30
+#: src/Blocks/Content/WysiwygBlock.php:30
 msgid "Affiche un texte enrichi avec sur-titre, titre et boutons optionnels."
-msgstr "Muestra un texto enriquecido con supertítulo, título y botones opcionales."
+msgstr ""
+"Muestra un texto enriquecido con supertítulo, título y botones opcionales."
 
-#: Blocks/Content/WysiwygBlock.php:48
+#: src/Blocks/Content/WysiwygBlock.php:48
 msgid "Alignement"
 msgstr "Alineación"
 
-#: Blocks/Content/WysiwygBlock.php:53
+#: src/Blocks/Content/WysiwygBlock.php:53
 msgid "Droite"
 msgstr "Derecha"
 
-#: Blocks/Hero/HeroBlock.php:27
+#: src/Blocks/Hero/HeroBlock.php:27
 msgid "Haut de page"
 msgstr "Cabecera de página"
 
-#: Blocks/Hero/HeroBlock.php:32
+#: src/Blocks/Hero/HeroBlock.php:32
 msgid "Premier élément de la page, offrant une introduction percutante."
 msgstr "Primer elemento de la página, que ofrece una introducción impactante."
 
-#: Blocks/Hero/HeroForm.php:28
+#: src/Blocks/Hero/HeroForm.php:28
 msgid "Haut de page avec formulaire"
 msgstr "Cabecera con formulario"
 
-#: Blocks/Hero/HeroForm.php:33
-msgid "Haut de page combinant une introduction et un formulaire pour favoriser la conversion."
-msgstr "Cabecera que combina una introducción y un formulario para favorecer la conversión."
+#: src/Blocks/Hero/HeroForm.php:33
+msgid ""
+"Haut de page combinant une introduction et un formulaire pour favoriser la "
+"conversion."
+msgstr ""
+"Cabecera que combina una introducción y un formulario para favorecer la "
+"conversión."
 
-#: Blocks/Hero/HeroForm.php:42
+#: src/Blocks/Hero/HeroForm.php:42
 msgid "Titre au dessus du formulaire"
 msgstr "Título encima del formulario"
 
-#: Blocks/Hero/HeroForm.php:43
+#: src/Blocks/Hero/HeroForm.php:43
 msgid "Description du formulaire"
 msgstr "Descripción del formulario"
 
-#: Blocks/Hero/HeroPostBlock.php:21
+#: src/Blocks/Hero/HeroPostBlock.php:21
 msgid "Haut de page - Article"
 msgstr "Cabecera - Artículo"
 
-#: Blocks/Hero/HeroPostBlock.php:26
-msgid "Affiche les informations principales d'un article : titre, extrait, catégories, date de publication, temps de lecture et image à la une."
-msgstr "Muestra la información principal de un artículo: título, extracto, categorías, fecha de publicación, tiempo de lectura e imagen destacada."
+#: src/Blocks/Hero/HeroPostBlock.php:26
+msgid ""
+"Affiche les informations principales d'un article : titre, extrait, "
+"catégories, date de publication, temps de lecture et image à la une."
+msgstr ""
+"Muestra la información principal de un artículo: título, extracto, "
+"categorías, fecha de publicación, tiempo de lectura e imagen destacada."
 
-#: Blocks/Listing/ListingBlock.php:46
+#: src/Blocks/Listing/ListingBlock.php:47
 msgid "Liste d’éléments"
 msgstr "Lista de elementos"
 
-#: Blocks/Listing/ListingBlock.php:51
+#: src/Blocks/Listing/ListingBlock.php:52
 msgid "Affiche une liste filtrable et paginée d’articles ou de contenus."
 msgstr "Muestra una lista filtrable y paginada de artículos o contenidos."
 
-#: Blocks/Listing/ListingBlock.php:116
-msgid "Enregistrez la page après modification de ce champ pour afficher les bonnes valeurs dans les filtres."
-msgstr "Guarde la página tras modificar este campo para mostrar los valores correctos en los filtros."
+#: src/Blocks/Listing/ListingBlock.php:118
+msgid ""
+"Enregistrez la page après modification de ce champ pour afficher les bonnes "
+"valeurs dans les filtres."
+msgstr ""
+"Guarde la página tras modificar este campo para mostrar los valores "
+"correctos en los filtros."
 
-#: Blocks/Listing/ListingBlock.php:127
+#: src/Blocks/Listing/ListingBlock.php:129
 msgid "Nombre d’éléments par page"
 msgstr "Número de elementos por página"
 
-#: Blocks/Listing/ListingBlock.php:131
+#: src/Blocks/Listing/ListingBlock.php:133
 msgid "Afficher le tri"
 msgstr "Mostrar la ordenación"
 
-#: Blocks/Listing/ListingBlock.php:134
+#: src/Blocks/Listing/ListingBlock.php:136
 msgid "Afficher le nombre de résultats"
 msgstr "Mostrar el número de resultados"
 
-#: Blocks/Listing/ListingBlock.php:137
+#: src/Blocks/Listing/ListingBlock.php:139
 msgid "Nom des éléments au singulier"
 msgstr "Nombre de los elementos en singular"
 
-#: Blocks/Listing/ListingBlock.php:138
+#: src/Blocks/Listing/ListingBlock.php:140
 msgid "élément"
 msgstr "elemento"
 
-#: Blocks/Listing/ListingBlock.php:140
+#: src/Blocks/Listing/ListingBlock.php:142
 msgid "Nom des éléments au pluriel"
 msgstr "Nombre de los elementos en plural"
 
-#: Blocks/Listing/ListingBlock.php:141
+#: src/Blocks/Listing/ListingBlock.php:143
 msgid "éléments"
 msgstr "elementos"
 
-#: Blocks/Listing/ListingBlock.php:160
+#: src/Blocks/Listing/ListingBlock.php:162
 msgid "Cards internes"
 msgstr "Tarjetas internas"
 
-#: Blocks/Listing/ListingBlock.php:161
-msgid "Les cards internes sont des cards qui peuvent être insérées dans le listing, soit sur la première page, soit sur toutes les pages."
-msgstr "Las tarjetas internas son tarjetas que pueden insertarse en el listado, en la primera página o en todas las páginas."
+#: src/Blocks/Listing/ListingBlock.php:163
+msgid ""
+"Les cards internes sont des cards qui peuvent être insérées dans le listing, "
+"soit sur la première page, soit sur toutes les pages."
+msgstr ""
+"Las tarjetas internas son tarjetas que pueden insertarse en el listado, en "
+"la primera página o en todas las páginas."
 
-#: Blocks/Listing/ListingBlock.php:163
+#: src/Blocks/Listing/ListingBlock.php:165
 msgid "Card à afficher"
 msgstr "Tarjeta a mostrar"
 
-#: Blocks/Listing/ListingBlock.php:167
+#: src/Blocks/Listing/ListingBlock.php:169
 msgid "Position de la card"
 msgstr "Posición de la tarjeta"
 
-#: Blocks/Listing/ListingBlock.php:172
-#: Blocks/Listing/ListingBlock.php:183
+#: src/Blocks/Listing/ListingBlock.php:174
+#: src/Blocks/Listing/ListingBlock.php:185
 msgid "Pages"
 msgstr "Páginas"
 
-#: Blocks/Listing/ListingBlock.php:174
+#: src/Blocks/Listing/ListingBlock.php:176
 msgid "Toutes"
 msgstr "Todas"
 
-#: Blocks/Listing/ListingBlock.php:175
+#: src/Blocks/Listing/ListingBlock.php:177
 msgid "Première"
 msgstr "Primera"
 
-#: Blocks/Listing/ListingBlock.php:176
+#: src/Blocks/Listing/ListingBlock.php:178
 msgid "Impaires"
 msgstr "Impares"
 
-#: Blocks/Listing/ListingBlock.php:177
+#: src/Blocks/Listing/ListingBlock.php:179
 msgid "Paires"
 msgstr "Pares"
 
-#: Blocks/Listing/ListingBlock.php:178
+#: src/Blocks/Listing/ListingBlock.php:180
 msgid "Personnalisées"
 msgstr "Personalizadas"
 
-#: Blocks/Listing/ListingBlock.php:185
+#: src/Blocks/Listing/ListingBlock.php:187
 msgid "Indiquez les numéros de pages séparés par des virgules (ex: 1,2,3)"
 msgstr "Indique los números de páginas separados por comas (ej: 1,2,3)"
 
-#: Blocks/Listing/ListingBlock.php:204
-#: Blocks/Listing/ListingBlock.php:216
+#: src/Blocks/Listing/ListingBlock.php:206
+#: src/Blocks/Listing/ListingBlock.php:218
 msgid "Sélection"
 msgstr "Selección"
 
-#: Blocks/Listing/ListingBlock.php:205
-#: Blocks/Listing/ListingBlock.php:217
+#: src/Blocks/Listing/ListingBlock.php:207
+#: src/Blocks/Listing/ListingBlock.php:219
 msgid "Cases à cocher"
 msgstr "Casillas de verificación"
 
-#: Blocks/Listing/ListingBlock.php:206
-#: Blocks/Listing/ListingBlock.php:218
+#: src/Blocks/Listing/ListingBlock.php:208
+#: src/Blocks/Listing/ListingBlock.php:220
 msgid "Choix unique"
 msgstr "Elección única"
 
-#: Blocks/Listing/ListingBlock.php:207
+#: src/Blocks/Listing/ListingBlock.php:209
 msgid "Champ libre"
 msgstr "Campo libre"
 
-#: Blocks/Listing/ListingBlock.php:208
-#: Blocks/Listing/ListingBlock.php:219
+#: src/Blocks/Listing/ListingBlock.php:210
+#: src/Blocks/Listing/ListingBlock.php:221
 msgid "Sélection multiple"
 msgstr "Selección múltiple"
 
-#: Blocks/Listing/ListingBlock.php:209
-#: Blocks/Listing/ListingBlock.php:220
+#: src/Blocks/Listing/ListingBlock.php:211
+#: src/Blocks/Listing/ListingBlock.php:222
 msgid "Sélection unique"
 msgstr "Selección única"
 
-#: Blocks/Listing/ListingBlock.php:242
+#: src/Blocks/Listing/ListingBlock.php:245
 msgid "Méta"
 msgstr "Meta"
 
-#: Blocks/Listing/ListingBlock.php:248
-#: Blocks/Listing/ListingBlock.php:314
+#: src/Blocks/Listing/ListingBlock.php:251
+#: src/Blocks/Listing/ListingBlock.php:334
 msgid "Taxonomie"
 msgstr "Taxonomía"
 
-#: Blocks/Listing/ListingBlock.php:253
-#: Blocks/Listing/ListingBlock.php:261
+#: src/Blocks/Listing/ListingBlock.php:256
+#: src/Blocks/Listing/ListingBlock.php:268
 msgid "Recherche"
 msgstr "Búsqueda"
 
-#: Blocks/Listing/ListingBlock.php:256
-#: Blocks/Reassurance/KeyFigureBlock.php:63
+#: src/Blocks/Listing/ListingBlock.php:260
+msgid "Période (date de publication)"
+msgstr "Periodo (fecha de publicación)"
+
+#: src/Blocks/Listing/ListingBlock.php:263
+#: src/Blocks/Reassurance/KeyFigureBlock.php:63
 msgid "Type"
 msgstr "Tipo"
 
-#: Blocks/Listing/ListingBlock.php:262
-msgid "Actuellement, seule la recherche dans le titre et dans le contenu de l’élément sont prises en charge."
-msgstr "Actualmente, solo se admite la búsqueda en el título y en el contenido del elemento."
+#: src/Blocks/Listing/ListingBlock.php:269
+msgid ""
+"Actuellement, seule la recherche dans le titre et dans le contenu de "
+"l’élément sont prises en charge."
+msgstr ""
+"Actualmente, solo se admite la búsqueda en el título y en el contenido del "
+"elemento."
 
-#: Blocks/Listing/ListingBlock.php:269
+#: src/Blocks/Listing/ListingBlock.php:276
+msgid "Périodes à afficher"
+msgstr "Periodos a mostrar"
+
+#: src/Blocks/Listing/ListingBlock.php:279
+msgid ""
+"Sélectionnez les périodes proposées dans le filtre. Le visiteur en choisira "
+"une pour filtrer par date de publication."
+msgstr ""
+"Seleccione los periodos ofrecidos en el filtro. El visitante elegirá uno "
+"para filtrar por fecha de publicación."
+
+#: src/Blocks/Listing/ListingBlock.php:287
 msgid "Nom du filtre"
 msgstr "Nombre del filtro"
 
-#: Blocks/Listing/ListingBlock.php:273
+#: src/Blocks/Listing/ListingBlock.php:291
 msgid "Texte par défaut du filtre"
 msgstr "Texto predeterminado del filtro"
 
-#: Blocks/Listing/ListingBlock.php:273
+#: src/Blocks/Listing/ListingBlock.php:291
 msgid "Si non renseigné, le nom sera utilisé"
 msgstr "Si no se rellena, se utilizará el nombre"
 
-#: Blocks/Listing/ListingBlock.php:279
-#: Blocks/Listing/ListingBlock.php:302
+#: src/Blocks/Listing/ListingBlock.php:297
+#: src/Blocks/Listing/ListingBlock.php:321
 msgid "Apparence du filtre"
 msgstr "Apariencia del filtro"
 
-#: Blocks/Listing/ListingBlock.php:284
-#: Blocks/Listing/ListingBlock.php:307
+#: src/Blocks/Listing/ListingBlock.php:302
+#: src/Blocks/Listing/ListingBlock.php:326
 msgid "Choix \"Tous\""
 msgstr "Opción \"Todos\""
 
-#: Blocks/Listing/ListingBlock.php:285
-#: Blocks/Listing/ListingBlock.php:308
+#: src/Blocks/Listing/ListingBlock.php:303
+#: src/Blocks/Listing/ListingBlock.php:327
 msgid "Laisser vide pour ne pas afficher le choix \"Tous\""
 msgstr "Dejar vacío para no mostrar la opción \"Todos\""
 
-#: Blocks/Listing/ListingBlock.php:291
+#: src/Blocks/Listing/ListingBlock.php:310
 msgid "Champ"
 msgstr "Campo"
 
-#: Blocks/Listing/ListingBlock.php:293
-#: Blocks/Listing/ListingBlock.php:316
+#: src/Blocks/Listing/ListingBlock.php:312
+#: src/Blocks/Listing/ListingBlock.php:336
 msgid "Si aucune option n’est sélectionnée, le filtre ne s’affichera pas."
 msgstr "Si no se selecciona ninguna opción, el filtro no se mostrará."
 
-#: Blocks/Listing/ListingBlock.php:344
+#: src/Blocks/Listing/ListingBlock.php:364
 msgid "Filtres primaires"
 msgstr "Filtros primarios"
 
-#: Blocks/Listing/ListingBlock.php:345
-msgid "Les filtres primaires sont les filtres affichés par défaut au-dessus du listing"
-msgstr "Los filtros primarios son los filtros mostrados por defecto encima del listado"
+#: src/Blocks/Listing/ListingBlock.php:365
+msgid ""
+"Les filtres primaires sont les filtres affichés par défaut au-dessus du "
+"listing"
+msgstr ""
+"Los filtros primarios son los filtros mostrados por defecto encima del "
+"listado"
 
-#: Blocks/Listing/ListingBlock.php:346
+#: src/Blocks/Listing/ListingBlock.php:366
 msgid "Ajouter un filtre"
 msgstr "Añadir un filtro"
 
-#: Blocks/Listing/ListingBlock.php:356
+#: src/Blocks/Listing/ListingBlock.php:376
 msgid "Activer les filtres secondaires"
 msgstr "Activar los filtros secundarios"
 
-#: Blocks/Listing/ListingBlock.php:357
-msgid "Les filtres secondaires sont des filtres que l’on peut afficher au clic sur un bouton"
-msgstr "Los filtros secundarios son filtros que pueden mostrarse al hacer clic en un botón"
+#: src/Blocks/Listing/ListingBlock.php:377
+msgid ""
+"Les filtres secondaires sont des filtres que l’on peut afficher au clic sur "
+"un bouton"
+msgstr ""
+"Los filtros secundarios son filtros que pueden mostrarse al hacer clic en un "
+"botón"
 
-#: Blocks/Listing/ListingBlock.php:359
+#: src/Blocks/Listing/ListingBlock.php:379
 msgid "Label du bouton"
 msgstr "Etiqueta del botón"
 
-#: Blocks/Listing/ListingBlock.php:360
+#: src/Blocks/Listing/ListingBlock.php:380
 msgid "Texte affiché sur le bouton pour afficher les filtres secondaires"
 msgstr "Texto mostrado en el botón para mostrar los filtros secundarios"
 
-#: Blocks/Listing/ListingBlock.php:361
-#: Blocks/Listing/ListingBlock.php:365
+#: src/Blocks/Listing/ListingBlock.php:381
+#: src/Blocks/Listing/ListingBlock.php:385
 msgid "Filtres avancés"
 msgstr "Filtros avanzados"
 
-#: Blocks/Listing/ListingBlock.php:363
+#: src/Blocks/Listing/ListingBlock.php:383
 msgid "Titre des filtres secondaires"
 msgstr "Título de los filtros secundarios"
 
-#: Blocks/Listing/ListingBlock.php:364
+#: src/Blocks/Listing/ListingBlock.php:384
 msgid "Titre affiché au-dessus des filtres secondaires"
 msgstr "Título mostrado encima de los filtros secundarios"
 
-#: Blocks/Listing/ListingBlock.php:367
+#: src/Blocks/Listing/ListingBlock.php:387
 msgid "Filtres secondaires"
 msgstr "Filtros secundarios"
 
-#: Blocks/Listing/ListingBlock.php:368
+#: src/Blocks/Listing/ListingBlock.php:388
 msgid "Ajouter un filtre secondaire"
 msgstr "Añadir un filtro secundario"
 
-#: Blocks/Listing/ListingBlock.php:377
+#: src/Blocks/Listing/ListingBlock.php:397
 msgid "Activer les filtres forcés"
 msgstr "Activar los filtros forzados"
 
-#: Blocks/Listing/ListingBlock.php:378
-msgid "Les filtres forcés sont des filtres qui seront toujours appliqués et qu’il n’est pas possible de désélectionner"
-msgstr "Los filtros forzados son filtros que siempre se aplicarán y que no es posible deseleccionar"
+#: src/Blocks/Listing/ListingBlock.php:398
+msgid ""
+"Les filtres forcés sont des filtres qui seront toujours appliqués et qu’il "
+"n’est pas possible de désélectionner"
+msgstr ""
+"Los filtros forzados son filtros que siempre se aplicarán y que no es "
+"posible deseleccionar"
 
-#: Blocks/Listing/ListingBlock.php:380
+#: src/Blocks/Listing/ListingBlock.php:400
 msgid "Filtres forcés"
 msgstr "Filtros forzados"
 
-#: Blocks/Listing/ListingBlock.php:381
+#: src/Blocks/Listing/ListingBlock.php:401
 msgid "Ajouter un filtre forcé"
 msgstr "Añadir un filtro forzado"
 
-#: Blocks/Listing/ListingBlock.php:441
+#: src/Blocks/Listing/ListingBlock.php:461
 msgid "Catégories"
 msgstr "Categorías"
 
-#: Blocks/Listing/SearchEngineResultsBlock.php:22
+#: src/Blocks/Listing/SearchEngineResultsBlock.php:22
 msgid "Résultats du moteur de recherche"
 msgstr "Resultados del motor de búsqueda"
 
-#: Blocks/Listing/SearchEngineResultsBlock.php:27
+#: src/Blocks/Listing/SearchEngineResultsBlock.php:27
 msgid "Affiche les résultats de la recherche du site avec pagination."
 msgstr "Muestra los resultados de búsqueda del sitio con paginación."
 
-#: Blocks/Listing/SearchEngineResultsBlock.php:33
+#: src/Blocks/Listing/SearchEngineResultsBlock.php:33
 msgid "Configuration du moteur de recherche"
 msgstr "Configuración del motor de búsqueda"
 
-#: Blocks/Reassurance/CustomerReviewBlock.php:29
-#: Blocks/Reassurance/CustomerReviewBlock.php:45
+#: src/Blocks/Reassurance/CustomerReviewBlock.php:29
+#: src/Blocks/Reassurance/CustomerReviewBlock.php:45
 msgid "Avis clients"
 msgstr "Reseñas de clientes"
 
-#: Blocks/Reassurance/CustomerReviewBlock.php:34
-msgid "Affiche une série de témoignages clients, ainsi que la note globale attribuée."
-msgstr "Muestra una serie de testimonios de clientes, así como la nota global asignada."
+#: src/Blocks/Reassurance/CustomerReviewBlock.php:34
+msgid ""
+"Affiche une série de témoignages clients, ainsi que la note globale "
+"attribuée."
+msgstr ""
+"Muestra una serie de testimonios de clientes, así como la nota global "
+"asignada."
 
-#: Blocks/Reassurance/CustomerReviewBlock.php:43
+#: src/Blocks/Reassurance/CustomerReviewBlock.php:43
 msgid "Information"
 msgstr "Información"
 
-#: Blocks/Reassurance/CustomerReviewBlock.php:44
+#: src/Blocks/Reassurance/CustomerReviewBlock.php:44
 msgid "La note globale est gérée au niveau général de votre thème."
 msgstr "La nota global se gestiona a nivel general de su tema."
 
-#: Blocks/Reassurance/KeyFigureBlock.php:32
+#: src/Blocks/Reassurance/KeyFigureBlock.php:32
 msgid "Chiffres clés"
 msgstr "Cifras clave"
 
-#: Blocks/Reassurance/KeyFigureBlock.php:37
-msgid "Chiffres percutants destinés à renforcer la crédibilité ou souligner des données marquantes."
-msgstr "Cifras impactantes destinadas a reforzar la credibilidad o destacar datos relevantes."
+#: src/Blocks/Reassurance/KeyFigureBlock.php:37
+msgid ""
+"Chiffres percutants destinés à renforcer la crédibilité ou souligner des "
+"données marquantes."
+msgstr ""
+"Cifras impactantes destinadas a reforzar la credibilidad o destacar datos "
+"relevantes."
 
-#: Blocks/Reassurance/KeyFigureBlock.php:49
-#: Blocks/Reassurance/ReinsuranceBlock.php:45
-msgid "Pour garantir une mise en page cohérente et harmonieuse sur le site, il est recommandé de remplir les mêmes champs pour chaque élément de ce bloc. Par exemple, si vous renseignez les champs 'Icône' et 'Donnée' pour un élément, assurez-vous de le faire pour tous les autres éléments. Cela permettra d'optimiser l'affichage de vos informations."
-msgstr "Para garantizar un diseño coherente y armonioso en el sitio, se recomienda rellenar los mismos campos para cada elemento de este bloque. Por ejemplo, si rellena los campos 'Icono' y 'Dato' para un elemento, asegúrese de hacerlo para todos los demás elementos. Esto permitirá optimizar la visualización de su información."
+#: src/Blocks/Reassurance/KeyFigureBlock.php:49
+#: src/Blocks/Reassurance/ReinsuranceBlock.php:45
+msgid ""
+"Pour garantir une mise en page cohérente et harmonieuse sur le site, il est "
+"recommandé de remplir les mêmes champs pour chaque élément de ce bloc. Par "
+"exemple, si vous renseignez les champs 'Icône' et 'Donnée' pour un élément, "
+"assurez-vous de le faire pour tous les autres éléments. Cela permettra "
+"d'optimiser l'affichage de vos informations."
+msgstr ""
+"Para garantizar un diseño coherente y armonioso en el sitio, se recomienda "
+"rellenar los mismos campos para cada elemento de este bloque. Por ejemplo, "
+"si rellena los campos 'Icono' y 'Dato' para un elemento, asegúrese de "
+"hacerlo para todos los demás elementos. Esto permitirá optimizar la "
+"visualización de su información."
 
-#: Blocks/Reassurance/KeyFigureBlock.php:53
-#: Blocks/Reassurance/ReinsuranceBlock.php:47
+#: src/Blocks/Reassurance/KeyFigureBlock.php:53
+#: src/Blocks/Reassurance/ReinsuranceBlock.php:47
 msgid "Icône"
 msgstr "Icono"
 
-#: Blocks/Reassurance/KeyFigureBlock.php:54
-#: Blocks/Reassurance/ReinsuranceBlock.php:48
+#: src/Blocks/Reassurance/KeyFigureBlock.php:54
+#: src/Blocks/Reassurance/ReinsuranceBlock.php:48
 msgid "Donnée"
 msgstr "Dato"
 
-#: Blocks/Reassurance/KeyFigureBlock.php:57
-#: Blocks/Reassurance/ReinsuranceBlock.php:52
+#: src/Blocks/Reassurance/KeyFigureBlock.php:57
+#: src/Blocks/Reassurance/ReinsuranceBlock.php:52
 msgid "Maximum %s caractères"
 msgstr "Máximo %s caracteres"
 
-#: Blocks/Reassurance/KeyFigureBlock.php:65
+#: src/Blocks/Reassurance/KeyFigureBlock.php:65
 msgid "Par défaut"
 msgstr "Predeterminado"
 
-#: Blocks/Reassurance/KeyFigureBlock.php:66
+#: src/Blocks/Reassurance/KeyFigureBlock.php:66
 msgid "Avec fond"
 msgstr "Con fondo"
 
-#: Blocks/Reassurance/KeyFigureBlock.php:67
+#: src/Blocks/Reassurance/KeyFigureBlock.php:67
 msgid "Cartouches encadrées"
 msgstr "Tarjetas enmarcadas"
 
-#: Blocks/Reassurance/LogosBlock.php:31
-#: Blocks/Reassurance/LogosBlock.php:45
+#: src/Blocks/Reassurance/LogosBlock.php:31
+#: src/Blocks/Reassurance/LogosBlock.php:45
 msgid "Logos"
 msgstr "Logos"
 
-#: Blocks/Reassurance/LogosBlock.php:36
-msgid "Affiche une série de logos comme des clients, partenaires ou certifications."
+#: src/Blocks/Reassurance/LogosBlock.php:36
+msgid ""
+"Affiche une série de logos comme des clients, partenaires ou certifications."
 msgstr "Muestra una serie de logos como clientes, socios o certificaciones."
 
-#: Blocks/Reassurance/LogosBlock.php:51
+#: src/Blocks/Reassurance/LogosBlock.php:51
 msgid "Logo"
 msgstr "Logo"
 
-#: Blocks/Reassurance/LogosBlock.php:52
+#: src/Blocks/Reassurance/LogosBlock.php:52
 msgid "Lien sur le logo"
 msgstr "Enlace en el logo"
 
-#: Blocks/Reassurance/QuoteBlock.php:20
+#: src/Blocks/Reassurance/QuoteBlock.php:20
 msgid "Citation"
 msgstr "Cita"
 
-#: Blocks/Reassurance/QuoteBlock.php:25
+#: src/Blocks/Reassurance/QuoteBlock.php:25
 msgid "Mise en avant d'une citation, un témoignage ou un extrait de texte."
 msgstr "Destacado de una cita, un testimonio o un extracto de texto."
 
-#: Blocks/Reassurance/ReinsuranceBlock.php:29
+#: src/Blocks/Reassurance/ReinsuranceBlock.php:29
 msgid "Réassurance"
 msgstr "Tranquilización"
 
-#: Blocks/Reassurance/ReinsuranceBlock.php:34
+#: src/Blocks/Reassurance/ReinsuranceBlock.php:34
 msgid "Éléments visuels et textuels destinés à renforcer la confiance."
 msgstr "Elementos visuales y textuales destinados a reforzar la confianza."
 
-#: Livewire/Listing/Listing.php:90
+#: src/Enum/ListingPeriod.php:21
+msgid "Aujourd'hui"
+msgstr "Hoy"
+
+#: src/Enum/ListingPeriod.php:22
+msgid "Cette semaine"
+msgstr "Esta semana"
+
+#: src/Enum/ListingPeriod.php:23
+msgid "Ce mois-ci"
+msgstr "Este mes"
+
+#: src/Enum/ListingPeriod.php:24
+msgid "Cette année"
+msgstr "Este año"
+
+#: src/Enum/ListingPeriod.php:25
+msgid "7 derniers jours"
+msgstr "Últimos 7 días"
+
+#: src/Enum/ListingPeriod.php:26
+msgid "30 derniers jours"
+msgstr "Últimos 30 días"
+
+#: src/Enum/ListingPeriod.php:27
+msgid "12 derniers mois"
+msgstr "Últimos 12 meses"
+
+#: src/Enum/ListingPeriod.php:28
+msgid "L'an dernier"
+msgstr "El año pasado"
+
+#: src/Livewire/Listing/Listing.php:87
 msgid "Plus récent"
 msgstr "Más reciente"
 
-#: Livewire/Listing/Listing.php:91
+#: src/Livewire/Listing/Listing.php:88
 msgid "Plus ancien"
 msgstr "Más antiguo"
 
-#: Livewire/Listing/SearchEngineResults.php:196
+#: src/Livewire/Listing/SearchEngineResults.php:196
 msgid "Tous les résultats"
 msgstr "Todos los resultados"
