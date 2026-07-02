@@ -727,6 +727,8 @@ class Listing extends Component
             if (!empty($value) && isset($workingFilters[$name])) {
                 if ($workingFilters[$name] && isset($workingFilters[$name]['isSearch']) && $workingFilters[$name]['isSearch']) {
                     $qb->search($value);
+                } elseif (($workingFilters[$name]['type'] ?? null) === FilterTypesEnum::PERIOD->value) {
+                    $this->applyPeriodFilter(qb: $qb, value: $value);
                 } else {
                     $handleFilter = true;
 
@@ -866,6 +868,34 @@ class Listing extends Component
                 }
             }
         }
+    }
+
+    private function applyPeriodFilter(QueryBuilder $qb, mixed $value): void
+    {
+        // A Choices.js enhanced <select> can report its value through Livewire as
+        // ['value' => 'slug'] instead of a bare scalar (same shape as taxonomy
+        // single-select). Normalise both forms to a scalar slug.
+        if (is_array($value)) {
+            $value = $value['value'] ?? null;
+        }
+
+        if (!is_string($value) || '' === $value) {
+            return;
+        }
+
+        $period = ListingPeriod::tryFrom($value);
+
+        if (null === $period) {
+            return;
+        }
+
+        [$after, $before] = $period->resolve(new \DateTimeImmutable('now', wp_timezone()));
+
+        $qb->addDateQuery(
+            (new DateQuery())
+                ->after($after)
+                ->before($before)
+        );
     }
 
     private function applyForcedFilters(QueryBuilder $qb): void
