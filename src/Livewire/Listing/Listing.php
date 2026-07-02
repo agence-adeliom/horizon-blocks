@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\Livewire\Listing;
 
+use Adeliom\HorizonBlocks\Enum\ListingPeriod;
 use Adeliom\HorizonBlocks\ViewModels\ListingInnerCardViewModel;
+use Adeliom\HorizonTools\Database\DateQuery;
 use Adeliom\HorizonTools\Database\MetaQuery;
 use Adeliom\HorizonTools\Database\QueryBuilder;
 use Adeliom\HorizonTools\Database\TaxQuery;
@@ -121,6 +123,52 @@ class Listing extends Component
             'label' => $label,
             'placeholder' => $placeholder,
             'isSearch' => true,
+        ];
+
+        switch ($level) {
+            case 1:
+                $this->filters = $workingFilters;
+                break;
+            case 2:
+                $this->secondaryFilters = $workingFilters;
+                break;
+            default:
+                break;
+        }
+    }
+
+    private function initPeriodFilter(string $filterName, array $periods, string $label, ?string $placeholder = null, int $level = 1): void
+    {
+        $workingFilters = match ($level) {
+            1 => $this->filters,
+            2 => $this->secondaryFilters,
+        };
+
+        $choices = [];
+
+        foreach ($periods as $slug) {
+            if (!is_string($slug)) {
+                continue;
+            }
+
+            $period = ListingPeriod::tryFrom($slug);
+
+            if (null !== $period) {
+                $choices[] = [
+                    self::KEY_SLUG => $period->value,
+                    self::KEY_NAME => $period->label(),
+                ];
+            }
+        }
+
+        $workingFilters[$filterName] = [
+            'type' => FilterTypesEnum::PERIOD->value,
+            'name' => $filterName,
+            'appearance' => ListingBlock::VALUE_FILTER_APPEARANCE_SELECT,
+            'value' => null,
+            'label' => $label,
+            'placeholder' => $placeholder,
+            'choices' => $choices,
         ];
 
         switch ($level) {
@@ -427,6 +475,9 @@ class Listing extends Component
                     case FilterTypesEnum::SEARCH->value:
                         $type = FilterTypesEnum::SEARCH;
                         break;
+                    case FilterTypesEnum::PERIOD->value:
+                        $type = FilterTypesEnum::PERIOD;
+                        break;
                 }
 
                 switch ($type) {
@@ -458,6 +509,15 @@ class Listing extends Component
                         break;
                     case FilterTypesEnum::SEARCH:
                         $this->initSearchFilter(searchName: $name, label: $label, placeholder: $placeholder, level: $level);
+                        break;
+                    case FilterTypesEnum::PERIOD:
+                        $this->initPeriodFilter(
+                            filterName: $name,
+                            periods: is_array($filter[ListingBlock::FIELD_FILTERS_PERIODS] ?? null) ? $filter[ListingBlock::FIELD_FILTERS_PERIODS] : [],
+                            label: $label,
+                            placeholder: $placeholder,
+                            level: $level,
+                        );
                         break;
                     default:
                         break;
