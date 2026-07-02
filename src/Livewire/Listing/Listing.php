@@ -694,7 +694,15 @@ class Listing extends Component
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_SELECT:
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_RADIO:
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT:
-                                                $taxQuery->add($taxonomyName, [$value]);
+                                                // Single-value appearances only ever carry a scalar term slug.
+                                                // A non-scalar value can still reach this point when the URL
+                                                // holds a stale array shape (e.g. a legacy checkbox/multiselect
+                                                // link kept after the filter was switched to a single-value
+                                                // appearance); passing it through would build a nested `terms`
+                                                // array and make WP_Term_Query call preg_match() on an array.
+                                                if (is_scalar($value)) {
+                                                    $taxQuery->add($taxonomyName, [$value]);
+                                                }
                                                 break;
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX:
                                             case ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT:
