@@ -285,6 +285,7 @@ class ListingBlock extends AbstractBlock
 						->helperText(__('Laisser vide pour ne pas afficher le choix "Tous"', 'horizon-blocks'))
 						->conditionalLogic([
 							ConditionalLogic::where(self::FIELD_FILTERS_META_APPEARANCE, '==', self::VALUE_FILTER_APPEARANCE_RADIO),
+							ConditionalLogic::where(self::FIELD_FILTERS_META_APPEARANCE, '==', self::VALUE_FILTER_APPEARANCE_SELECT),
 						]);
 				}
 
@@ -308,6 +309,7 @@ class ListingBlock extends AbstractBlock
 					->helperText(__('Laisser vide pour ne pas afficher le choix "Tous"', 'horizon-blocks'))
 					->conditionalLogic([
 						ConditionalLogic::where(self::FIELD_FILTERS_TAX_APPEARANCE, '==', self::VALUE_FILTER_APPEARANCE_RADIO),
+						ConditionalLogic::where(self::FIELD_FILTERS_TAX_APPEARANCE, '==', self::VALUE_FILTER_APPEARANCE_SELECT),
 					]);
 			}
 
