@@ -8,10 +8,11 @@
             $attributes['class'],
         ])
     >
-        <div
-            @class(['relative shrink-0 overflow-hidden', 'aspect-[384/217]' => $vertical, 'aspect-[384/217] sm:aspect-[240/207] sm:w-60' => ! $vertical])
-        >
-            @if ($image)
+        {{-- Pas d’image à la une : pas de cadre vide, le contenu occupe toute la carte. --}}
+        @if ($image)
+            <div
+                @class(['relative shrink-0 overflow-hidden', 'aspect-[384/217]' => $vertical, 'aspect-[384/217] sm:aspect-[240/207] sm:w-60' => ! $vertical])
+            >
                 <x-media.img
                     :image="$image"
                     size="medium_large"
@@ -19,8 +20,8 @@
                     container-class="absolute-full"
                     :decorative="true"
                 />
-            @endif
-        </div>
+            </div>
+        @endif
 
         <div class="p-card gap-card flex flex-1 flex-col items-start">
             @if ($term || ($withDate && $date))

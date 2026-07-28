@@ -65,6 +65,16 @@ class LatestPostBlock extends AbstractBlock
     {
         $maxPosts = max(self::MAX_POSTS_PER_LAYOUT);
 
+        $taxonomies = self::getSelectableTaxonomies();
+
+        // Les taxonomies écartées ci-dessus n’ont pas à apparaître dans le sélecteur de taxonomie.
+        $excludedTaxonomies = array_values(
+            array_diff(
+                PostService::getAllAssociatedTaxonomies(postType: self::ASSOCIATED_POST_TYPE, onlySlugs: true),
+                array_keys($taxonomies),
+            ),
+        );
+
         /**
          * Un champ Taxonomie par taxonomie associée aux articles : celui qui s’affiche dépend de la
          * taxonomie choisie juste au-dessus. Impossible de n’en poser qu’un seul, ACF a besoin de
@@ -72,7 +82,7 @@ class LatestPostBlock extends AbstractBlock
          */
         $taxonomyFields = [];
 
-        foreach (PostService::getAllAssociatedTaxonomies(postType: self::ASSOCIATED_POST_TYPE) as $taxonomySlug => $taxonomyName) {
+        foreach ($taxonomies as $taxonomySlug => $taxonomyName) {
             $taxonomyFields[] = Taxonomy::make($taxonomyName, $taxonomySlug)
                 ->taxonomy($taxonomySlug)
                 ->appearance('multi_select')
@@ -106,6 +116,7 @@ class LatestPostBlock extends AbstractBlock
                 postType: self::ASSOCIATED_POST_TYPE,
                 label: __('Taxonomie', 'horizon-blocks'),
                 name: self::FIELD_TAXONOMY,
+                excluded: $excludedTaxonomies,
             )->conditionalLogic([ConditionalLogic::where(self::FIELD_TYPE, '==', self::VALUE_TYPE_TAXONOMY)]),
             ...$taxonomyFields,
             Relationship::make(__('Articles', 'horizon-blocks'), self::FIELD_MANUAL_POSTS)
@@ -137,6 +148,29 @@ class LatestPostBlock extends AbstractBlock
                 ),
             LayoutField::margin(),
         ]);
+    }
+
+    /**
+     * Les taxonomies proposées à l’éditeur : celles qui ont une interface d’administration. Des
+     * plugins accrochent aux articles des taxonomies techniques — Polylang par exemple, avec
+     * `language` et `post_translations` — dont le libellé peut valoir false : elles n’ont rien à
+     * faire dans les champs du bloc, et un libellé non textuel fait échouer la déclaration ACF.
+     *
+     * @return array<string, string> libellés indexés par slug de taxonomie
+     */
+    private static function getSelectableTaxonomies(): array
+    {
+        $taxonomies = [];
+
+        foreach (PostService::getAllAssociatedTaxonomies(postType: self::ASSOCIATED_POST_TYPE) as $slug => $label) {
+            $taxonomy = get_taxonomy($slug);
+
+            if ($taxonomy && $taxonomy->show_ui && is_string($label) && '' !== $label) {
+                $taxonomies[$slug] = $label;
+            }
+        }
+
+        return $taxonomies;
     }
 
     public function addToContext(): array
