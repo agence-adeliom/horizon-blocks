@@ -21,8 +21,8 @@ final class FaqSchemaBuilder
 		$questions = [];
 
 		foreach ($items as $item) {
-			$title = trim((string)($item['title'] ?? ''));
-			$content = self::toPlainText((string)($item['content'] ?? ''));
+			$title = self::toPlainText(is_string($item['title'] ?? null) ? $item['title'] : '');
+			$content = self::toPlainText(is_string($item['content'] ?? null) ? $item['content'] : '');
 
 			if ('' === $title || '' === $content) {
 				continue;
@@ -59,15 +59,25 @@ final class FaqSchemaBuilder
 	}
 
 	/**
-	 * wp_strip_all_tags() retire le contenu des balises script/style, ce que
-	 * strip_tags() laisse passer. On garde un repli pour rester testable hors WordPress.
+	 * Normalise du HTML de wysiwyg en texte brut exploitable par schema.org.
+	 *
+	 * Les deux branches partagent le même pré- et post-traitement : ni strip_tags()
+	 * ni wp_strip_all_tags() n'insèrent d'espace aux frontières de bloc, et aucune
+	 * des deux ne décode les entités — or le JSON-LD n'est pas du HTML.
 	 */
 	private static function toPlainText(string $html): string
 	{
+		$html = preg_replace('#<br\s*/?>#i', ' ', $html) ?? $html;
+		$html = preg_replace('#</(p|div|li|h[1-6]|tr|blockquote)>#i', '$0 ', $html) ?? $html;
+
 		if (function_exists('wp_strip_all_tags')) {
-			return trim(wp_strip_all_tags($html));
+			$text = wp_strip_all_tags($html);
+		} else {
+			$text = strip_tags(preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', $html) ?? $html);
 		}
 
-		return trim(strip_tags(preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', $html) ?? $html));
+		$text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+		return trim(preg_replace('/\s+/u', ' ', $text) ?? $text);
 	}
 }
