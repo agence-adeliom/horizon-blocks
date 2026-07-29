@@ -52,8 +52,10 @@ Repeater::make(__('Éléments', 'horizon-blocks'), self::FIELD_ITEMS)
             ->maxLength(150)
             ->helperText(__('Maximum 150 caractères', 'horizon-blocks'))
             ->required(),
-        WysiwygField::minimal(),
+        WysiwygField::minimal(__('Contenu', 'horizon-blocks'), self::FIELD_ITEM_CONTENT)
+            ->required(),
     ])
+    ->layout('row')
     ->collapsed(self::FIELD_ITEM_TITLE)
     ->minRows(2)
     ->button(__('Ajouter un élément', 'horizon-blocks')),
@@ -63,7 +65,9 @@ TrueFalseField::make(__('Activer le balisage schema.org (FAQ)', 'horizon-blocks'
     ->default(false),
 ```
 
-Constantes : `FIELD_IMG`, `FIELD_ITEMS`, `FIELD_ITEM_TITLE`, `FIELD_SCHEMA_ORG`.
+Constantes : `FIELD_IMG`, `FIELD_ITEMS`, `FIELD_ITEM_TITLE`, `FIELD_ITEM_CONTENT`, `FIELD_SCHEMA_ORG`.
+
+Le repeater force `->layout('row')` : le layout par défaut d'ACF (`table`) comprime le wysiwyg dans une cellule de tableau, ce qui rend TinyMCE inutilisable. C'est le même correctif que celui déjà appliqué dans `CardsBlock`, seul autre repeater du repo contenant un wysiwyg. Le sous-champ contenu est aussi `->required()` : un titre sans contenu est un état enregistrable mais invisible (le garde `@if` du Blade masque silencieusement toute la ligne), donc le contrat ACF doit interdire cet état plutôt que de laisser le rendu le faire disparaître.
 
 Imports : `Extended\ACF\Fields\Text`, `Extended\ACF\Fields\Repeater`, `Extended\ACF\Fields\Image`, `Adeliom\HorizonTools\Fields\Choices\TrueFalseField` (helper Horizon, comme dans `PostSummaryBlock`, plutôt que le `TrueFalse` brut d'Extended ACF).
 
@@ -74,7 +78,7 @@ Imports : `Extended\ACF\Fields\Text`, `Extended\ACF\Fields\Repeater`, `Extended\
 
 `TrueFalseField` existe bien dans `Adeliom\HorizonTools\Fields\Choices` et le `TrueFalse` qu'il retourne expose `->default()` et `->helperText()`.
 
-**Écart assumé par rapport à `CardsBlock`.** Ce bloc utilise `HeadingField::make()` pour le titre de ligne, ce qui expose un sélecteur de balise au rédacteur. Pour un accordéon, le niveau de titre est une décision structurelle (il doit être cohérent avec le `<h2>` du bloc et stable pour `aria-labelledby`), pas un choix éditorial — d'où un `Text` simple. `WysiwygField::minimal()` reste appelé sans argument, conformément à la convention du repo.
+**Écart assumé par rapport à `CardsBlock`.** Ce bloc utilise `HeadingField::make()` pour le titre de ligne, ce qui expose un sélecteur de balise au rédacteur. Pour un accordéon, le niveau de titre est une décision structurelle (il doit être cohérent avec le `<h2>` du bloc et stable pour `aria-labelledby`), pas un choix éditorial — d'où un `Text` simple. Le sous-champ wysiwyg du repeater reçoit, lui, un nom explicite (`WysiwygField::minimal(__('Contenu', 'horizon-blocks'), self::FIELD_ITEM_CONTENT)`) plutôt que d'être appelé nu : c'est plus lisible dans la définition des champs, et c'est la clé que `AccordionBlock::addToContext()` relit ensuite dans `$item[self::FIELD_ITEM_CONTENT]`.
 
 **Non repris** : le `maxPosts(5)` de l'ancien `Relationship`. Un accordéon générique n'a pas de raison d'être plafonné à 5 entrées. `minRows(2)` est conservé — un accordéon d'un seul élément n'a pas de sens.
 
@@ -130,17 +134,17 @@ Les lignes dont le titre ou le contenu est vide sont ignorées à la constructio
                 :aria-expanded="open"
                 @click="open = !open"
                 class="flex justify-between items-center w-full text-left cursor-pointer">
-            <x-typography.text :content="$title" class="font-semibold transition-all" x-bind:class="{ 'text-primary': open }" />
+            <x-typography.text :content="$title" tag="span" class="font-semibold transition-all" x-bind:class="{ 'text-primary': open }" />
             <svg aria-hidden="true" :class="{ 'rotate-180': open }" …></svg>
         </button>
     </h3>
-    <div id="{{ $uid }}-panel" role="region" aria-labelledby="{{ $uid }}-btn" x-show="open" x-collapse class="pt-medium">
+    <div id="{{ $uid }}-panel" aria-labelledby="{{ $uid }}-btn" x-show="open" x-collapse class="pt-medium">
         <x-typography.text :content="$content" />
     </div>
 </div>
 ```
 
-Points clés : `<button type="button">` (accès clavier et restitution correcte), `aria-expanded` piloté par Alpine, `aria-controls`/`aria-labelledby` appairés, chevron `aria-hidden`, `<h3>` cohérent avec le `<h2>` du bloc. `wp_unique_id()` garantit l'unicité des `id` si plusieurs accordéons cohabitent sur une page.
+Points clés : `<button type="button">` (accès clavier et restitution correcte), `aria-expanded` piloté par Alpine, `aria-controls`/`aria-labelledby` appairés, chevron `aria-hidden`, `<h3>` cohérent avec le `<h2>` du bloc. `wp_unique_id()` garantit l'unicité des `id` si plusieurs accordéons cohabitent sur une page. `<x-typography.text>` rend un `<p>` par défaut ; à l'intérieur du `<button>`, dont le modèle de contenu n'accepte que du phrasing content, on force `tag="span"` sur le titre — le panneau, lui, n'est pas dans un bouton et n'a pas besoin de ce forçage. Pas de `role="region"` sur le panneau : au-delà d'une demi-douzaine d'éléments, ce que l'accordéon n'a justement pas de raison de plafonner, l'ARIA APG déconseille ce rôle pour éviter la prolifération de landmarks — décision humaine explicite.
 
 Chaque panneau reste replié au chargement — comportement actuel, conservé.
 

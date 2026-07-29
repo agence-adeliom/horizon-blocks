@@ -714,7 +714,7 @@ git status --short
 git log --oneline sage/11 ^origin/sage/11
 git diff --check origin/sage/11..sage/11
 ```
-Expected : seul `resources/views/blocks/action/navbar.blade.php` reste modifié et non commité (travail en cours étranger à ce chantier — **ne pas le committer**) ; six commits listés ; aucun signalement de whitespace.
+Expected : arbre de travail propre (`git status --short` ne renvoie rien) — le travail sur `navbar.blade.php` a finalement été commité séparément par l'humain (`c902970`), hors périmètre de ce chantier ; la plage de commits de ce plan compte 7 commits de code plus les commits de documentation associés ; aucun signalement de whitespace.
 
 - [ ] **Step 4: Pusher**
 
