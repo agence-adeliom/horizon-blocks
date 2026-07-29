@@ -10,11 +10,11 @@ use Adeliom\HorizonBlocks\Blocks\Action\FormBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormConfirmationBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\NavbarBlock;
 use Adeliom\HorizonBlocks\Blocks\Blog\LatestPostBlock;
+use Adeliom\HorizonBlocks\Blocks\Content\AccordionBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\ArgumentBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CatchphraseBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\DocumentsBlock;
-use Adeliom\HorizonBlocks\Blocks\Content\FaqBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\GalleryBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\HighlightBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\PhotoCarouselBlock;
@@ -39,7 +39,7 @@ use Adeliom\HorizonBlocks\Livewire\Listing\Listing;
 use Adeliom\HorizonBlocks\Livewire\Listing\SearchEngineResults;
 use Adeliom\HorizonBlocks\View\Components\Action\ShareButtons;
 use Adeliom\HorizonBlocks\View\Components\Breadcrumbs;
-use Adeliom\HorizonBlocks\View\Components\Cards\CardFaq;
+use Adeliom\HorizonBlocks\View\Components\Cards\CardAccordion;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardPrice;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
@@ -51,7 +51,6 @@ use Adeliom\HorizonBlocks\View\Components\Navigation\HierarchicalSummaryElement;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\MergedResults;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\SeparatedResults;
-use Adeliom\HorizonPostTypes\PostTypes\FAQ;
 
 class HorizonBlockService
 {
@@ -171,12 +170,11 @@ class HorizonBlockService
                 self::ASSET_FILES => [],
                 self::LIVEWIRE_COMPONENTS => [],
             ],
-            FaqBlock::class => [
+            AccordionBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
                 self::ASSET_FILES => [],
                 self::LIVEWIRE_COMPONENTS => [],
-                self::COMPONENTS => [CardFaq::class],
-                self::REQUIRED_POSTTYPES => [FAQ::class],
+                self::COMPONENTS => [CardAccordion::class],
             ],
             HeroForm::class => [
                 self::REQUIRES_LIVEWIRE => false,
