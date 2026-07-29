@@ -8,6 +8,7 @@ use Adeliom\HorizonBlocks\Admin\Post\PostSummaryAdmin;
 use Adeliom\HorizonBlocks\Blocks\Action\CtaBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormConfirmationBlock;
+use Adeliom\HorizonBlocks\Blocks\Blog\LatestPostBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\ArgumentBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CatchphraseBlock;
@@ -43,6 +44,7 @@ use Adeliom\HorizonBlocks\View\Components\Cards\CardStep;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardBasic;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardCustomerReview;
 use Adeliom\HorizonBlocks\View\Components\Cards\CardDocument;
+use Adeliom\HorizonBlocks\View\Components\Cards\CardPost;
 use Adeliom\HorizonBlocks\View\Components\Content\TextMedia;
 use Adeliom\HorizonBlocks\View\Components\Navigation\HierarchicalSummaryElement;
 use Adeliom\HorizonBlocks\View\Components\Offer;
@@ -120,6 +122,12 @@ class HorizonBlockService
                 self::ASSET_FILES => ['resources/scripts/blocks/steps.ts'],
                 self::LIVEWIRE_COMPONENTS => [],
                 self::COMPONENTS => [CardStep::class],
+            ],
+            LatestPostBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+                self::COMPONENTS => [CardPost::class],
             ],
             CustomerReviewBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
