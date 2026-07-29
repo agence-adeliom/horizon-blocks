@@ -24,7 +24,13 @@
         
         `#sticky-navbar` sert de point d'entrée au script (cf. scripts/blocks/navbar.ts).
     --}}
-    <div class="navbar-anchors" id="sticky-navbar" x-data="initNavBar">
+    {{--
+        `awc-theme-dark` : la barre est une surface sombre du design system (cf. la fiche
+        block-header-topnavbar sur webcomponents.adeliom.io). Les couleurs qu'elle utilise
+        — `color-01-50` pour le fond, `neutral-950` pour les ancres — ne prennent leurs valeurs
+        sombres que sous cette classe.
+    --}}
+    <div class="navbar-anchors awc-theme-dark" id="sticky-navbar" x-data="initNavBar">
         <nav class="navbar-anchors-inner container" aria-label="{{ __('Sommaire de la page', 'horizon-blocks') }}">
             {{--
                 Le scroller et son dégradé de fondu sont dans un wrapper à part : le dégradé se
@@ -50,8 +56,15 @@
                 </ul>
             </div>
 
+            {{--
+                Pas d'icône : `<x-ui.icon>` appelle `@svg($iconName, $class)` avec le `icon-class`
+                du bouton, vide par défaut. Le SVG sortait donc sans classe, la règle
+                `.btn-md .icon { h-3 w-3 }` de button.css ne s'y appliquait pas et il était calculé
+                à 0x0 — tout en restant un élément flex, donc le `gap` du bouton ajoutait 16px de
+                vide à droite du libellé, vers un icône invisible.
+            --}}
             @if (! empty($cta['link']['url']))
-                <x-action.button :fields="$cta" type="secondary" size="medium" icon="fas-arrow-right" class="navbar-anchors-cta" />
+                <x-action.button :fields="$cta" type="secondary" size="medium" class="navbar-anchors-cta" />
             @endif
         </nav>
     </div>
