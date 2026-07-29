@@ -1,7 +1,7 @@
 <x-block :fields="$fields" :block="$block">
     @if(!empty($context['structuredData']))
         <script type="application/ld+json">
-            @json($context['structuredData'])
+            @json($context['structuredData'], JSON_HEX_TAG | JSON_UNESCAPED_UNICODE)
         </script>
     @endif
 

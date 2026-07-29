@@ -10,7 +10,7 @@
             <button type="button" id="{{ $uid }}-btn" aria-controls="{{ $uid }}-panel"
                 :aria-expanded="open" @click="open = !open"
                 class="flex justify-between items-center gap-medium w-full text-left cursor-pointer">
-                <x-typography.text :content="$title" class="font-semibold transition-all"
+                <x-typography.text :content="$title" tag="span" class="font-semibold transition-all"
                     x-bind:class="{ 'text-primary': open }" />
                 <svg aria-hidden="true" :class="{ 'rotate-180': open }"
                     class="shrink-0 transform transition-transform duration-300 w-5 h-5" fill="none"
@@ -19,7 +19,7 @@
                 </svg>
             </button>
         </h3>
-        <div id="{{ $uid }}-panel" role="region" aria-labelledby="{{ $uid }}-btn" x-show="open" x-collapse
+        <div id="{{ $uid }}-panel" aria-labelledby="{{ $uid }}-btn" x-show="open" x-collapse
             class="pt-medium">
             <x-typography.text :content="$content" />
         </div>

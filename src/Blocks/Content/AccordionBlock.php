@@ -54,8 +54,10 @@ class AccordionBlock extends AbstractBlock
 						->maxLength(150)
 						->helperText(__('Maximum 150 caractères', 'horizon-blocks'))
 						->required(),
-					WysiwygField::minimal(__('Contenu', 'horizon-blocks'), self::FIELD_ITEM_CONTENT),
+					WysiwygField::minimal(__('Contenu', 'horizon-blocks'), self::FIELD_ITEM_CONTENT)
+						->required(),
 				])
+				->layout('row')
 				->collapsed(self::FIELD_ITEM_TITLE)
 				->minRows(2)
 				->button(__('Ajouter un élément', 'horizon-blocks')),
