@@ -67,12 +67,12 @@ Constantes : `FIELD_IMG`, `FIELD_ITEMS`, `FIELD_ITEM_TITLE`, `FIELD_SCHEMA_ORG`.
 
 Imports : `Extended\ACF\Fields\Text`, `Extended\ACF\Fields\Repeater`, `Extended\ACF\Fields\Image`, `Adeliom\HorizonTools\Fields\Choices\TrueFalseField` (helper Horizon, comme dans `PostSummaryBlock`, plutôt que le `TrueFalse` brut d'Extended ACF).
 
-**À vérifier à l'implémentation.** `vendor/` n'étant pas installé localement, deux points n'ont pas pu être confirmés dans le code de `horizon-tools` :
+**Vérifié dans `vendor/` (résolu).** Les deux inconnues signalées lors du brainstorming ont été levées en installant les dépendances avant l'implémentation :
 
-1. **Le nom du champ produit par `WysiwygField::minimal()`.** Toutes les occurrences du repo l'appellent sans argument, y compris dans un repeater (`CardsBlock.php:46`), donc la clé de ligne est le nom par défaut du helper — probablement exposé par une constante `WysiwygField::NAME`, sur le modèle de `HeadingField::NAME` utilisé en `->collapsed()`. À confirmer, et à utiliser pour lire le contenu côté `addToContext()` et blade.
-2. **Si le helper accepte `(label, name)`**, on pourra lui passer un `self::FIELD_ITEM_CONTENT` explicite, ce qui serait plus lisible. Sinon on s'en tient à l'appel nu — c'est la convention observée partout dans le repo, donc l'option par défaut.
+1. `WysiwygField::minimal(string $label = 'Description', string|null $name = self::WYSIWYG)` **accepte** `(label, name)`. On lui passe donc un nom explicite `FIELD_ITEM_CONTENT = 'itemContent'` pour le sous-champ du repeater, plus lisible qu'un appel nu.
+2. La constante de nom par défaut du helper s'appelle `WysiwygField::WYSIWYG` (valeur `'wysiwyg'`) — il n'existe pas de `WysiwygField::NAME`. Elle ne concerne que le champ wysiwyg de l'en-tête, qui reste appelé nu.
 
-Ce choix n'a aucun impact sur le reste du design : seule la clé de lecture d'une ligne change.
+`TrueFalseField` existe bien dans `Adeliom\HorizonTools\Fields\Choices` et le `TrueFalse` qu'il retourne expose `->default()` et `->helperText()`.
 
 **Écart assumé par rapport à `CardsBlock`.** Ce bloc utilise `HeadingField::make()` pour le titre de ligne, ce qui expose un sélecteur de balise au rédacteur. Pour un accordéon, le niveau de titre est une décision structurelle (il doit être cohérent avec le `<h2>` du bloc et stable pour `aria-labelledby`), pas un choix éditorial — d'où un `Text` simple. `WysiwygField::minimal()` reste appelé sans argument, conformément à la convention du repo.
 

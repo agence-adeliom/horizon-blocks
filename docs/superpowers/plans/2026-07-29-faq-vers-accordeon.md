@@ -12,7 +12,8 @@
 
 - **Branche de travail : `sage/11`.** Ne pas committer sur `main`.
 - **Périmètre strictement limité à ce repo.** Ne rien modifier dans `horizon-posttypes` : le CPT FAQ y reste intact.
-- **Aucune dépendance de dev disponible.** `composer.json` ne déclare ni PHPUnit ni Pest, et `vendor/` n'est pas installé. Les tests sont des **scripts PHP autonomes** sur le modèle de `tests/ListingPeriodTest.php` : `require` direct du fichier source, helper `check()`, `exit(0|1)`. Lancement : `php tests/<Nom>Test.php`.
+- **Aucune dépendance de dev.** `composer.json` ne déclare ni PHPUnit ni Pest. Les tests sont des **scripts PHP autonomes** sur le modèle de `tests/ListingPeriodTest.php` : `require` direct du fichier source, helper `check()`, `exit(0|1)`. Lancement : `php tests/<Nom>Test.php`. Ne pas introduire de dépendance de dev pour ce chantier.
+- **`vendor/` est installé** (`composer install` passé au démarrage). Les signatures d'API utilisées dans ce plan ont été vérifiées dans `vendor/` : les prendre telles quelles, sans repartir en exploration.
 - **Noms de champs ACF en camelCase** (`argTitle`, `bgColor`, `priceSuffix`…), conformément au commit `094961a`.
 - **Toutes les chaînes visibles passent par `__('…', 'horizon-blocks')`.**
 - **Tout bloc déclare un `$icon` et une `getDescription()`** (commit `74ea5f9`).
@@ -391,6 +392,7 @@ class AccordionBlock extends AbstractBlock
 	public const string FIELD_IMG = 'img';
 	public const string FIELD_ITEMS = 'items';
 	public const string FIELD_ITEM_TITLE = 'itemTitle';
+	public const string FIELD_ITEM_CONTENT = 'itemContent';
 	public const string FIELD_SCHEMA_ORG = 'schemaOrg';
 
 	public function getFields(): ?iterable
@@ -407,7 +409,7 @@ class AccordionBlock extends AbstractBlock
 						->maxLength(150)
 						->helperText(__('Maximum 150 caractères', 'horizon-blocks'))
 						->required(),
-					WysiwygField::minimal(),
+					WysiwygField::minimal(__('Contenu', 'horizon-blocks'), self::FIELD_ITEM_CONTENT),
 				])
 				->collapsed(self::FIELD_ITEM_TITLE)
 				->minRows(2)
@@ -435,7 +437,7 @@ class AccordionBlock extends AbstractBlock
 		foreach ($fields[self::FIELD_ITEMS] ?? [] as $item) {
 			$items[] = [
 				'title' => $item[self::FIELD_ITEM_TITLE] ?? null,
-				'content' => $item[WysiwygField::NAME] ?? null,
+				'content' => $item[self::FIELD_ITEM_CONTENT] ?? null,
 			];
 		}
 
@@ -456,22 +458,17 @@ class AccordionBlock extends AbstractBlock
 Run: `php -l src/Blocks/Content/AccordionBlock.php`
 Expected: `No syntax errors detected`
 
-- [ ] **Step 3: Confirmer les deux inconnues de la spec dans le code de horizon-tools**
+- [ ] **Step 3: Ne rien explorer — les signatures sont déjà vérifiées**
 
-La spec signale deux points non vérifiables sans `vendor/`. Les lever ici :
+`vendor/` a été installé et les API confirmées avant l'écriture de ce task. Ne pas repartir en exploration, et **ne pas** remplacer les valeurs ci-dessous :
 
-```bash
-composer install --no-interaction 2>/dev/null || ddev composer install
-grep -rn "const string NAME\|public static function minimal" vendor/agence-adeliom/horizon-tools/src/Fields/Text/WysiwygField.php
-ls vendor/agence-adeliom/horizon-tools/src/Fields/Choices/TrueFalseField.php
-```
+- `WysiwygField::minimal(string $label = 'Description', string|null $name = self::WYSIWYG): WYSIWYGEditor` — accepte bien `(label, name)`, d'où la constante explicite `FIELD_ITEM_CONTENT`. La constante de nom par défaut du helper s'appelle `WysiwygField::WYSIWYG` (valeur `'wysiwyg'`), **pas** `WysiwygField::NAME` qui n'existe pas.
+- Le champ wysiwyg de l'en-tête reste appelé nu, donc sa clé de lecture est `'wysiwyg'` — c'est ce que fait déjà `faq.blade.php`.
+- `TrueFalseField::make(?string $label, ?string $name): TrueFalse` existe bien dans `Adeliom\HorizonTools\Fields\Choices`, applique `->stylized()`, et le `TrueFalse` retourné expose `->default()` (trait `DefaultValue`) et `->helperText()` (trait `HelperText`).
+- `Repeater` expose `collapsed()`, `minRows()`, `maxRows()` en propre et `button()` via le trait `ButtonLabel`.
+- `Text` expose `maxLength()`, `helperText()` et `required()`.
 
-Trois cas à traiter :
-1. **`WysiwygField::NAME` existe** → le code ci-dessus est correct, ne rien changer.
-2. **La constante porte un autre nom** (`FIELD_NAME`, ou nom en dur `'content'` — cette valeur figure déjà parmi les noms de champs du repo) → remplacer `WysiwygField::NAME` par la constante réelle dans `addToContext()`, **et** répercuter dans `accordion.blade.php` au Task 4.
-3. **`minimal()` accepte `(label, name)`** → passer une constante explicite `FIELD_ITEM_CONTENT = 'itemContent'` dans le repeater et l'utiliser en lecture, ce qui est plus lisible. Sinon conserver l'appel nu.
-
-Si `TrueFalseField` n'existe pas à ce chemin, se replier sur `Extended\ACF\Fields\TrueFalse` (déjà utilisé dans `ListingBlock.php:133`), en conservant `->default(false)`.
+Aucune action à cette étape hors la lecture de ces contraintes.
 
 - [ ] **Step 4: Relancer le lint après tout ajustement**
 
@@ -534,7 +531,7 @@ Créer `resources/views/blocks/content/accordion.blade.php`. L'en-tête reprend 
         <div class="lg:col-span-7 flex flex-col gap-medium">
             @if (!empty($fields['items']))
                 @foreach ($fields['items'] as $item)
-                    <x-cards.card-accordion :title="$item['itemTitle'] ?? null" :content="$item['wysiwyg'] ?? null" />
+                    <x-cards.card-accordion :title="$item['itemTitle'] ?? null" :content="$item['itemContent'] ?? null" />
                 @endforeach
             @endif
         </div>
@@ -542,7 +539,7 @@ Créer `resources/views/blocks/content/accordion.blade.php`. L'en-tête reprend 
 </x-block>
 ```
 
-**Point de vigilance :** les clés `'wysiwyg'` (ligne de l'en-tête et ligne du repeater) doivent correspondre à la valeur réelle de `WysiwygField::NAME` relevée au Task 3, Step 3. Si c'est `'content'`, remplacer les deux occurrences. Les autres clés (`img`, `uptitle`, `title`, `buttons`, `items`, `itemTitle`) sont confirmées par le code existant et par les constantes du Task 3.
+**Les clés sont toutes vérifiées, ne rien deviner.** `img`, `uptitle`, `title`, `buttons` viennent de `faq.blade.php` ; `wysiwyg` est la valeur de `WysiwygField::WYSIWYG` pour le champ d'en-tête appelé nu ; `items`, `itemTitle`, `itemContent` sont les constantes du Task 3. La ligne du repeater lit bien `itemContent` — et non `wysiwyg`, puisque le sous-champ reçoit un nom explicite.
 
 - [ ] **Step 2: Vérifier la structure de la vue**
 
