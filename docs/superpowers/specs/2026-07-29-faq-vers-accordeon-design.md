@@ -24,6 +24,7 @@ On transforme donc le bloc en **accordéon** : les paires titre/contenu sont sai
 
 | Action | Fichier |
 |---|---|
+| Créé | `src/Services/FaqSchemaBuilder.php` |
 | Créé | `src/Blocks/Content/AccordionBlock.php` |
 | Créé | `src/View/Components/Cards/CardAccordion.php` |
 | Créé | `resources/views/blocks/content/accordion.blade.php` |
@@ -106,7 +107,11 @@ return ['structuredData' => $questions === [] ? null : [
 
 **Supprimé** : `datePublished`. Il venait de `$questionPost->post_date`, qui n'existe plus sans CPT.
 
+**Conservé** : l'`author` de type `Organization` portant le nom du site, qu'émet déjà `FaqBlock`. Il est passé au builder en paramètre optionnel (`?string $siteName`) plutôt que lu via `get_bloginfo()` à l'intérieur, pour que le builder reste testable hors WordPress. Sans ce paramètre, aucun `author` n'est émis.
+
 Les lignes dont le titre ou le contenu est vide sont ignorées à la construction, comme aujourd'hui.
+
+**Où vit cette logique.** Dans une classe dédiée `Adeliom\HorizonBlocks\Services\FaqSchemaBuilder`, sans aucun `use` ni appel WordPress obligatoire. C'est une contrainte du dispositif de test du repo : `tests/ListingPeriodTest.php` est un script PHP autonome qui fait un `require` direct du fichier source, sans autoloader. `AccordionBlock` étendant `AbstractBlock` (horizon-tools) n'est pas chargeable ainsi — d'où l'extraction dans un fichier sans dépendance.
 
 ## Rendu et accessibilité
 
@@ -154,7 +159,9 @@ Dans `HorizonBlockService.php` : l'entrée du bloc perd `REQUIRED_POSTTYPES => [
 - lignes au titre ou contenu vide → ignorées
 - toutes les lignes vides → `null` plutôt qu'un `FAQPage` sans `mainEntity`
 
-La logique de construction est extraite dans une méthode statique pure pour être appelable sans bootstrap WordPress, `SeoService::isCurrentPageIndexed()` restant côté `addToContext()`.
+Le test est un **script PHP autonome**, pas un test PHPUnit : le repo ne déclare aucune dépendance de dev, et `ListingPeriodTest.php` fonctionne par `require` direct + helper `check()` + `exit(0|1)`. Lancement : `php tests/AccordionSchemaTest.php`.
+
+`SeoService::isCurrentPageIndexed()` et la lecture du toggle restent côté `addToContext()`, hors du builder — ce sont les deux points qui exigent WordPress.
 
 ## Hors périmètre
 
