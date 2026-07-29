@@ -64,8 +64,9 @@
         }
     }
 
+    /* 28px (`2xlarge`) entre les ancres, comme entre les blocs de la barre. */
     .navbar-anchors-list {
-        @apply flex items-center gap-3 overflow-x-auto;
+        @apply flex items-center gap-7 overflow-x-auto;
 
         /* La barre de défilement alourdirait la barre : on garde le geste, sans le chrome. */
         scrollbar-width: none;
@@ -73,38 +74,63 @@
         &::-webkit-scrollbar {
             @apply hidden;
         }
+
+        /*
+            Ancres centrées dans la place laissée par le CTA, comme dans le design system.
+
+            Le centrage passe par des marges auto et non par `justify-content: center` : en cas
+            de débordement, `center` rend le début de la liste inatteignable au défilement — les
+            premières ancres sont rognées sans pouvoir y revenir. Les marges auto, elles, se
+            réduisent d'elles-mêmes à zéro dès qu'il n'y a plus d'espace libre à absorber.
+        */
+        & > li:first-child {
+            margin-inline-start: auto;
+        }
+
+        & > li:last-child {
+            margin-inline-end: auto;
+        }
     }
 
     /*
-        Pastille d'ancre. Elle reprend le rayon et la graisse des boutons pour s'accorder au CTA
-        voisin, mais pas leurs majuscules : ce sont des libellés de section, parfois longs, que
-        la casse haute rendrait pénibles à lire.
+        Ancre : un lien texte, sans fond ni bordure, conformément au design system. Pas de
+        majuscules non plus — ce sont des libellés de section, parfois longs, que la casse haute
+        rendrait pénibles à lire.
 
         `whitespace-nowrap` : un libellé ne revient jamais à la ligne, c'est la liste qui défile.
     */
     .navbar-anchors-link {
-        /* `inline-flex`, comme le composant `.btn` : un `<a>` reste `inline` par défaut, et la
-           boîte d'un élément inline ne réserve pas sa hauteur — les bordures haute et basse
-           n'étaient pas peintes et la pastille se lisait comme une paire de parenthèses. */
-        @apply inline-flex items-center;
-        /* Bordure à 40 % : en dessous, le contour se perd sur le fond sombre. */
-        @apply rounded-button border border-solid border-white/40;
-        @apply text-small whitespace-nowrap px-4 py-2 font-semibold text-neutral-950;
-        @apply transition-colors duration-300 ease-out;
-
-        &:hover {
-            @apply border-white/70 bg-white/10;
-        }
+        /* Graisse normale au repos : le design system met les liens en semibold, mais l'écart
+           avec le gras de l'ancre active est alors trop ténu pour se lire. */
+        @apply text-medium whitespace-nowrap font-normal text-neutral-950;
+        @apply transition-opacity duration-300 ease-out;
 
         /*
-            `aria-current` est la seule source de vérité de l'état actif : pas de classe en double.
-
-            Le texte actif est en `color-01-50`, la couleur du fond de la barre, et non en
-            `neutral-1000` : sous `awc-theme-dark` ce dernier vaut blanc, on aurait eu du blanc
-            sur blanc.
+            L'ancre active passe en gras, ce qui élargit son libellé — et décalerait toute la
+            rangée à chaque changement de section. On réserve donc en permanence la largeur du
+            gras : le libellé et une copie en gras (`::after`, invisible) partagent la même
+            cellule de grille, dont la largeur est celle du plus large des deux.
         */
+        display: inline-grid;
+
+        & > span,
+        &::after {
+            grid-area: 1 / 1;
+        }
+
+        &::after {
+            @apply invisible font-bold;
+
+            content: attr(data-label);
+        }
+
+        &:hover {
+            @apply opacity-70;
+        }
+
+        /* `aria-current` est la seule source de vérité de l'état actif : pas de classe en double. */
         &[aria-current] {
-            @apply text-color-01-50 border-neutral-950 bg-neutral-950;
+            @apply font-bold;
         }
 
         &:focus-visible {
