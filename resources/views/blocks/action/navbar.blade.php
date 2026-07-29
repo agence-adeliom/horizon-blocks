@@ -40,6 +40,7 @@
                 <ul class="navbar-anchors-list">
                     @foreach ($anchors as $anchor)
                         @php($link = $anchor[NavbarBlock::FIELD_BUTTON]['link'])
+                        @php($label = $link['title'] ?: $link['url'])
 
                         <li>
                             {{--
@@ -47,9 +48,21 @@
                                 composer avec l'URL absolue que le navigateur renvoie sur
                                 `a.href` (`https://…/page#ancre`), là où il lui faut le seul
                                 fragment. `aria-current` est posé par le script.
+                                
+                                `data-label` reprend le libellé : le CSS s'en sert pour réserver
+                                la largeur du libellé en gras, afin que le passage de l'ancre
+                                active en gras ne décale pas toute la rangée. Le `<span>` est
+                                nécessaire pour que le libellé et cette réserve se superposent
+                                dans la même cellule de grille.
                             --}}
-                            <a href="{{ $link['url'] }}" data-anchor="{{ $link['url'] }}" class="navbar-anchors-link" js-anchor>
-                                {{ $link['title'] ?: $link['url'] }}
+                            <a
+                                href="{{ $link['url'] }}"
+                                data-anchor="{{ $link['url'] }}"
+                                data-label="{{ $label }}"
+                                class="navbar-anchors-link"
+                                js-anchor
+                            >
+                                <span>{{ $label }}</span>
                             </a>
                         </li>
                     @endforeach
