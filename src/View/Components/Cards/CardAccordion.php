@@ -13,7 +13,6 @@ class CardAccordion extends Component
 	public function __construct(
 		public ?string $title = null,
 		public ?string $content = null,
-		public ?string $class = null,
 	)
 	{
 	}
