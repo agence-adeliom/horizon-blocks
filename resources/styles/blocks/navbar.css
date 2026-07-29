@@ -1,0 +1,120 @@
+/*
+    Barre d'ancres collante du bloc « Barre de navigation interne (ancres) ».
+
+    ── Intégration projet ────────────────────────────────────────────────────────────────
+    Le seul réglage à fournir est `--navbar-anchors-offset` : la hauteur du chrome collant
+    déjà présent en haut de l'écran, sous lequel la barre doit se caler. Sans header collant
+    il n'y a rien à faire, le repli à `0px` colle la barre en haut de la fenêtre.
+
+    Exemple, pour un projet dont le header publie sa hauteur mesurée en JS :
+
+        :root {
+            --navbar-anchors-offset: var(--header-height, 0px);
+        }
+
+    La valeur sert à deux choses, d'où la variable partagée plutôt qu'une valeur en dur : le
+    `top` de la barre, et la ligne de détection de la section courante côté script.
+    ──────────────────────────────────────────────────────────────────────────────────────
+*/
+
+@layer components {
+    /*
+        Desktop uniquement : sous lg les thèmes Horizon basculent sur une barre mobile et son
+        panneau plein écran, où une seconde barre collante n'aurait plus de place.
+
+        z-index en retrait : la barre ne doit jamais passer devant le header ni un sous-menu
+        ouvert, qui montent plus haut dans les thèmes Horizon.
+    */
+    .navbar-anchors {
+        @apply bg-neutral-1000 sticky inset-x-0 z-[100] max-lg:hidden;
+
+        top: var(--navbar-anchors-offset, 0px);
+    }
+
+    .navbar-anchors-inner {
+        @apply gap-x-large flex items-center py-3;
+    }
+
+    /*
+        `flex-1` : le scroller occupe toute la largeur laissée par le CTA, il ne se contente pas
+        de la largeur de ses pastilles. C'est ce qui repousse le dégradé de fondu à l'extrémité
+        droite de la barre — sinon il se collait au bord du contenu et voilait en permanence la
+        dernière pastille, même quand tout tenait largement dans la largeur.
+
+        `min-w-0` l'autorise en retour à rétrécir sous la largeur de son contenu : sans lui, un
+        grand nombre d'ancres pousserait la largeur du flex au lieu de déclencher le défilement,
+        et c'est le CTA qui serait comprimé.
+    */
+    .navbar-anchors-scroller {
+        @apply relative min-w-0 flex-1;
+
+        /*
+            Dégradé de droite : signale qu'il reste des ancres à faire défiler. Il n'a pas
+            besoin d'être masqué quand tout tient dans la largeur, puisqu'il se fond alors
+            dans le fond de la barre, de la même couleur.
+        */
+        &::after {
+            @apply pointer-events-none absolute inset-y-0 right-0 w-12;
+
+            background-image: linear-gradient(to left, var(--color-neutral-1000), transparent);
+            content: '';
+        }
+    }
+
+    .navbar-anchors-list {
+        @apply flex items-center gap-3 overflow-x-auto;
+
+        /* La barre de défilement alourdirait la barre : on garde le geste, sans le chrome. */
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            @apply hidden;
+        }
+    }
+
+    /*
+        Pastille d'ancre. Elle reprend le rayon et la graisse des boutons pour s'accorder au CTA
+        voisin, mais pas leurs majuscules : ce sont des libellés de section, parfois longs, que
+        la casse haute rendrait pénibles à lire.
+
+        `whitespace-nowrap` : un libellé ne revient jamais à la ligne, c'est la liste qui défile.
+    */
+    .navbar-anchors-link {
+        /* `inline-flex`, comme le composant `.btn` : un `<a>` reste `inline` par défaut, et la
+           boîte d'un élément inline ne réserve pas sa hauteur — les bordures haute et basse
+           n'étaient pas peintes et la pastille se lisait comme une paire de parenthèses. */
+        @apply inline-flex items-center;
+        /* Bordure à 40 % : en dessous, le contour se perd sur le fond sombre. */
+        @apply rounded-button border border-solid border-white/40;
+        @apply text-small whitespace-nowrap px-4 py-2 font-semibold text-white;
+        @apply transition-colors duration-300 ease-out;
+
+        &:hover {
+            @apply border-white/70 bg-white/10;
+        }
+
+        /* `aria-current` est la seule source de vérité de l'état actif : pas de classe en double. */
+        &[aria-current] {
+            @apply text-neutral-1000 border-white bg-white;
+        }
+
+        &:focus-visible {
+            @apply outline-2 outline-offset-2 outline-white;
+        }
+    }
+
+    .navbar-anchors-cta {
+        @apply shrink-0;
+    }
+
+    /*
+        Dégagement des cibles d'ancres : sans lui, le saut vers un fragment place le haut de la
+        section sous le chrome collant, qui la recouvre. On ne le pose que sur les pages qui
+        portent la barre, pour ne pas modifier le comportement des ancres ailleurs.
+
+        `--navbar-anchors-height` est publiée par scripts/blocks/navbar.ts.
+    */
+    .main:has(> .navbar-anchors) > section[id] {
+        scroll-margin-top: calc(var(--navbar-anchors-offset, 0px) + var(--navbar-anchors-height, 0px));
+    }
+}
