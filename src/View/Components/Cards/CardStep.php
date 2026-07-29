@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Adeliom\HorizonBlocks\View\Components\Cards;
 
-use App\PostTypes\FAQ;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
