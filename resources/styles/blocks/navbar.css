@@ -26,13 +26,16 @@
         ouvert, qui montent plus haut dans les thèmes Horizon.
     */
     .navbar-anchors {
-        @apply bg-neutral-1000 sticky inset-x-0 z-[100] max-lg:hidden;
+        /* Fond en `color-01-50`, résolu par `awc-theme-dark` (posé dans le Blade) en sa valeur
+           sombre. Attention : `neutral-1000` basculerait au blanc sous ce thème. */
+        @apply bg-color-01-50 sticky inset-x-0 z-[100] max-lg:hidden;
 
         top: var(--navbar-anchors-offset, 0px);
     }
 
+    /* 28px (`2xlarge`) entre les ancres et le CTA. */
     .navbar-anchors-inner {
-        @apply gap-x-large flex items-center py-3;
+        @apply flex items-center gap-x-7 py-3;
     }
 
     /*
@@ -56,7 +59,7 @@
         &::after {
             @apply pointer-events-none absolute inset-y-0 right-0 w-12;
 
-            background-image: linear-gradient(to left, var(--color-neutral-1000), transparent);
+            background-image: linear-gradient(to left, var(--color-color-01-50), transparent);
             content: '';
         }
     }
@@ -86,16 +89,22 @@
         @apply inline-flex items-center;
         /* Bordure à 40 % : en dessous, le contour se perd sur le fond sombre. */
         @apply rounded-button border border-solid border-white/40;
-        @apply text-small whitespace-nowrap px-4 py-2 font-semibold text-white;
+        @apply text-small whitespace-nowrap px-4 py-2 font-semibold text-neutral-950;
         @apply transition-colors duration-300 ease-out;
 
         &:hover {
             @apply border-white/70 bg-white/10;
         }
 
-        /* `aria-current` est la seule source de vérité de l'état actif : pas de classe en double. */
+        /*
+            `aria-current` est la seule source de vérité de l'état actif : pas de classe en double.
+
+            Le texte actif est en `color-01-50`, la couleur du fond de la barre, et non en
+            `neutral-1000` : sous `awc-theme-dark` ce dernier vaut blanc, on aurait eu du blanc
+            sur blanc.
+        */
         &[aria-current] {
-            @apply text-neutral-1000 border-white bg-white;
+            @apply text-color-01-50 border-neutral-950 bg-neutral-950;
         }
 
         &:focus-visible {
