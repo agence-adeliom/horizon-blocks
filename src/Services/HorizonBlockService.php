@@ -8,6 +8,7 @@ use Adeliom\HorizonBlocks\Admin\Post\PostSummaryAdmin;
 use Adeliom\HorizonBlocks\Blocks\Action\CtaBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormBlock;
 use Adeliom\HorizonBlocks\Blocks\Action\FormConfirmationBlock;
+use Adeliom\HorizonBlocks\Blocks\Action\NavbarBlock;
 use Adeliom\HorizonBlocks\Blocks\Blog\LatestPostBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\ArgumentBlock;
 use Adeliom\HorizonBlocks\Blocks\Content\CardsBlock;
@@ -88,6 +89,11 @@ class HorizonBlockService
             CtaBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
                 self::ASSET_FILES => [],
+                self::LIVEWIRE_COMPONENTS => [],
+            ],
+            NavbarBlock::class => [
+                self::REQUIRES_LIVEWIRE => false,
+                self::ASSET_FILES => ['resources/scripts/blocks/navbar.ts', 'resources/styles/blocks/navbar.css'],
                 self::LIVEWIRE_COMPONENTS => [],
             ],
             ArgumentBlock::class => [
