@@ -113,8 +113,9 @@ class ListingInnerCardViewModel
     {
         $html = null;
 
+        // getData() is nullable; the card component expects an array in `fields`.
         if (empty($data)) {
-            $data = $this->getData();
+            $data = $this->getData() ?? [];
         }
 
         $class = $this->getClass();
@@ -139,7 +140,7 @@ class ListingInnerCardViewModel
     public function getHtml(?int $currentPage = null, ?int $perPage = null, array $data = []): ?string
     {
         if (empty($data)) {
-            $data = $this->getData();
+            $data = $this->getData() ?? [];
         }
 
         $this->render(currentPage: $currentPage, perPage: $perPage, data: $data);
@@ -174,7 +175,14 @@ class ListingInnerCardViewModel
         $stdClass->pages = $this->getPages();
         $stdClass->timesAlreadyDisplayed = $this->getTimesAlreadyDisplayed();
         $stdClass->bladeComponentName = $this->getBladeComponentName();
-        $stdClass->html = $this->getHtml(currentPage: $currentPage, perPage: $perPage, data: $this->getData());
+        /*
+            `?? []` is what fixes the crash: getData() is declared ?array, getHtml() takes a
+            non-nullable array, and nothing set data on the card — so every configured inner card
+            hit a TypeError. Coalescing here rather than widening getHtml()'s signature keeps the
+            public API untouched: a project subclassing this view model would fatal on load if a
+            parameter type were relaxed in the parent (PHP forbids narrowing it back in a child).
+        */
+        $stdClass->html = $this->getHtml(currentPage: $currentPage, perPage: $perPage, data: $this->getData() ?? []);
 
         return $stdClass;
     }

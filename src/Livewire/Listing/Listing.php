@@ -949,7 +949,17 @@ class Listing extends Component
         if (!empty($this->innerCards)) {
             foreach ($this->innerCards as $innerCard) {
                 $card = new ListingInnerCardViewModel();
-                $card->setClass($innerCard['class'] ?? null)->setPosition((int) $innerCard['position'] ?? null);
+                /*
+                    The repeater row is what the card component receives as `fields` (see the view
+                    model's render()), so it doubles as the data every card needs to be rendered.
+                    Without it getData() stayed null on every card.
+                */
+                $card
+                    ->setClass($innerCard['class'] ?? null)
+                    // Parentheses matter: `(int) $x ?? null` casts first, so the coalesce never
+                    // fires and a missing key raises an undefined-key warning instead.
+                    ->setPosition((int) ($innerCard['position'] ?? 0))
+                    ->setData($innerCard);
 
                 if (!empty($innerCard[ListingBlock::FIELD_INNER_CARD_PAGES])) {
                     switch ($innerCard[ListingBlock::FIELD_INNER_CARD_PAGES]) {
