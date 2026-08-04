@@ -66,12 +66,21 @@
         <button wire:click="resetFilters">Ré-initialiser</button>
     @endif
 
-    <div class="loading hidden">
+    {{--
+        Loading state driven by wire:loading rather than by a `change` listener on the form: the
+        listener missed page and sort changes, and left the results hidden for good if the request
+        failed. wire:loading reacts to any request made by the component.
+
+        The `is-loading` class is only a hook — projects decide what it looks like. Keeping it on
+        `.results` rather than on a shared parent lets a project blur the results without blurring
+        its own loading indicator.
+    --}}
+    <div class="loading" wire:loading>
         Loading
     </div>
 
     @if(!empty($data['items']))
-        <div class="results">
+        <div class="results" wire:loading.class="is-loading">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
                 @foreach($data['items'] as $post)
                     @if(property_exists($post, 'timesAlreadyDisplayed'))

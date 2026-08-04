@@ -71,21 +71,8 @@ Listing.initInstanceSecondaryFilters = instance => {
     });
 };
 
+// The loading state is handled by wire:loading in the Livewire view, not here.
 Listing.initInstance = instance => {
-    const form = instance.querySelector('form');
-
-    if (form) {
-        form.addEventListener('change', () => {
-            const loading = instance.querySelector('.loading');
-            const results = instance.querySelector('.results');
-
-            if (loading && results) {
-                loading.classList.remove('hidden');
-                results.classList.add('hidden');
-            }
-        });
-    }
-
     Listing.initInstanceSecondaryFilters(instance);
 };
 
