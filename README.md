@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo/horizon-blocks-horizontal-negatif.svg">
+    <img src="docs/logo/horizon-blocks-horizontal-couleur.svg" alt="Horizon Blocks" width="420">
+  </picture>
+</p>
+
 # Horizon Blocks
 
 Horizon Blocks is a versatile library designed to integrate seamlessly with Horizon Tools, enabling you to create and reuse blocks across multiple sites with ease.
