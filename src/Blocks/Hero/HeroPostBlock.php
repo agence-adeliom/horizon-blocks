@@ -8,7 +8,6 @@ use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Services\DateService;
 use Adeliom\HorizonTools\Services\PostService;
 use Adeliom\HorizonTools\Services\SeoService;
-use Adeliom\HorizonTools\Services\Compilation\CompilationService;
 
 class HeroPostBlock extends AbstractBlock
 {
@@ -44,14 +43,10 @@ class HeroPostBlock extends AbstractBlock
             'excerpt' => $post?->post_excerpt,
             'readingTimeInMinutes' => PostService::getReadingTimeInMinutes(post: $post),
             'publishedAt' => DateService::getPrettyDate(date: $post?->post_date),
+            'publishedAtDatetime' => $post ? get_the_date('Y-m-d', $post) : null,
             'hasBreadcrumbs' => SeoService::isRankMathActive(),
             'categories' => get_the_category($post?->ID),
             'img' => get_post_thumbnail_id($post?->ID),
         ];
-    }
-
-    public function renderBlockCallback(): void
-    {
-        CompilationService::getAsset('resources/scripts/blocks/hero-post.ts')?->enqueueAll();
     }
 }
