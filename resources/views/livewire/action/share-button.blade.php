@@ -1,6 +1,6 @@
 <div>
     <x-action.button
-        @class(['copy-current-link' => $type === 'copy', 'rounded-full' => $iconOnly])
+        @class(['copy-current-link' => in_array($type, ['copy', 'instagram'], true), 'rounded-full' => $iconOnly])
         :id="$buttonId"
         :label="$label"
         :icon="$icon"

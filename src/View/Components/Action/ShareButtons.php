@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\View\Components\Action;
+namespace Adeliom\HorizonBlocks\View\Components\Action;
 
 use Adeliom\HorizonTools\Admin\ShareOptionsAdmin;
 use Adeliom\HorizonTools\Services\ShareService;
