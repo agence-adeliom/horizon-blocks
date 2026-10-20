@@ -44,7 +44,7 @@ class GalleryBlock extends AbstractBlock
     {
         yield from ContentTab::make()->fields([
             UptitleField::make(),
-            HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h1')->required(),
+            HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
             WysiwygField::simple(),
             ButtonField::group(),
         ]);

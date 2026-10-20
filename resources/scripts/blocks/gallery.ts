@@ -1,69 +1,78 @@
 import Swiper from 'swiper';
-import { Navigation, Pagination } from 'swiper/modules';
-// Uncomment when problem from Swiper lib fixed
-// import { SwiperOptions } from "swiper/types";
 import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+
 document.addEventListener('alpine:init', () => {
     window.Alpine.data('initGallery', () => {
         return {
             open: false,
+            announcement: '',
+            trigger: null as HTMLElement | null,
+            swiper: null as Swiper | null,
+            horizontalSwiper: null as Swiper | null,
+
             init() {
-                // Uncomment when problem from Swiper lib fixed
-                // const swiperParams: SwiperOptions = {
-                const swiperParams = {
-                    // configure Swiper to use modules
-                    modules: [Navigation, Pagination],
+                // Popin : une image à la fois, les images masquées sont retirées du parcours et de la restitution
+                this.swiper = new Swiper(this.$refs.swiperContainer, {
                     slidesPerView: 1,
-                    loop: false,
-                    mousewheel: true,
                     spaceBetween: 24,
-                    navigation: {
-                        nextEl: this.$refs.buttonNext,
-                        prevEl: this.$refs.buttonPrev,
-                        disabledClass: 'opacity-50 pointer-events-none',
+                    rewind: true,
+                    observer: true,
+                    observeParents: true,
+                    on: {
+                        init: (swiper) => this.updateSlides(swiper),
+                        slideChange: (swiper) => {
+                            this.updateSlides(swiper);
+                            this.announcement = swiper.slides[swiper.activeIndex]?.dataset.announcement ?? '';
+                        },
                     },
-                    pagination: {
-                        el: this.$refs.swiperPagination,
-                        type: 'bullets',
-                        clickable: true,
-                        lockClass: 'hidden',
-                        hiddenClass: 'hidden',
-                        bulletActiveClass: '!bg-neutral-1000',
-                        bulletClass: 'clickable-area relative bg-neutral-500 w-5 h-1 inline-block transition-colors cursor-pointer',
-                    },
-                };
-                this.swiper = new Swiper(this.$refs.swiperContainer, swiperParams);
+                });
 
                 if (this.$refs.horizontalContainer) {
-                    const horizontalParams = {
-                        modules: [Navigation],
+                    this.horizontalSwiper = new Swiper(this.$refs.horizontalContainer, {
                         slidesPerView: 1.2,
                         spaceBetween: 16,
-                        loop: false,
-                        mousewheel: true,
-                        navigation: {
-                            nextEl: this.$refs.horizontalNext,
-                            prevEl: this.$refs.horizontalPrev,
-                            disabledClass: 'opacity-50 pointer-events-none',
-                        },
+                        rewind: true,
+                        watchSlidesProgress: true,
                         breakpoints: {
                             1024: {
                                 slidesPerView: 3.2,
                                 spaceBetween: 24,
                             },
                         },
-                    };
-                    this.horizontalSwiper = new Swiper(this.$refs.horizontalContainer, horizontalParams);
+                    });
                 }
+            },
+
+            updateSlides(swiper: Swiper) {
+                swiper.slides.forEach((slide, i) => (slide.inert = i !== swiper.activeIndex));
+            },
+
+            // Une vignette qui reçoit le focus clavier hors de la zone visible fait défiler le slider jusqu'à elle
+            showHorizontalSlide(index: number) {
+                const slide = this.horizontalSwiper?.slides[index];
+
+                if (slide && !slide.classList.contains('swiper-slide-fully-visible')) {
+                    this.horizontalSwiper.slideTo(index);
+                }
+            },
+
+            openAt(index: number) {
+                this.trigger = document.activeElement as HTMLElement;
+                this.open = true;
 
                 this.$nextTick(() => {
-                    this.swiper.init();
-                    if (this.horizontalSwiper) {
-                        this.horizontalSwiper.init();
-                    }
+                    this.swiper?.update();
+                    this.swiper?.slideTo(index, 0);
+                    this.updateSlides(this.swiper);
                 });
+            },
+
+            close() {
+                this.open = false;
+                this.announcement = '';
+
+                // Retour du focus sur la vignette qui a ouvert la popin
+                this.$nextTick(() => this.trigger?.focus());
             },
         };
     });
