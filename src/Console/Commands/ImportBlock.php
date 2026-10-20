@@ -204,8 +204,8 @@ class ImportBlock extends Command
         $fullPath = null;
         $fullFileName = null;
 
-        foreach (scandir($hypotheticalFolderPath) as $fileFullName) {
-            if (str_starts_with($fileFullName, $fileName)) {
+        foreach (is_dir($hypotheticalFolderPath) ? scandir($hypotheticalFolderPath) : [] as $fileFullName) {
+            if (pathinfo($fileFullName, PATHINFO_FILENAME) === $fileName) {
                 $fullPath = $hypotheticalFolderPath . $fileFullName;
                 $fullFileName = $fileFullName;
                 break;
@@ -213,7 +213,10 @@ class ImportBlock extends Command
         }
 
         if (null !== $fullPath && null !== $fullFileName && file_exists($fullPath)) {
-            $inTemplatePath = $this->getBlockImagesPath() . $hypotheticalImagePathWithoutExtension->replace($fileName, $fullFileName);
+            $relativeFolder = $hypotheticalImagePathWithoutExtension->contains('/')
+                ? $hypotheticalImagePathWithoutExtension->beforeLast('/') . '/'
+                : '';
+            $inTemplatePath = $this->getBlockImagesPath() . $relativeFolder . $fullFileName;
 
             if (file_exists($inTemplatePath)) {
                 $this->error('Illustration already exists at ' . $inTemplatePath);
