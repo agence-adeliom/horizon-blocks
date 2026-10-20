@@ -14,6 +14,7 @@ use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
 use Extended\ACF\Fields\Image;
 use Extended\ACF\Fields\Repeater;
+use Extended\ACF\Fields\Text;
 
 class CardsBlock extends AbstractBlock
 {
@@ -42,7 +43,7 @@ class CardsBlock extends AbstractBlock
 			WysiwygField::minimal(),
 			Repeater::make(__("Cartouches", 'horizon-blocks'), self::FIELD_CARDS)
 				->fields([
-					HeadingField::make(),
+					Text::make(__(HeadingField::LABEL, 'horizon-tools'), HeadingField::NAME),
 					WysiwygField::minimal(),
 					ButtonField::make()->required(),
 					Image::make(__("Image", 'horizon-blocks'), self::FIELD_CARD_IMAGE)->required(),

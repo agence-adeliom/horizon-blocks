@@ -15,8 +15,10 @@
         </div>
         <div class="col-span-full grid-12">
             @if (!empty($fields['cards']))
+                @php($cardHeadingTag = preg_match('/^h([1-5])$/', $fields['title']['tag'] ?? '', $level) && !empty($fields['title']['content']) ? 'h' . ($level[1] + 1) : 'h2')
+
                 @foreach ($fields['cards'] as $card)
-                    <x-cards.card-basic :card="$card" />
+                    <x-cards.card-basic :card="$card" :heading-tag="$cardHeadingTag" />
                 @endforeach
             @endif
         </div>

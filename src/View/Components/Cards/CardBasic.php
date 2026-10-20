@@ -12,8 +12,13 @@ class CardBasic extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public ?array $card = null
-    ) {}
+        public ?array $card = null,
+        public string $headingTag = 'h3',
+    ) {
+        if (!preg_match('/^h[2-6]$/', $this->headingTag)) {
+            $this->headingTag = 'h3';
+        }
+    }
 
     /**
      * Get the view / contents that represent the component.
