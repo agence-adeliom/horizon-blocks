@@ -13,12 +13,14 @@
                 <x-typography.text class="text-large mt-title-text-mobile lg:mt-title-text-desktop" :content="$fields['wysiwyg']" />
             @endif
         </div>
-        <div class="col-span-full flex flex-col gap-2 lg:gap-4 lg:col-span-8 lg:col-start-3">
-            @if (!empty($fields['documents']))
+        @if (!empty($fields['documents']))
+            <ul role="list" class="col-span-full flex flex-col gap-2 lg:gap-4 lg:col-span-8 lg:col-start-3">
                 @foreach ($fields['documents'] as $document)
-                    <x-cards.card-document :document="$document" />
+                    <li>
+                        <x-cards.card-document :document="$document" />
+                    </li>
                 @endforeach
-            @endif
-        </div>
+            </ul>
+        @endif
     </div>
 </x-block>
