@@ -1,5 +1,5 @@
 <x-block :fields="$fields" :block="$block">
-    @if(!empty($context['structuredData']))
+    @if (!empty($context['structuredData']))
         <script type="application/ld+json">
             @json($context['structuredData'], JSON_HEX_TAG | JSON_UNESCAPED_UNICODE)
         </script>
@@ -30,8 +30,10 @@
         </div>
         <div class="lg:col-span-7 flex flex-col gap-medium">
             @if (!empty($fields['items']))
+                @php($itemHeadingTag = preg_match('/^h([1-5])$/', $fields['title']['tag'] ?? '', $level) ? 'h' . ($level[1] + 1) : 'h2')
+
                 @foreach ($fields['items'] as $item)
-                    <x-cards.card-accordion :title="$item['itemTitle'] ?? null" :content="$item['itemContent'] ?? null" />
+                    <x-cards.card-accordion :title="$item['itemTitle'] ?? null" :content="$item['itemContent'] ?? null" :heading-tag="$itemHeadingTag" />
                 @endforeach
             @endif
         </div>
