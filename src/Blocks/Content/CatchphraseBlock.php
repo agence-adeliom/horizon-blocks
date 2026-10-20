@@ -40,7 +40,7 @@ class CatchphraseBlock extends AbstractBlock
     public function getFields(): ?iterable
     {
         yield from ContentTab::make()->fields([
-            HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
+            HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'div')->required(),
         ]);
 
         yield from LayoutTab::make()->fields([
