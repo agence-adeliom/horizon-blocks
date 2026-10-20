@@ -13,8 +13,12 @@ class CardAccordion extends Component
 	public function __construct(
 		public ?string $title = null,
 		public ?string $content = null,
+		public string $headingTag = 'h3',
 	)
 	{
+		if (!preg_match('/^h[2-6]$/', $this->headingTag)) {
+			$this->headingTag = 'h3';
+		}
 	}
 
 	/**
