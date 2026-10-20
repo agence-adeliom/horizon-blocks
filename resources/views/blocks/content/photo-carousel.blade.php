@@ -32,7 +32,7 @@
 						@foreach ($gallery as $item)
 							<div class="swiper-slide rounded-card overflow-hidden cursor-pointer"
 							     @click="open = true; document.body.classList.add('overflow-hidden'); swiper.slideTo( {{ $loop->index }} )">
-								<x-media.img :image="$item" class="object-cover w-full h-full absolute"
+								<x-media.img :image="$item" :decorative="false" class="object-cover w-full h-full absolute"
 								             size="full"
 								             container-class="relative aspect-[16/9] w-full h-auto" />
 							</div>
@@ -86,7 +86,7 @@
 					<div class="swiper-wrapper">
 						@foreach ($gallery as $item)
 							<div class="swiper-slide w-full h-full">
-								<x-media.img :image="$item" class="max-w-full max-h-full object-contain"
+								<x-media.img :image="$item" :decorative="false" class="max-w-full max-h-full object-contain"
 								             size="full"
 								             container-class="relative w-full h-full" />
 							</div>

@@ -50,7 +50,7 @@
                                                     @class([$containerClass])>
                                         @endif
 
-                                        <x-media.img :image="$logoImg" class="contain-full" size="small"
+                                        <x-media.img :image="$logoImg" :decorative="false" class="contain-full" size="small"
                                             containerClass="aspect-[2/1] relative" />
                                         @if (!empty($logoLink))
                                             </a>

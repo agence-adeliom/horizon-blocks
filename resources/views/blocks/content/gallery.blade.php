@@ -46,7 +46,7 @@
 							@foreach ($fields[GalleryBlock::FIELD_GALLERY] as $item)
 								<div class="swiper-slide rounded-card overflow-hidden cursor-pointer"
 								     @click="open = true; document.body.classList.add('overflow-hidden'); swiper.slideTo( {{ $loop->index }} )">
-									<x-media.img :image="$item" class="object-cover w-full h-full absolute"
+									<x-media.img :image="$item" :decorative="false" class="object-cover w-full h-full absolute"
 									             size="full"
 									             container-class="relative aspect-[4/3] relative w-full h-auto" />
 								</div>
@@ -79,7 +79,7 @@
 					@foreach ($fields[GalleryBlock::FIELD_GALLERY] as $item)
 						<div class="rounded-card overflow-hidden group relative cursor-pointer"
 						     @click="open = true; document.body.classList.add('overflow-hidden'); swiper.slideTo( {{ $loop->index }} )">
-							<x-media.img :image="$item" class="object-cover w-full h-full absolute" size="full"
+							<x-media.img :image="$item" :decorative="false" class="object-cover w-full h-full absolute" size="full"
 							             container-class="relative aspect-[4/3] relative w-full h-auto" />
 							<div class="rounded-full bg-primary w-full absolute aspect-square scale-50 -bottom-full lg:group-hover:scale-[3] transition-all ease-linear duration-300 opacity-0 lg:group-hover:opacity-50"></div>
 						</div>
@@ -108,7 +108,7 @@
 					<div class="swiper-wrapper">
 						@foreach ($fields[GalleryBlock::FIELD_GALLERY] as $item)
 							<div class="swiper-slide w-full h-full">
-								<x-media.img :image="$item" class=" max-w-full max-h-full object-contain"
+								<x-media.img :image="$item" :decorative="false" class=" max-w-full max-h-full object-contain"
 								             size="full"
 								             container-class="relative w-full h-full" />
 							</div>
