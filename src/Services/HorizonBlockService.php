@@ -97,7 +97,7 @@ class HorizonBlockService
             ],
             ArgumentBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
-                self::ASSET_FILES => ['resources/scripts/blocks/arguments.ts'],
+                self::ASSET_FILES => ['resources/scripts/blocks/arguments.ts', 'resources/styles/blocks/arguments.css'],
                 self::LIVEWIRE_COMPONENTS => [],
             ],
             CardsBlock::class => [

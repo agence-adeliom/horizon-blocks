@@ -1,0 +1,46 @@
+@reference "../app.css";
+
+.step-progress {
+    @apply h-auto w-0.5 bg-neutral-300 overflow-hidden flex-none relative;
+}
+
+.argument-step.is-active .step-title {
+    @apply text-primary;
+}
+
+.step-progress-inner {
+    @apply absolute bottom-0 left-0 w-full h-full bg-neutral-300;
+
+    .is-active & {
+        @apply bg-primary;
+        animation: progressBarY 6s ease-in-out forwards;
+    }
+
+    .is-paused & {
+        animation-play-state: paused;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .is-active & {
+            animation: none;
+        }
+    }
+}
+
+.argument-dot {
+    @apply size-2.5 rounded-full bg-neutral-500 transition-[width,background-color];
+
+    &.is-active {
+        @apply w-6 bg-primary;
+    }
+}
+
+@keyframes progressBarY {
+    0% {
+        transform: translate3d(0, -100%, 0);
+    }
+
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+}
