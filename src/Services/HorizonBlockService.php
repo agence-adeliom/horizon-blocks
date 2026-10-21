@@ -76,7 +76,7 @@ class HorizonBlockService
             ],
             ListingBlock::class => [
                 self::REQUIRES_LIVEWIRE => true,
-                self::ASSET_FILES => ['resources/scripts/blocks/listing.ts'],
+                self::ASSET_FILES => ['resources/scripts/blocks/listing.ts', 'resources/styles/blocks/listing.css'],
                 self::LIVEWIRE_COMPONENTS => [Listing::class],
             ],
             SearchEngineResultsBlock::class => [

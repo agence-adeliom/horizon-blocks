@@ -1,3 +1,5 @@
+import '@styles/blocks/listing.css';
+
 const Listing: {
     selector?: string;
     getAllInstances?: () => HTMLElement[];
