@@ -226,7 +226,7 @@ class Listing extends Component
             }
         }
 
-        $this->handleChoiceAll(choiceAll: $choiceAll, workingFilters: $workingFilters, filterName: $filterName);
+        $this->handleChoiceAll(choiceAll: $choiceAll, workingFilters: $workingFilters, filterName: $filterName, level: $level);
 
         switch ($level) {
             case 1:
@@ -367,7 +367,7 @@ class Listing extends Component
             }
         }
 
-        $this->handleChoiceAll(choiceAll: $choiceAll, workingFilters: $workingFilters, filterName: $filterName);
+        $this->handleChoiceAll(choiceAll: $choiceAll, workingFilters: $workingFilters, filterName: $filterName, level: $level);
 
         switch ($level) {
             case 1:
@@ -381,12 +381,17 @@ class Listing extends Component
         }
     }
 
-    private function handleChoiceAll(?string $choiceAll = null, array &$workingFilters = [], ?string $filterName = null): void
+    private function handleChoiceAll(?string $choiceAll = null, array &$workingFilters = [], ?string $filterName = null, int $level = 1): void
     {
         if (!empty($choiceAll) && !empty($filterName)) {
             $value = sanitize_title($choiceAll);
 
-            if (empty($this->filterFields[$filterName])) {
+            // The default value goes with the filter's level: a secondary filter's « all » choice is not a primary filter.
+            if (2 === $level) {
+                if (empty($this->secondaryFilterFields[$filterName])) {
+                    $this->secondaryFilterFields[$filterName] = $value;
+                }
+            } elseif (empty($this->filterFields[$filterName])) {
                 $this->filterFields[$filterName] = $value;
             }
 
