@@ -13,7 +13,7 @@
             @endif
 
             @if (!empty($step['title']))
-                <x-typography.heading :content="$step['title']" size="5" />
+                <x-typography.heading :content="$step['title']" :tag="$headingTag" size="5" />
             @endif
 
             @if (!empty($step['content']))
