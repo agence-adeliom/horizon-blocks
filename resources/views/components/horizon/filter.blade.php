@@ -10,6 +10,17 @@
     $withDisplayButton = $withDisplayButton ?? true;
     $withIndicator = $withIndicator ?? true;
 
+    $asDropdown = $asDropdown ?? true;
+    $appearance = $value['appearance'] ?? null;
+
+    if (!$asDropdown) {
+        $appearance = match ($appearance) {
+            ListingBlock::VALUE_FILTER_APPEARANCE_MULTISELECT => ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX,
+            ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT => ListingBlock::VALUE_FILTER_APPEARANCE_RADIO,
+            default => $appearance,
+        };
+    }
+
     /*
         A set of checkboxes or radio buttons is a group: its name goes in a <legend>
     */
@@ -48,7 +59,7 @@
                 </label>
     @endif
 
-    @switch($value["appearance"])
+    @switch($appearance)
         @case(ListingBlock::VALUE_FILTER_APPEARANCE_SELECT)
             <div class="select-field">
                 <select class="select" id="{{ $model }}" name="{{ $model }}"
@@ -118,55 +129,64 @@
         @break
 
         @case(ListingBlock::VALUE_FILTER_APPEARANCE_SINGLESELECT)
-            <div>
-                <div>
+            <div class="select-dropdown" x-data="{ open: false }"
+                @keydown.escape="open && ($event.stopPropagation(), open = false, $refs.toggle.focus())"
+                @click.outside="open = false"
+                @focusout="$event.relatedTarget && !$el.contains($event.relatedTarget) && (open = false)">
+                <button type="button" class="indicator" x-ref="toggle" wire:ignore.self aria-expanded="false"
+                    :aria-expanded="open.toString()" aria-controls="{{ str_replace('.', '-', $model) }}-panel"
+                    @click="open = !open">
                     @if ($withIndicator)
-                        <p class="indicator">
-                            @if (!empty($values[$value['name']]))
-                                @foreach ($value['choices'] as $choiceKey => $choice)
-                                    @if (!empty($choice['slug']) && $choice['slug'] === $values[$value['name']])
-                                        <span class="label">{{ $choice['name'] }}</span>
-                                        @break
-                                    @endif
-                                @endforeach
-                            @else
-                                <span class="placeholder">{{ $value['placeholder'] }}</span>
-                            @endif
-                        </p>
+                        @if (!empty($values[$value['name']]))
+                            @foreach ($value['choices'] as $choiceKey => $choice)
+                                @if (!empty($choice['slug']) && $choice['slug'] === $values[$value['name']])
+                                    <span class="label">{{ $choice['name'] }}</span>
+                                    @break
+                                @endif
+                            @endforeach
+                        @else
+                            <span class="placeholder">{{ $value['placeholder'] }}</span>
+                        @endif
+                    @else
+                        <span class="placeholder">{{ $name }}</span>
                     @endif
 
-                    <div class="dropdown">
-                        <div class="values">
-                            @if (!empty($value['choices']))
-                                @foreach ($value['choices'] as $key => $choice)
-                                    <div wire:key="{{ $model }}-{{ $key }}">
-                                        <input type="radio" id="{{ $model }}_{{ $key }}"
-                                            name="{{ $model }}" value="{{ $choice['slug'] }}"
-                                            @if (!empty($model)) wire:model="{{ $model }}" @endif
-                                            @if (!empty($values[$value['name']][$choice['slug']])) @if ($values[$value['name']][$choice['slug']] == 'true')
-                                                        checked="checked" @endif
-                                            @endif
-                                        />
-                                        <label for="{{ $model }}_{{ $key }}">{{ $choice['name'] }}</label>
-                                    </div>
-                                @endforeach
-                            @endif
-                        </div>
-                        @if ($withReinitButton || $withDisplayButton)
-                            <div class="bottom">
-                                @if ($withReinitButton)
-                                    <button type="button" wire:click="resetFilter('{{ $model }}')">
-                                        Réinitialiser<span class="sr-only"> {{ $name }}</span>
-                                    </button>
-                                @endif
+                    <x-fas-angle-down class="select-field-icon" />
+                </button>
 
-                                @if ($withDisplayButton)
-                                    <button type="button" wire:click="handleFilters">Afficher<span class="sr-only">
-                                            {{ $name }}</span></button>
-                                @endif
-                            </div>
+                <div class="dropdown" id="{{ str_replace('.', '-', $model) }}-panel" wire:ignore.self x-show="open"
+                    style="display: none;">
+                    <div class="values">
+                        @if (!empty($value['choices']))
+                            @foreach ($value['choices'] as $key => $choice)
+                                <div wire:key="{{ $model }}-{{ $key }}">
+                                    <input type="radio" id="{{ $model }}_{{ $key }}"
+                                        name="{{ $model }}" value="{{ $choice['slug'] }}"
+                                        @if (!empty($model)) wire:model="{{ $model }}" @endif
+                                        @if (!empty($values[$value['name']][$choice['slug']])) @if ($values[$value['name']][$choice['slug']] == 'true')
+                                                    checked="checked" @endif
+                                        @endif
+                                    />
+                                    <label for="{{ $model }}_{{ $key }}">{{ $choice['name'] }}</label>
+                                </div>
+                            @endforeach
                         @endif
                     </div>
+                    @if ($withReinitButton || $withDisplayButton)
+                        <div class="bottom">
+                            @if ($withReinitButton)
+                                <button type="button" wire:click="resetFilter('{{ $model }}')">
+                                    Réinitialiser<span class="sr-only"> {{ $name }}</span>
+                                </button>
+                            @endif
+
+                            @if ($withDisplayButton)
+                                <button type="button" @click="open = false; $refs.toggle.focus()">Afficher<span
+                                        class="sr-only">
+                                        {{ $name }}</span></button>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
         @break
@@ -207,51 +227,61 @@
                 }
             @endphp
 
-            <div>
-                <div>
+
+            <div class="select-dropdown" x-data="{ open: false }"
+                @keydown.escape="open && ($event.stopPropagation(), open = false, $refs.toggle.focus())"
+                @click.outside="open = false"
+                @focusout="$event.relatedTarget && !$el.contains($event.relatedTarget) && (open = false)">
+                <button type="button" class="indicator" x-ref="toggle" wire:ignore.self aria-expanded="false"
+                    :aria-expanded="open.toString()" aria-controls="{{ str_replace('.', '-', $model) }}-panel"
+                    @click="open = !open">
                     @if ($withIndicator)
-                        <p class="indicator">
-                            @if ($selected = $this->howManyOptionsSelected($model))
-                                <span class="label">{{ $labelPlaceholder }}</span>
-                                <span class="counter">{{ $selected }}</span>
-                            @else
-                                <span class="placeholder">{{ $value['placeholder'] }}</span>
-                            @endif
-                        </p>
+                        @if ($selected = $this->howManyOptionsSelected($model))
+                            <span class="label">{{ $labelPlaceholder }}</span>
+                            <span class="counter">{{ $selected }}<span class="sr-only"> sélectionné(s)</span></span>
+                        @else
+                            <span class="placeholder">{{ $value['placeholder'] }}</span>
+                        @endif
+                    @else
+                        <span class="placeholder">{{ $name }}</span>
                     @endif
 
-                    <div class="dropdown">
-                        <div class="values">
-                            @if (!empty($value['choices']))
-                                @foreach ($value['choices'] as $key => $choice)
-                                    <div wire:key="{{ $model }}-{{ $key }}">
-                                        <input type="checkbox" id="{{ $model }}_{{ $key }}"
-                                            name="{{ $model }}.{{ $choice['slug'] }}"
-                                            @if (!empty($model)) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif
-                                            @if (!empty($values[$value['name']][$choice['slug']])) @if ($values[$value['name']][$choice['slug']] == 'true')
-                                                        checked="checked" @endif
-                                            @endif
-                                        />
-                                        <label for="{{ $model }}_{{ $key }}">{{ $choice['name'] }}</label>
-                                    </div>
-                                @endforeach
-                            @endif
-                        </div>
-                        @if ($withReinitButton || $withDisplayButton)
-                            <div class="bottom">
-                                @if ($withReinitButton)
-                                    <button type="button" wire:click="resetFilter('{{ $model }}')">
-                                        Réinitialiser<span class="sr-only"> {{ $name }}</span>
-                                    </button>
-                                @endif
+                    <x-fas-angle-down class="select-field-icon" />
+                </button>
 
-                                @if ($withDisplayButton)
-                                    <button type="button" wire:click="handleFilters">Afficher<span class="sr-only">
-                                            {{ $name }}</span></button>
-                                @endif
-                            </div>
+                <div class="dropdown" id="{{ str_replace('.', '-', $model) }}-panel" wire:ignore.self x-show="open"
+                    style="display: none;">
+                    <div class="values">
+                        @if (!empty($value['choices']))
+                            @foreach ($value['choices'] as $key => $choice)
+                                <div wire:key="{{ $model }}-{{ $key }}">
+                                    <input type="checkbox" id="{{ $model }}_{{ $key }}"
+                                        name="{{ $model }}.{{ $choice['slug'] }}"
+                                        @if (!empty($model)) wire:model="{{ $model }}.{{ $choice['slug'] }}" @endif
+                                        @if (!empty($values[$value['name']][$choice['slug']])) @if ($values[$value['name']][$choice['slug']] == 'true')
+                                                    checked="checked" @endif
+                                        @endif
+                                    />
+                                    <label for="{{ $model }}_{{ $key }}">{{ $choice['name'] }}</label>
+                                </div>
+                            @endforeach
                         @endif
                     </div>
+                    @if ($withReinitButton || $withDisplayButton)
+                        <div class="bottom">
+                            @if ($withReinitButton)
+                                <button type="button" wire:click="resetFilter('{{ $model }}')">
+                                    Réinitialiser<span class="sr-only"> {{ $name }}</span>
+                                </button>
+                            @endif
+
+                            @if ($withDisplayButton)
+                                <button type="button" @click="open = false; $refs.toggle.focus()">Afficher<span
+                                        class="sr-only">
+                                        {{ $name }}</span></button>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
         @break
