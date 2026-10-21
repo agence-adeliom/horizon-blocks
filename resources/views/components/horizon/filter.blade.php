@@ -50,20 +50,24 @@
 
     @switch($value["appearance"])
         @case(ListingBlock::VALUE_FILTER_APPEARANCE_SELECT)
-            <select class="select" id="{{ $model }}" name="{{ $model }}"
-                @if (!empty($model)) wire:model="{{ $model }}" @endif>
-                @if ($withEmpty && empty($value['hasChoiceAll']))
-                    <option value="" selected>
-                        {{ $name ?? 'Sélectionner' }}
-                    </option>
-                @endif
+            <div class="select-field">
+                <select class="select" id="{{ $model }}" name="{{ $model }}"
+                    @if (!empty($model)) wire:model="{{ $model }}" @endif>
+                    @if ($withEmpty && empty($value['hasChoiceAll']))
+                        <option value="" selected>
+                            {{ $name ?? 'Sélectionner' }}
+                        </option>
+                    @endif
 
-                @foreach ($value['choices'] as $choice)
-                    <option value="{{ $choice['slug'] }}">
-                        {{ $choice['name'] }}
-                    </option>
-                @endforeach
-            </select>
+                    @foreach ($value['choices'] as $choice)
+                        <option value="{{ $choice['slug'] }}">
+                            {{ $choice['name'] }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <x-fas-angle-down class="select-field-icon" />
+            </div>
         @break
 
         @case(ListingBlock::VALUE_FILTER_APPEARANCE_CHECKBOX)
