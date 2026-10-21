@@ -20,7 +20,7 @@
         </div>
         <x-action.button fullLink :url="$document['file']['url']"
             aria-label="{{ sprintf(__('Télécharger %s (%s, %s)', 'horizon-blocks'), $title, $extension, $filesize) }}" type="secondary" iconOnly>
-            <x-far-arrow-down-to-line class="icon-16" />
+            <x-far-arrow-down-to-line class="icon-4" />
         </x-action.button>
     </div>
 @endif
