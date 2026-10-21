@@ -51,7 +51,7 @@ class PricesBlock extends AbstractBlock
 	{
 		yield from ContentTab::make()->fields([
 			UptitleField::make(),
-			HeadingField::make()->required(),
+			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			WysiwygField::default(),
 			Repeater::make(__('Tarifs', 'horizon-blocks'), self::FIELD_PRICES)
 				->minRows(1)

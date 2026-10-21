@@ -20,8 +20,16 @@ class CardPrice extends Component
 	public ?array $button = null;
 	public null|false|array $characteristics = null;
 
-	public function __construct(private readonly array $fields = [])
+	public string $groupHeadingTag = 'h4';
+
+	public function __construct(private readonly array $fields = [], public string $headingTag = 'h3')
 	{
+		if (!preg_match('/^h[2-5]$/', $this->headingTag)) {
+			$this->headingTag = 'h3';
+		}
+
+		$this->groupHeadingTag = 'h' . ((int) substr($this->headingTag, 1) + 1);
+
 		$this->handleData();
 	}
 
@@ -85,4 +93,3 @@ class CardPrice extends Component
 		return view('components.cards.card-price');
 	}
 }
-
