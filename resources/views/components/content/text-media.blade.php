@@ -22,14 +22,29 @@
         @if ($isImage)
             <x-media.img :image="$image" @class(['rounded-image', 'cover-full' => $ratioClass]) :ratio="$ratioClass" size="large" />
         @elseif($isVideo || $isYouTube)
-            <x-media.img :image="$thumbnail" @class(['w-full rounded-image', 'cover-full' => $ratioClass]) :ratio="$ratioClass" />
+            <div class="relative">
+                <x-media.img :image="$thumbnail" @class(['w-full rounded-image', 'cover-full' => $ratioClass]) :ratio="$ratioClass" />
 
-            @if ($videoUrl)
-                <a href="{{ $videoUrl }}" data-glightbox class="absolute-full group flex items-center justify-center">
-                    <div class="btn btn--play">
-                        <x-fas-play class="icon-6 ml-1" />
-                    </div>
-                </a>
+                @if ($videoUrl)
+                    <a href="{{ $videoUrl }}" data-glightbox
+                        class="absolute-full group flex items-center justify-center"
+                        @if ($captionsUrl) data-captions="{{ $captionsUrl }}" data-captions-label="{{ __('Français', 'horizon-blocks') }}" data-captions-lang="fr" @endif
+                        aria-label="{{ trim(__('Lire la vidéo', 'horizon-blocks') . (!empty($title['content']) ? ' : ' . $title['content'] : '')) }}">
+                        <span class="btn btn-tertiary btn-contained btn-lg btn-icon-only rounded-full"
+                            aria-hidden="true">
+                            <x-fas-play class="icon-6 ml-1" />
+                        </span>
+                    </a>
+                @endif
+            </div>
+
+            {{-- Transcription --}}
+            @if ($transcript)
+                <details class="mt-4">
+                    <summary class="cursor-pointer font-semibold text-primary">
+                        {{ __('Lire la transcription de la vidéo', 'horizon-blocks') }}</summary>
+                    <x-typography.text :content="$transcript" class="mt-2" />
+                </details>
             @endif
         @endif
     </div>

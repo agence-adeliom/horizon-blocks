@@ -73,6 +73,8 @@ class TextMedia extends Component
 	public ?array $thumbnail = null;
 	public ?string $idYouTube = null;
 	public ?string $videoUrl = null;
+	public ?string $captionsUrl = null;
+	public ?string $transcript = null;
 
 	/**
 	 * Create a new component instance.
@@ -213,6 +215,14 @@ class TextMedia extends Component
 								if (isset($mediaData['video'][VideoField::THUMBNAIL])) {
 									$this->thumbnail = $mediaData['video'][VideoField::THUMBNAIL];
 								}
+
+								if (!empty($mediaData['video'][VideoField::TRANSCRIPT])) {
+									$this->transcript = $mediaData['video'][VideoField::TRANSCRIPT];
+								}
+							}
+
+							if ($this->isVideo && !empty($mediaData['video'][VideoField::CAPTIONS]['url'])) {
+								$this->captionsUrl = $mediaData['video'][VideoField::CAPTIONS]['url'];
 							}
 						}
 						break;
