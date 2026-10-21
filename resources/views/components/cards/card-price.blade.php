@@ -1,12 +1,12 @@
-<div class="flex flex-col rounded border border-card">
+<div class="flex flex-col h-full rounded border border-card">
     <div class="p-6">
         @if (!empty($title))
-            <x-typography.heading :content="$title" size="4" />
+            <x-typography.heading :content="$title" :tag="$headingTag" size="4" />
         @endif
 
         @if (!empty($subtitle))
             <x-typography.text :content="$subtitle"
-                               class="mt-1 px-2 py-1 font-semibold text-primary rounded bg-neutral-100 w-fit" />
+                class="mt-1 px-2 py-1 font-semibold text-primary rounded bg-neutral-100 w-fit" />
         @endif
 
         @if (!empty($price))
@@ -18,7 +18,12 @@
         @endif
 
         @if (!empty($button) && !empty($button['link']) && is_array($button['link']))
-            <x-action.button class="mt-6" :fields="$button" class="w-full mt-6" />
+            <x-action.button :fields="$button" class="w-full mt-6">
+                <span>{{ $button['link']['title'] }}</span>
+                @if (!empty($title))
+                    <span class="sr-only"> : {{ $title }}</span>
+                @endif
+            </x-action.button>
         @endif
     </div>
 
@@ -27,10 +32,10 @@
             <div>
                 @if (!empty($group['title']))
                     <div class="flex items-center gap-3 py-4 px-6 border-y border-y-card bg-neutral-100">
-                        @if (!empty($group['icon']))
-                            <x-dynamic-component :component="'fa' . $group['icon']->style[0] . '-' . $group['icon']->id" class="icon-20 text-primary" />
+                        @if (!empty($group['icon']) && is_object($group['icon']))
+                            <x-dynamic-component :component="'fa' . $group['icon']->style[0] . '-' . $group['icon']->id" class="icon-5 shrink-0 text-primary" />
                         @endif
-                        <x-typography.text :content="$group['title']" class="font-semibold" />
+                        <{{ $groupHeadingTag }} class="p font-semibold">{{ $group['title'] }}</{{ $groupHeadingTag }}>
                     </div>
                 @endif
 
@@ -38,7 +43,7 @@
                     <ul class="px-6 py-4 flex flex-col gap-3">
                         @foreach ($group['items'] as $item)
                             <li class="flex items-center gap-2">
-                                <x-fas-check class="icon-16 text-primary" />
+                                <x-fas-check class="icon-4 shrink-0 text-primary" />
                                 <x-typography.text :content="$item['title']" />
                             </li>
                         @endforeach
@@ -48,4 +53,3 @@
         @endforeach
     @endif
 </div>
-
