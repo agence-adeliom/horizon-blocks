@@ -1,10 +1,12 @@
+@use('Adeliom\HorizonTools\Fields\Medias\ImageField')
 <div @class([
     'card-step',
     'relative overflow-hidden rounded-card bg-primary',
     $attributes['class'],
 ])>
     @if (!empty($step['img']))
-        <x-media.img :image="$step['img']" class="cover-full" size="medium" container-class="aspect-[1.5] relative w-full" />
+        <x-media.img :image="$step['img']" class="cover-full" size="medium" container-class="aspect-[1.5] relative w-full"
+            :decorative="ImageField::isDecorative($step, 'img')" :alt="ImageField::alt($step, 'img')" />
     @endif
     <div class="relative z-10 bg-primary p-card">
         <div class="awc-theme-dark flex w-full flex-col items-start">

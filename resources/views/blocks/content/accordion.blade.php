@@ -1,3 +1,4 @@
+@use('Adeliom\HorizonTools\Fields\Medias\ImageField')
 <x-block :fields="$fields" :block="$block">
     @if (!empty($context['structuredData']))
         <script type="application/ld+json">
@@ -8,7 +9,8 @@
     <div class="grid-12">
         <div class="lg:col-span-5 lg:mr-12">
             @if (!empty($fields['img']))
-                <x-media.img :image="$fields['img']" class="w-20 mb-3" size="thumbnail" />
+                <x-media.img :image="$fields['img']" class="w-20 mb-3" size="thumbnail"
+                    :decorative="ImageField::isDecorative($fields, 'img')" :alt="ImageField::alt($fields, 'img')" />
             @endif
 
             @if (!empty($fields['uptitle']))

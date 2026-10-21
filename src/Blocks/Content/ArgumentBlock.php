@@ -48,6 +48,7 @@ class ArgumentBlock extends AbstractBlock
                     Text::make(__("Titre de l'argument", 'horizon-blocks'), self::FIELD_ARG_TITLE)->maxLength(100)->helperText(__("Maximum 100 caractères", 'horizon-blocks'))->required(),
                     Textarea::make(__("Description de l'argument", 'horizon-blocks'), self::FIELD_ARG_DESC)->maxLength(220)->helperText(__("Maximum 220 caractères", 'horizon-blocks'))->required(),
                     ImageField::make(__("Image de l'argument", 'horizon-blocks'), self::FIELD_ARG_IMG)->ratio(1000, 1000)->required(),
+                    ...ImageField::accessibilityFields(self::FIELD_ARG_IMG),
                 ])
                 ->collapsed(self::FIELD_ARG_TITLE)
                 ->minRows(3)

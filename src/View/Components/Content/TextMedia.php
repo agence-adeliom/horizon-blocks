@@ -6,6 +6,7 @@ namespace Adeliom\HorizonBlocks\View\Components\Content;
 
 use Adeliom\HorizonTools\Fields\Buttons\ButtonField;
 use Adeliom\HorizonTools\Fields\Layout\LayoutField;
+use Adeliom\HorizonTools\Fields\Medias\ImageField;
 use Adeliom\HorizonTools\Fields\Medias\MediaField;
 use Adeliom\HorizonTools\Fields\Medias\VideoField;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
@@ -69,6 +70,8 @@ class TextMedia extends Component
 	public ?string $mediaRatio = null;
 	public ?string $ratioClass = null;
 	public ?array $image = null;
+	public bool $imageDecorative = true;
+	public ?string $imageAlt = null;
 	public ?array $video = null;
 	public ?array $thumbnail = null;
 	public ?string $idYouTube = null;
@@ -189,6 +192,8 @@ class TextMedia extends Component
 							if ($mediaData['image']) {
 								$this->isImage = true;
 								$this->image = $mediaData['image'];
+								$this->imageDecorative = ImageField::isDecorative($mediaData, ImageField::IMAGE);
+								$this->imageAlt = ImageField::alt($mediaData, ImageField::IMAGE);
 							}
 						}
 						break;
