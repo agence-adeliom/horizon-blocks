@@ -92,10 +92,10 @@
             @if (count($args) > 1)
                 <x-action.button tag="button" type="tertiary" at-click="togglePause()" x-show="!reducedMotion">
                     <template x-if="!userPaused">
-                        <x-far-circle-pause class="icon-16" />
+                        <x-far-circle-pause class="icon-4" />
                     </template>
                     <template x-if="userPaused">
-                        <x-far-circle-play class="icon-16" />
+                        <x-far-circle-play class="icon-4" />
                     </template>
                     <span
                         x-text="userPaused ? '{{ __('Lecture', 'horizon-blocks') }}' : '{{ __('Pause', 'horizon-blocks') }}'">{{ __('Pause', 'horizon-blocks') }}</span>

@@ -112,12 +112,12 @@
                        @click.prevent="scrollToAnchor('{{ $idToScroll }}')"
                        @if ($handle) wire:click.prevent="{{ $handle }}(
                        @if($extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif{{ $current - 1 }}@if(!$extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif )" @endif>
-                        <x-far-angle-left class="icon-20" />
+                        <x-far-angle-left class="icon-5" />
                     </a>
                 @else
                     {{-- Kept in place so the row does not shift by one slot on the first and last pages. --}}
                     <span @class([$baseButtonClass, $inactiveButtonClass]) aria-hidden="true">
-                        <x-far-angle-left class="icon-20" />
+                        <x-far-angle-left class="icon-5" />
                     </span>
                 @endif
             @endif
@@ -146,11 +146,11 @@
                        @click.prevent="scrollToAnchor('{{ $idToScroll }}')"
                        @if ($handle) wire:click.prevent="{{ $handle }}(
                        @if($extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif {{ $current + 1 }} @if(!$extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif )" @endif>
-                        <x-far-angle-right class="icon-20" />
+                        <x-far-angle-right class="icon-5" />
                     </a>
                 @else
                     <span @class([$baseButtonClass, $inactiveButtonClass]) aria-hidden="true">
-                        <x-far-angle-right class="icon-20" />
+                        <x-far-angle-right class="icon-5" />
                     </span>
                 @endif
             @endif
