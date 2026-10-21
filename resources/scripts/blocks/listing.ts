@@ -11,67 +11,67 @@ Listing.getAllInstances = () => {
     return Array.from(document.querySelectorAll(Listing.selector));
 };
 
-Listing.closeSecondaryFilters = (instance: HTMLElement) => {
-    instance.classList.add('hidden');
-    instance.classList.remove('active');
+Listing.getSecondaryFiltersButton = (instance: HTMLElement, panel: HTMLElement) => {
+    return instance.querySelector(`[data-for="${panel.dataset.id}"]`) as HTMLElement | null;
 };
 
-Listing.openSecondaryFilters = (instance: HTMLElement) => {
-    instance.classList.remove('hidden');
-    instance.classList.add('active');
+Listing.closeSecondaryFilters = (instance: HTMLElement, panel: HTMLElement) => {
+    const button = Listing.getSecondaryFiltersButton(instance, panel);
+
+    panel.classList.add('hidden');
+    panel.classList.remove('active');
+    button?.setAttribute('aria-expanded', 'false');
+    button?.focus();
+};
+
+Listing.openSecondaryFilters = (instance: HTMLElement, panel: HTMLElement) => {
+    panel.classList.remove('hidden');
+    panel.classList.add('active');
+    Listing.getSecondaryFiltersButton(instance, panel)?.setAttribute('aria-expanded', 'true');
 };
 
 Listing.initInstanceSecondaryFilters = instance => {
     instance.querySelector('.secondary-filters-btn')?.addEventListener('click', e => {
         e.preventDefault();
 
-        if (e.target.dataset.for) {
-            const target = instance.querySelector(`[data-id="${e.target.dataset.for}"]`);
+        const target = instance.querySelector(`[data-id="${e.currentTarget.dataset.for}"]`);
 
-            if (target) {
-                Listing.openSecondaryFilters(target);
+        if (target) {
+            if (target.classList.contains('hidden')) {
+                Listing.openSecondaryFilters(instance, target);
+            } else {
+                Listing.closeSecondaryFilters(instance, target);
             }
         }
     });
 
-    instance.querySelector('[data-close]')?.addEventListener('click', e => {
-        e.preventDefault();
+    ['close', 'reset', 'apply'].forEach(action => {
+        instance.querySelector(`[data-${action}]`)?.addEventListener('click', e => {
+            e.preventDefault();
 
-        if (e.target.dataset.close) {
-            const target = instance.querySelector(`[data-id="${e.target.dataset.close}"]`);
+            const target = instance.querySelector(`[data-id="${e.currentTarget.dataset[action]}"]`);
 
             if (target) {
-                Listing.closeSecondaryFilters(target);
+                Listing.closeSecondaryFilters(instance, target);
             }
-        }
+        });
     });
 
-    instance.querySelector('[data-reset]')?.addEventListener('click', e => {
-        e.preventDefault();
-
-        if (e.target.dataset.reset) {
-            const target = instance.querySelector(`[data-id="${e.target.dataset.reset}"]`);
-
-            if (target) {
-                Listing.closeSecondaryFilters(target);
-            }
+    // Escape closes the open panel, from the panel or from its button.
+    instance.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') {
+            return;
         }
-    });
 
-    instance.querySelector('[data-apply]')?.addEventListener('click', e => {
-        e.preventDefault();
+        const panel = instance.querySelector('.secondary-filters.active') as HTMLElement | null;
 
-        if (e.target.dataset.apply) {
-            const target = instance.querySelector(`[data-id="${e.target.dataset.apply}"]`);
-
-            if (target) {
-                Listing.closeSecondaryFilters(target);
-            }
+        if (panel && (panel.contains(e.target as Node) || Listing.getSecondaryFiltersButton(instance, panel) === e.target)) {
+            e.stopPropagation();
+            Listing.closeSecondaryFilters(instance, panel);
         }
     });
 };
 
-// The loading state is handled by wire:loading in the Livewire view, not here.
 Listing.initInstance = instance => {
     Listing.initInstanceSecondaryFilters(instance);
 };
