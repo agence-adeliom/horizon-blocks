@@ -21,6 +21,9 @@
         $activeNumberClass = 'horizon-pagination-page-current cursor-default border border-primary rounded';
         $idToScroll = 'listing-container';
 
+        $idToFocus = $idToFocus ?? 'listing-results';
+        $onClick = "scrollToAnchor('{$idToScroll}'); document.getElementById('{$idToFocus}')?.focus({ preventScroll: true })";
+
         $separator = '...';
 
         $pages = (int) $data['pages'];
@@ -35,7 +38,9 @@
                 meaning for the reader and pushes the pages that do matter out of reach — on 37
                 pages sitting on page 18 it rendered thirteen entries.
             */
-            $pageNumbers = array_filter([1, $current - 1, $current, $current + 1, $pages], static function (int $page) use ($pages): bool {
+            $pageNumbers = array_filter([1, $current - 1, $current, $current + 1, $pages], static function (
+                int $page,
+            ) use ($pages): bool {
                 return $page >= 1 && $page <= $pages;
             });
         } else {
@@ -54,106 +59,131 @@
             }
 
             // Ajouter la dernière page si elle n'est pas déjà incluse
-            if (!in_array($pages, $pageNumbers)) {
-                $pageNumbers[] = $pages;
-            }
-        }
+    if (!in_array($pages, $pageNumbers)) {
+        $pageNumbers[] = $pages;
+    }
+}
 
-        // Trier et ajouter les séparateurs
-        $pageNumbers = array_unique($pageNumbers);
-        sort($pageNumbers);
-        $displayValues = [];
-        $last = null;
+// Trier et ajouter les séparateurs
+$pageNumbers = array_unique($pageNumbers);
+sort($pageNumbers);
+$displayValues = [];
+$last = null;
 
-        foreach ($pageNumbers as $value) {
-            if ($last !== null && $value - $last > 1) {
-                $displayValues[] = $separator;
-            }
-            $displayValues[] = $value;
-            $last = $value;
-        }
+foreach ($pageNumbers as $value) {
+    if ($last !== null && $value - $last > 1) {
+        $displayValues[] = $separator;
+    }
+    $displayValues[] = $value;
+    $last = $value;
+}
 
-        $extraHandleParamsFirst = $extraHandleParamsFirst ?? false;
-        if (!is_bool($extraHandleParamsFirst)) {
-            $extraHandleParamsFirst = false;
-        }
+$extraHandleParamsFirst = $extraHandleParamsFirst ?? false;
+if (!is_bool($extraHandleParamsFirst)) {
+    $extraHandleParamsFirst = false;
+}
 
-        if (!empty($extraHandleParams)) {
-            $extraHandleParams = sprintf('%s', implode(', ', array_map(function($param){
+if (!empty($extraHandleParams)) {
+    $extraHandleParams = sprintf(
+        '%s',
+        implode(
+            ', ',
+            array_map(function ($param) {
                 if (is_string($param)) {
                     return "'$param'";
                 }
 
                 return $param;
-            }, $extraHandleParams)));
+            }, $extraHandleParams),
+        ),
+    );
 
-            if ($extraHandleParamsFirst) {
-                $extraHandleParams = $extraHandleParams.', ';
-            } else {
-                $extraHandleParams = ', '.$extraHandleParams;
-            }
-        } else {
-            $extraHandleParams = '';
+    if ($extraHandleParamsFirst) {
+        $extraHandleParams = $extraHandleParams . ', ';
+    } else {
+        $extraHandleParams = ', ' . $extraHandleParams;
+    }
+} else {
+    $extraHandleParams = '';
         }
     @endphp
 
     @if (!empty($displayValues) && $pages > 1)
         {{--
             <nav> and not <div>: a set of page links is a navigation landmark, and screen readers
-            announce it as such. The utility classes are unchanged, so the rendering is identical —
-            this is the only change to the DOM structure.
+            announce it as such. Inside, the links form a list (RGAA 9.3). The margins on the arrows
+            keep the spacing the former flex gap gave between the arrows and the page numbers.
         --}}
-        <nav class="horizon-pagination flex justify-center gap-4 lg:gap-10{{ $containerClass ? ' '.$containerClass : '' }}"
-             aria-label="{{ $paginationLabel }}">
-            @if ($hasButtons)
-                @if ($current > 1)
-                    <a @class([$baseButtonClass]) title="{{ $previousLabel }}" aria-label="{{ $previousLabel }}"
-                       href="{{ request()->fullUrlWithQuery(['pagination' => $current - 1]) }}"
-                       @click.prevent="scrollToAnchor('{{ $idToScroll }}')"
-                       @if ($handle) wire:click.prevent="{{ $handle }}(
-                       @if($extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif{{ $current - 1 }}@if(!$extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif )" @endif>
-                        <x-far-angle-left class="icon-5" />
-                    </a>
-                @else
-                    {{-- Kept in place so the row does not shift by one slot on the first and last pages. --}}
-                    <span @class([$baseButtonClass, $inactiveButtonClass]) aria-hidden="true">
-                        <x-far-angle-left class="icon-5" />
-                    </span>
+        <nav class="horizon-pagination{{ $containerClass ? ' ' . $containerClass : '' }}"
+            aria-label="{{ $paginationLabel }}">
+            <ol role="list" class="flex justify-center items-center">
+                @if ($hasButtons)
+                    @if ($current > 1)
+                        <li class="me-4 lg:me-10">
+                            <a @class([$baseButtonClass]) title="{{ $previousLabel }}" aria-label="{{ $previousLabel }}"
+                                href="{{ request()->fullUrlWithQuery(['pagination' => $current - 1]) }}"
+                                @click.prevent="{{ $onClick }}"
+                                @if ($handle) wire:click.prevent="{{ $handle }}(
+                               @if ($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif{{ $current - 1 }}@if (!$extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif
+                                )" @endif>
+                                <x-far-angle-left class="icon-5" />
+                            </a>
+                        </li>
+                    @else
+                        {{-- Kept in place so the row does not shift by one slot on the first and last pages. --}}
+                        <li class="me-4 lg:me-10" aria-hidden="true">
+                            <span @class([$baseButtonClass, $inactiveButtonClass])>
+                                <x-far-angle-left class="icon-5" />
+                            </span>
+                        </li>
+                    @endif
                 @endif
-            @endif
 
-            <div class="horizon-pagination-pages flex items-center">
                 @foreach ($displayValues as $page)
                     @if ($page == $current)
-                        <span @class([$baseNumberClass, $activeNumberClass]) aria-current="page">{{ $page }}</span>
+                        <li>
+                            <span @class([$baseNumberClass, $activeNumberClass]) aria-current="page"><span class="sr-only">Page
+                                </span>{{ $page }}</span>
+                        </li>
                     @elseif($page != $separator)
-                        <a @class([$baseNumberClass]) title="Page {{ $page }}" aria-label="Page {{ $page }}"
-                           href="{{ request()->fullUrlWithQuery(['pagination' => $page]) }}"
-                           @click.prevent="scrollToAnchor('{{ $idToScroll }}')"
-                           @if ($handle) wire:click.prevent="{{ $handle }}(
-                           @if($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif {{$page}} @if(!$extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif )" @endif>{{ $page }}</a>
+                        <li>
+                            <a @class([$baseNumberClass]) title="Page {{ $page }}"
+                                aria-label="Page {{ $page }}"
+                                href="{{ request()->fullUrlWithQuery(['pagination' => $page]) }}"
+                                @click.prevent="{{ $onClick }}"
+                                @if ($handle) wire:click.prevent="{{ $handle }}(
+                               @if ($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif
+                                {{ $page }} @if (!$extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif
+                                )" @endif>{{ $page }}</a>
+                        </li>
                     @else
-                        <span class="horizon-pagination-ellipsis my-2 mx-1" aria-hidden="true">{{ $separator }}</span>
+                        <li class="horizon-pagination-ellipsis my-2 mx-1" aria-hidden="true">{{ $separator }}</li>
                     @endif
                 @endforeach
-            </div>
 
-
-            @if ($hasButtons)
-                @if ($current < $pages)
-                    <a @class([$baseButtonClass]) title="{{ $nextLabel }}" aria-label="{{ $nextLabel }}"
-                       href="{{ request()->fullUrlWithQuery(['pagination' => $current + 1]) }}"
-                       @click.prevent="scrollToAnchor('{{ $idToScroll }}')"
-                       @if ($handle) wire:click.prevent="{{ $handle }}(
-                       @if($extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif {{ $current + 1 }} @if(!$extraHandleParamsFirst && $extraHandleParams) {{$extraHandleParams}} @endif )" @endif>
-                        <x-far-angle-right class="icon-5" />
-                    </a>
-                @else
-                    <span @class([$baseButtonClass, $inactiveButtonClass]) aria-hidden="true">
-                        <x-far-angle-right class="icon-5" />
-                    </span>
+                @if ($hasButtons)
+                    @if ($current < $pages)
+                        <li class="ms-4 lg:ms-10">
+                            <a @class([$baseButtonClass]) title="{{ $nextLabel }}"
+                                aria-label="{{ $nextLabel }}"
+                                href="{{ request()->fullUrlWithQuery(['pagination' => $current + 1]) }}"
+                                @click.prevent="{{ $onClick }}"
+                                @if ($handle) wire:click.prevent="{{ $handle }}(
+                               @if ($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif
+                                {{ $current + 1 }} @if (!$extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif
+                                )" @endif>
+                                <x-far-angle-right class="icon-5" />
+                            </a>
+                        </li>
+                    @else
+                        <li class="ms-4 lg:ms-10" aria-hidden="true">
+                            <span @class([$baseButtonClass, $inactiveButtonClass])>
+                                <x-far-angle-right class="icon-5" />
+                            </span>
+                        </li>
+                    @endif
                 @endif
-            @endif
+            </ol>
         </nav>
     @endif
 @endif
