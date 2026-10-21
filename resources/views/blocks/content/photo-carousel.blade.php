@@ -1,6 +1,8 @@
 @php
     use App\Blocks\Content\PhotoCarouselBlock;
+    use Adeliom\HorizonTools\Fields\Medias\ImageField;
     $gallery = $fields[PhotoCarouselBlock::FIELD_GALLERY] ?? [];
+    $informative = !empty($fields[ImageField::GALLERY_INFORMATIVE]);
     $count = count($gallery ?: []);
     $dialogLabel = !empty($fields['title']['content'])
         ? $fields['title']['content']
@@ -92,7 +94,7 @@
                             @foreach ($gallery as $item)
                                 <div class="swiper-slide w-full h-full"
                                     data-announcement="{{ $photoLabel($item, $loop->index) }}">
-                                    <x-media.img :image="$item" :decorative="false"
+                                    <x-media.img :image="$item" :decorative="!$informative"
                                         class="max-w-full max-h-full object-contain" size="full"
                                         container-class="relative w-full h-full" />
                                 </div>

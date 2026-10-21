@@ -1,13 +1,15 @@
 @php
     use App\Blocks\Content\GalleryBlock;
+    use Adeliom\HorizonTools\Fields\Medias\ImageField;
     $displayType = $fields[GalleryBlock::FIELD_DISPLAY_TYPE] ?? GalleryBlock::VALUE_DISPLAY_MOSAIC;
     $isSlider = $displayType === GalleryBlock::VALUE_DISPLAY_SLIDER;
     $images = $fields[GalleryBlock::FIELD_GALLERY] ?? [];
     $count = count($images ?: []);
     $dialogLabel = !empty($fields['title']['content']) ? $fields['title']['content'] : __('Galerie', 'horizon-blocks');
+    $informative = !empty($fields[ImageField::GALLERY_INFORMATIVE]);
     $openLabel = fn($item, $index) => trim(
         sprintf(__("Agrandir l'image %d sur %d", 'horizon-blocks'), $index + 1, $count) .
-            (!empty($item['alt']) ? ' : ' . $item['alt'] : ''),
+            ($informative && !empty($item['alt']) ? ' : ' . $item['alt'] : ''),
     );
 @endphp
 <x-block :fields="$fields" :block="$block" :class="$isSlider ? 'overflow-x-clip' : ''">
@@ -126,7 +128,7 @@
                             @foreach ($images as $item)
                                 <div class="swiper-slide w-full h-full"
                                     data-announcement="{{ sprintf(__('Image %d sur %d', 'horizon-blocks'), $loop->iteration, $count) }}">
-                                    <x-media.img :image="$item" :decorative="false"
+                                    <x-media.img :image="$item" :decorative="!$informative"
                                         class=" max-w-full max-h-full object-contain" size="full"
                                         container-class="relative w-full h-full" />
                                 </div>

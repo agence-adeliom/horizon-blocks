@@ -13,7 +13,7 @@ use Adeliom\HorizonTools\Fields\Tabs\LayoutTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
-use Extended\ACF\Fields\Image;
+use Adeliom\HorizonTools\Fields\Medias\ImageField;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Text;
 
@@ -50,8 +50,9 @@ class StepBlock extends AbstractBlock
 					UptitleField::make()->required(),
 					Text::make(__("Titre de l'étape", 'horizon-blocks'), self::FIELD_STEP_TITLE)->required(),
 					WysiwygField::minimal(__("Contenu de l'étape", 'horizon-blocks'), self::FIELD_STEP_CONTENT)->required(),
-					Image::make(__("Image de l'étape", 'horizon-blocks'), self::FIELD_STEP_IMG)
+					ImageField::make(__("Image de l'étape", 'horizon-blocks'), self::FIELD_STEP_IMG)
 						->required(),
+					...ImageField::accessibilityFields(self::FIELD_STEP_IMG),
 				])
 				->collapsed(self::FIELD_STEP_TITLE)
 				->layout('block')

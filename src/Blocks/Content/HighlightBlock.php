@@ -13,7 +13,7 @@ use Adeliom\HorizonTools\Fields\Tabs\MediaTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
-use Extended\ACF\Fields\Image;
+use Adeliom\HorizonTools\Fields\Medias\ImageField;
 
 class HighlightBlock extends AbstractBlock
 {
@@ -41,7 +41,8 @@ class HighlightBlock extends AbstractBlock
             ButtonField::group(),
         ]);
         yield from MediaTab::make()->fields([
-            Image::make(__("Image principale", 'horizon-blocks'), self::FIELD_MAIN_IMAGE),
+            ImageField::make(__("Image principale", 'horizon-blocks'), self::FIELD_MAIN_IMAGE),
+            ...ImageField::accessibilityFields(self::FIELD_MAIN_IMAGE),
         ]);
 
         yield from LayoutTab::make()->fields([

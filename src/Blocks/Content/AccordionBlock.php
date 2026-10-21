@@ -15,7 +15,7 @@ use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
 use Adeliom\HorizonTools\Services\SeoService;
-use Extended\ACF\Fields\Image;
+use Adeliom\HorizonTools\Fields\Medias\ImageField;
 use Extended\ACF\Fields\Repeater;
 use Extended\ACF\Fields\Text;
 
@@ -43,7 +43,8 @@ class AccordionBlock extends AbstractBlock
 	public function getFields(): ?iterable
 	{
 		yield from ContentTab::make()->fields([
-			Image::make(__('Petite image', 'horizon-blocks'), self::FIELD_IMG),
+			ImageField::make(__('Petite image', 'horizon-blocks'), self::FIELD_IMG),
+			...ImageField::accessibilityFields(self::FIELD_IMG),
 			UptitleField::make(),
 			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
 			WysiwygField::minimal(),

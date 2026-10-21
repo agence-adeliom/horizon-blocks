@@ -14,6 +14,7 @@ use Adeliom\HorizonTools\Fields\Tabs\MediaTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
+use Adeliom\HorizonTools\Fields\Medias\ImageField;
 use Extended\ACF\Fields\ButtonGroup;
 use Extended\ACF\Fields\Gallery;
 
@@ -51,6 +52,7 @@ class GalleryBlock extends AbstractBlock
 
         yield from MediaTab::make()->fields([
             Gallery::make(__("Image principale", 'horizon-blocks'), self::FIELD_GALLERY),
+            ...ImageField::galleryInformative(),
         ]);
 
         yield from LayoutTab::make()->fields([

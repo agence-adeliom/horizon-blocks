@@ -14,6 +14,7 @@ use Adeliom\HorizonTools\Fields\Tabs\MediaTab;
 use Adeliom\HorizonTools\Fields\Text\HeadingField;
 use Adeliom\HorizonTools\Fields\Text\UptitleField;
 use Adeliom\HorizonTools\Fields\Text\WysiwygField;
+use Adeliom\HorizonTools\Fields\Medias\ImageField;
 use Extended\ACF\Fields\Gallery;
 
 
@@ -47,6 +48,7 @@ class PhotoCarouselBlock extends AbstractBlock
 
         yield from MediaTab::make()->fields([
             Gallery::make(__("Photos", 'horizon-blocks'), self::FIELD_GALLERY)->required(),
+            ...ImageField::galleryInformative(),
         ]);
 
         yield from LayoutTab::make()->fields([

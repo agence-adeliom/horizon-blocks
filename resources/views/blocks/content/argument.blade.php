@@ -1,3 +1,4 @@
+@use('Adeliom\HorizonTools\Fields\Medias\ImageField')
 <x-block :fields="$fields" :block="$block">
     @php
         $args = array_values(array_filter($fields['args'] ?? [], fn($arg) => !empty($arg['argTitle'])));
@@ -51,7 +52,8 @@
                     <div class="swiper-slide"
                         data-announcement="{{ sprintf(__('Argument %d sur %d : %s', 'horizon-blocks'), $loop->iteration, $loop->count, $arg['argTitle']) }}">
                         @if (!empty($arg['argImg']))
-                            <x-media.img ratio="aspect-square" class="size-full object-cover" :image="$arg['argImg']" />
+                            <x-media.img ratio="aspect-square" class="size-full object-cover" :image="$arg['argImg']"
+                                :decorative="ImageField::isDecorative($arg, 'argImg')" :alt="ImageField::alt($arg, 'argImg')" />
                         @endif
                         <div class="lg:hidden mt-6 flex flex-col gap-2">
                             <{{ $argHeadingTag }} class="text-md font-semibold">{{ $arg['argTitle'] }}

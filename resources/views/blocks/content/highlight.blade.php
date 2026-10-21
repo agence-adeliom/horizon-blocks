@@ -1,3 +1,4 @@
+@use('Adeliom\HorizonTools\Fields\Medias\ImageField')
 <x-block :fields="$fields" :block="$block">
 	<div class="grid grid-cols-12 bg-neutral-100">
 		<div class="col-span-full lg:col-span-8 xl:col-span-7 p-6 lg:p-10">
@@ -19,7 +20,8 @@
 			@endif
 		</div>
 		<div class="col-span-full lg:col-span-4 xl:col-span-5 relative max-lg:aspect-[4/3]">
-			<x-media.img :image="$fields['mainImage']" class="cover-full" size="full" container-class="w-full" />
+			<x-media.img :image="$fields['mainImage']" class="cover-full" size="full" container-class="w-full"
+				:decorative="ImageField::isDecorative($fields, 'mainImage')" :alt="ImageField::alt($fields, 'mainImage')" />
 		</div>
 	</div>
 </x-block>

@@ -20,7 +20,8 @@
 
     <div @class(['relative', $mediaClass]) @if ($videoUrl) x-data="initLightbox()" @endif>
         @if ($isImage)
-            <x-media.img :image="$image" @class(['rounded-image', 'cover-full' => $ratioClass]) :ratio="$ratioClass" size="large" />
+            <x-media.img :image="$image" @class(['rounded-image', 'cover-full' => $ratioClass]) :ratio="$ratioClass" size="large"
+                :decorative="$imageDecorative" :alt="$imageAlt" />
         @elseif($isVideo || $isYouTube)
             <div class="relative">
                 <x-media.img :image="$thumbnail" @class(['w-full rounded-image', 'cover-full' => $ratioClass]) :ratio="$ratioClass" />
