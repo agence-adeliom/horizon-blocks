@@ -16,6 +16,46 @@
         $status .= sprintf(' – page %d sur %d', (int) $data['current'], $pages);
     }
 
+    /*
+        Page title (RGAA 8.6): search, filters and page change through Livewire without reloading the
+        page, so the <title> has to say them (« Recherche « x » – Filtres : A, B – Page 2 sur 3 »). The
+        script below puts this text in front of the original title after every render.
+    */
+    $searchTerms = [];
+    $activeFilters = [];
+
+    foreach ([[$filters, $filterFields], [$secondaryFilters, $secondaryFilterFields]] as [$levelFilters, $levelValues]) {
+        foreach ($levelFilters ?: [] as $filter) {
+            $value = $levelValues[$filter['name'] ?? ''] ?? null;
+
+            if (!empty($filter['isSearch'])) {
+                if (is_string($value) && '' !== trim($value)) {
+                    $searchTerms[] = trim($value);
+                }
+
+                continue;
+            }
+
+            $names = array_column($filter['choices'] ?? [], 'name', 'slug');
+
+            // Checkboxes and multiselect: [slug => 'true'|'false'] ; other appearances: the slug.
+            $slugs = is_array($value)
+                ? array_keys(array_filter($value, static fn ($state) => true === $state || 'true' === $state))
+                : [$value];
+
+            foreach ($slugs as $slug) {
+                if (null !== $slug && '' !== $slug && $slug !== ($filter['choiceAllValue'] ?? null) && isset($names[$slug])) {
+                    $activeFilters[] = $names[$slug];
+                }
+            }
+        }
+    }
+
+    $titleParts = array_filter([
+        $searchTerms ? sprintf('Recherche « %s »', implode(' ', $searchTerms)) : null,
+        $activeFilters ? sprintf('Filtres : %s', implode(', ', $activeFilters)) : null,
+        $pages > 1 ? sprintf('Page %d sur %d', (int) $data['current'], $pages) : null,
+    ]);
 @endphp
 
 <div id="listing-container">
@@ -144,8 +184,30 @@
 
     <x-horizon.pagination :data="$data" handle="setPage" :has-buttons="true"/>
 
+    <span hidden data-listing-title="{{ implode(' – ', $titleParts) }}"></span>
+
+    {{--
+        Page title updated after every render. The morphed hook runs once the DOM is updated: commit +
+        succeed runs before it and gives a title one render late.
+        Nothing before the first `const` in the script: Alpine, which evaluates it, wraps it in a function
+        only when it starts with const or let, otherwise the declarations are a syntax error.
+    --}}
     @script
     <script>
+        const baseTitle = document.title;
+        const updateTitle = () => {
+            const parts = $wire.$el.querySelector('[data-listing-title]')?.dataset.listingTitle;
+            document.title = parts ? `${parts} – ${baseTitle}` : baseTitle;
+        };
+
+        updateTitle();
+
+        Livewire.hook('morphed', ({ component }) => {
+            if (component.id === $wire.$id) {
+                updateTitle();
+            }
+        });
+
         $wire.on('filters-reset', () => {
             // Ré-écriture de l'URL
             window.history.pushState({}, '', '');
