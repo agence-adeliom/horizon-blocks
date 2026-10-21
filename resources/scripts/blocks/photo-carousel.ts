@@ -1,68 +1,76 @@
 import Swiper from 'swiper';
-import { Navigation, Pagination } from 'swiper/modules';
-// Uncomment when problem from Swiper lib fixed
-// import { SwiperOptions } from "swiper/types";
+import { Pagination } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 document.addEventListener('alpine:init', () => {
     window.Alpine.data('initPhotoCarousel', () => {
         return {
             open: false,
-            init() {
-                // Lightbox swiper
-                // Uncomment when problem from Swiper lib fixed
-                // const swiperParams: SwiperOptions = {
-                const swiperParams = {
-                    modules: [Navigation],
-                    slidesPerView: 1,
-                    loop: false,
-                    navigation: {
-                        nextEl: this.$refs.buttonNext,
-                        prevEl: this.$refs.buttonPrev,
-                        disabledClass: 'opacity-50 pointer-events-none',
-                    },
-                };
-                this.swiper = new Swiper(this.$refs.swiperContainer, swiperParams);
+            announcement: '',
+            inlineAnnouncement: '',
+            trigger: null as HTMLElement | null,
+            swiper: null as Swiper | null,
+            horizontalSwiper: null as Swiper | null,
 
-                // Inline slider
-                if (this.$refs.horizontalContainer) {
-                    const horizontalParams = {
-                        modules: [Navigation, Pagination],
-                        slidesPerView: 1,
-                        spaceBetween: 16,
-                        loop: false,
-                        navigation: {
-                            nextEl: this.$refs.horizontalNext,
-                            prevEl: this.$refs.horizontalPrev,
-                            disabledClass: 'opacity-50 pointer-events-none',
+            init() {
+                // Popin : une photo à la fois, les photos masquées sont retirées du parcours et de la restitution
+                this.swiper = new Swiper(this.$refs.swiperContainer, {
+                    slidesPerView: 1,
+                    rewind: true,
+                    observer: true,
+                    observeParents: true,
+                    on: {
+                        init: (swiper) => this.updateSlides(swiper),
+                        slideChange: (swiper) => {
+                            this.updateSlides(swiper);
+                            this.announcement = swiper.slides[swiper.activeIndex]?.dataset.announcement ?? '';
                         },
-                        pagination: {
-                            el: this.$refs.progressBar,
-                            type: 'progressbar',
-                            progressbarFillClass: 'swiper-pagination-progressbar-fill !bg-primary',
+                    },
+                });
+
+                // Carrousel dans la page : même principe, la légende suit la photo active
+                this.horizontalSwiper = new Swiper(this.$refs.horizontalContainer, {
+                    modules: [Pagination],
+                    slidesPerView: 1,
+                    spaceBetween: 16,
+                    rewind: true,
+                    pagination: {
+                        el: this.$refs.progressBar,
+                        type: 'progressbar',
+                        progressbarFillClass: 'swiper-pagination-progressbar-fill !bg-primary',
+                    },
+                    on: {
+                        init: (swiper) => this.updateSlides(swiper),
+                        slideChange: (swiper) => {
+                            this.updateSlides(swiper);
+                            this.inlineAnnouncement = swiper.slides[swiper.activeIndex]?.dataset.announcement ?? '';
                         },
-                        on: {
-                            slideChange: (sw: any) => {
-                                if (!this.$refs.captionContainer) return;
-                                const captions = this.$refs.captionContainer.querySelectorAll('.swiper-caption');
-                                captions.forEach((el: HTMLElement) => {
-                                    const idx = parseInt(el.dataset.captionIndex || '0', 10);
-                                    el.classList.toggle('hidden', idx !== sw.realIndex);
-                                });
-                            },
-                        },
-                    };
-                    this.horizontalSwiper = new Swiper(this.$refs.horizontalContainer, horizontalParams);
-                }
+                    },
+                });
+            },
+
+            updateSlides(swiper: Swiper) {
+                swiper.slides.forEach((slide, i) => (slide.inert = i !== swiper.activeIndex));
+            },
+
+            openAt(index: number) {
+                this.trigger = document.activeElement as HTMLElement;
+                this.open = true;
 
                 this.$nextTick(() => {
-                    this.swiper.init();
-                    if (this.horizontalSwiper) {
-                        this.horizontalSwiper.init();
-                    }
+                    this.swiper?.update();
+                    this.swiper?.slideTo(index, 0);
+                    this.updateSlides(this.swiper);
                 });
+            },
+
+            close() {
+                this.open = false;
+                this.announcement = '';
+
+                // Retour du focus sur la photo qui a ouvert la popin
+                this.$nextTick(() => this.trigger?.focus());
             },
         };
     });
