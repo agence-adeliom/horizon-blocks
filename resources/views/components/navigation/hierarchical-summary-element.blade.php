@@ -3,13 +3,13 @@
     @php($level = $element['tag'])
 
     <li class="group font-semibold">
-        <span class="summary-elt" data-title="{{ trim($title) }}" data-level="{{ $level }}">
+        <a href="#{{ sanitize_title($title) }}" class="summary-elt" data-title="{{ trim($title) }}" data-level="{{ $level }}">
             @if (! empty($titleOverrides[$title]))
                 {{ trim($titleOverrides[$title]) }}
             @else
                 {{ trim($title) }}
             @endif
-        </span>
+        </a>
 
         @if (! empty($element['children']))
             <ul class="summary-list pt-2">

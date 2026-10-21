@@ -13,6 +13,14 @@ const PostSummary = {
 
 let instance: HTMLElement = null;
 
+// WordPress remplace les apostrophes et guillemets droits du titre affiché (wptexturize) : on compare sans en tenir compte
+const normalizeTitle = (text: string): string =>
+    text
+        .replace(/[\u2018\u2019]/g, "'")
+        .replace(/[\u201C\u201D\u00AB\u00BB]/g, '"')
+        .replace(/\s+/g, ' ')
+        .trim();
+
 PostSummary.getPostSummary = () => {
     if (null === instance) {
         instance = document.querySelector(PostSummary.selector);
@@ -89,25 +97,43 @@ PostSummary.initElt = (elt: HTMLElement) => {
             // Parcourt les éléments pour trouver celui qui a le bon textContent
             for (const element of elements) {
                 // textContent récupère le texte brut sans les balises HTML
-                if (element.textContent.trim() === title.trim()) {
+                if (normalizeTitle(element.textContent) === normalizeTitle(title)) {
                     contentTitle = element;
                 }
             }
         }
 
         if (contentTitle) {
+            linkToTitle(listElt as HTMLAnchorElement, contentTitle);
+
             PostSummary.associations.push({
                 content: contentTitle,
                 summary: listElt,
             });
-            listElt.addEventListener('click', () => {
-                // Scroll to contentTitle
-                window.scrollTo({
-                    top: contentTitle.getBoundingClientRect().top + window.scrollY - PostSummary.scrollOffset,
-                    behavior: 'smooth',
-                });
-            });
         }
+    });
+};
+
+// Le lien cible l'id du titre (posé s'il manque) : le titre reçoit le focus, la lecture et la tabulation reprennent à la section
+const linkToTitle = (link: HTMLAnchorElement, title: HTMLElement) => {
+    const wantedId = link.hash.slice(1);
+
+    if (!title.id) {
+        title.id = wantedId && !document.getElementById(wantedId) ? wantedId : `${wantedId || 'section'}-${PostSummary.associations.length + 1}`;
+    }
+
+    link.href = `#${title.id}`;
+    title.style.scrollMarginTop = `${PostSummary.scrollOffset}px`;
+
+    link.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        title.setAttribute('tabindex', '-1');
+        title.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
+        title.focus({ preventScroll: true });
+        history.replaceState(null, '', `#${title.id}`);
     });
 };
 
@@ -119,6 +145,8 @@ const setSummaryEltAsBeforeActive = (elt: HTMLElement) => {
     if (!elt.classList.contains(PostSummary.eltBeforeActiveClass)) {
         elt.classList.add(PostSummary.eltBeforeActiveClass);
     }
+
+    elt.removeAttribute('aria-current');
 };
 
 const setSummaryEltAsActive = (elt: HTMLElement) => {
@@ -129,6 +157,8 @@ const setSummaryEltAsActive = (elt: HTMLElement) => {
     if (!elt.classList.contains(PostSummary.eltActiveClass)) {
         elt.classList.add(PostSummary.eltActiveClass);
     }
+
+    elt.setAttribute('aria-current', 'location');
 };
 
 const setSummaryEltAsInactive = (elt: HTMLElement) => {
@@ -139,6 +169,8 @@ const setSummaryEltAsInactive = (elt: HTMLElement) => {
     if (elt.classList.contains(PostSummary.eltBeforeActiveClass)) {
         elt.classList.remove(PostSummary.eltBeforeActiveClass);
     }
+
+    elt.removeAttribute('aria-current');
 };
 
 PostSummary.handleScroll = () => {
@@ -176,21 +208,17 @@ PostSummary.init = () => {
         if (PostSummary.getPostSummary()) {
             PostSummary.initElt(PostSummary.getPostSummary());
 
-            const toggleSummary = document.querySelector('[js-toggle-summary]');
-            const summaryContainer: HTMLElement = document.querySelector('[js-summary-container]');
+            const toggleSummary: HTMLButtonElement = document.querySelector('[js-toggle-summary]');
             const summaryContent: HTMLElement = document.querySelector('[js-summary-content]');
-            const summaryContentHeight: number = summaryContent.offsetHeight;
 
-            summaryContent.style.maxHeight = `${summaryContentHeight}px`;
-
+            // Replié : liens retirés du parcours et de la restitution
             toggleSummary?.addEventListener('click', () => {
-                if (summaryContainer.classList.contains('is-open')) {
-                    summaryContent.style.maxHeight = '0px';
-                } else {
-                    summaryContent.style.maxHeight = `${summaryContentHeight}px`;
-                }
+                const isOpen = toggleSummary.getAttribute('aria-expanded') === 'true';
 
-                summaryContainer.classList.toggle('is-open');
+                toggleSummary.setAttribute('aria-expanded', String(!isOpen));
+                summaryContent.classList.toggle('grid-rows-[1fr]', !isOpen);
+                summaryContent.classList.toggle('grid-rows-[0fr]', isOpen);
+                summaryContent.inert = isOpen;
             });
 
             if (PostSummary.associations) {
