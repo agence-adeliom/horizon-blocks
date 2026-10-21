@@ -23,7 +23,8 @@
     }
 
     .select-group input[type='text'],
-    .select-group select {
+    .select-group select,
+    .select-dropdown .indicator {
         @apply h-[var(--awc-input-height-medium)] w-full rounded-input-md border border-input bg-input px-medium font-input text-input-md text-input;
         @apply placeholder:text-input-placeholder hover:border-input-hover;
         @apply focus-visible:border-input-focus focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-primary;
@@ -39,6 +40,30 @@
 
     .select-field-icon {
         @apply pointer-events-none absolute end-medium top-1/2 size-4 -translate-y-1/2 text-input-icon;
+    }
+
+    .select-dropdown {
+        @apply relative;
+
+        .indicator {
+            @apply relative flex cursor-pointer items-center gap-xsmall pe-xlarge text-start;
+        }
+
+        .label {
+            @apply truncate;
+        }
+
+        .placeholder {
+            @apply text-input-placeholder;
+        }
+
+        .counter {
+            @apply rounded-full bg-primary px-xsmall text-xsmall font-semibold text-primary-contrast;
+        }
+    }
+
+    .dropdown {
+        @apply absolute start-0 top-full z-10 mt-3xsmall w-full min-w-max rounded-input-md border border-input bg-input p-small shadow-md;
     }
 
     .dropdown .bottom {

@@ -101,7 +101,7 @@
 
                                 <div class="secondary-filters--filters">
                                     @foreach ($secondaryFilters as $type => $secondaryFilter)
-                                        <x-horizon.filter :values="$secondaryFilterFields" :value="$secondaryFilter" :model="'secondaryFilterFields.' . $secondaryFilter['name']" />
+                                        <x-horizon.filter :values="$secondaryFilterFields" :value="$secondaryFilter" :model="'secondaryFilterFields.' . $secondaryFilter['name']" :as-dropdown="false" />
                                     @endforeach
                                 </div>
 
