@@ -416,7 +416,7 @@ class ListingBlock extends AbstractBlock
 
 	public function renderBlockCallback(): void
 	{
-		$this->enqueueBlockScript('listing');
+		$this->enqueueBlockStyle('listing');
 	}
 
 	private function getAvailableFilterChoices(int $level = 1): array
