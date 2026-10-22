@@ -79,43 +79,45 @@
                             $secondaryFiltersUniqId = 'secondary-filters-' . $this->getId();
                         @endphp
 
-                        <button type="button" class="secondary-filters-btn" data-for="{{ $secondaryFiltersUniqId }}"
-                            aria-expanded="false" aria-controls="{{ $secondaryFiltersUniqId }}" wire:ignore.self>
-                            {{ !empty($secondaryFiltersButtonLabel) ? $secondaryFiltersButtonLabel : 'Filtres avancés' }}
-                        </button>
+                        <div class="secondary-filters" x-data="initModal()" wire:ignore.self>
+                            <button type="button" class="secondary-filters-btn" aria-haspopup="dialog"
+                                @click="openModal()">
+                                {{ !empty($secondaryFiltersButtonLabel) ? $secondaryFiltersButtonLabel : 'Filtres avancés' }}
+                            </button>
 
-                        <div class="secondary-filters hidden" wire:ignore.self id="{{ $secondaryFiltersUniqId }}"
-                            data-id="{{ $secondaryFiltersUniqId }}" role="group"
-                            @if ($secondaryFiltersTitle) aria-labelledby="{{ $secondaryFiltersUniqId }}-title" @endif>
-                            <div class="secondary-filters--container">
-                                <div class="secondary-filters--header">
-                                    @if ($secondaryFiltersTitle)
-                                        <p class="secondary-filters--title" id="{{ $secondaryFiltersUniqId }}-title">
-                                            {{ $secondaryFiltersTitle }}</p>
-                                    @endif
-                                    <button type="button" class="secondary-filters--close"
-                                        data-close="{{ $secondaryFiltersUniqId }}">
-                                        Fermer les filtres avancés
-                                    </button>
-                                </div>
+                            @teleport('body')
+                                <div class="listing-drawer" wire:change="handleFilters">
+                                    <x-structure.drawer :id="$secondaryFiltersUniqId" :aria-label="$secondaryFiltersTitle
+                                        ? null
+                                        : (!empty($secondaryFiltersButtonLabel)
+                                            ? $secondaryFiltersButtonLabel
+                                            : 'Filtres avancés')"
+                                        class="secondary-filters--drawer">
+                                        @if ($secondaryFiltersTitle)
+                                            <x-slot:header>
+                                                <p class="secondary-filters--title">{{ $secondaryFiltersTitle }}</p>
+                                            </x-slot:header>
+                                        @endif
 
-                                <div class="secondary-filters--filters">
-                                    @foreach ($secondaryFilters as $type => $secondaryFilter)
-                                        <x-horizon.filter :values="$secondaryFilterFields" :value="$secondaryFilter" :model="'secondaryFilterFields.' . $secondaryFilter['name']" :as-dropdown="false" />
-                                    @endforeach
-                                </div>
+                                        <div class="secondary-filters--filters">
+                                            @foreach ($secondaryFilters as $type => $secondaryFilter)
+                                                <x-horizon.filter :values="$secondaryFilterFields" :value="$secondaryFilter" :model="'secondaryFilterFields.' . $secondaryFilter['name']"
+                                                    :as-dropdown="false" />
+                                            @endforeach
+                                        </div>
 
-                                <div class="secondary-filters--btns">
-                                    <button type="button" class="secondary-filters--reset"
-                                        wire:click="resetSecondaryFilters"
-                                        data-reset="{{ $secondaryFiltersUniqId }}">Tout effacer
-                                    </button>
-                                    <button type="button" class="secondary-filters--apply"
-                                        data-apply="{{ $secondaryFiltersUniqId }}">
-                                        Afficher les résultats
-                                    </button>
+                                        <x-slot:footer class="secondary-filters--btns">
+                                            <button type="button" class="secondary-filters--reset"
+                                                wire:click="resetSecondaryFilters">
+                                                Tout effacer
+                                            </button>
+                                            <button type="button" class="secondary-filters--apply" @click="close()">
+                                                Afficher les résultats
+                                            </button>
+                                        </x-slot:footer>
+                                    </x-structure.drawer>
                                 </div>
-                            </div>
+                            @endteleport
                         </div>
                     @endif
                 </div>
@@ -173,12 +175,6 @@
 
     <span hidden data-listing-title="{{ implode(' – ', $titleParts) }}"></span>
 
-    {{--
-        Page title updated after every render. The morphed hook runs once the DOM is updated: commit +
-        succeed runs before it and gives a title one render late.
-        Nothing before the first `const` in the script: Alpine, which evaluates it, wraps it in a function
-        only when it starts with const or let, otherwise the declarations are a syntax error.
-    --}}
     @script
         <script>
             const baseTitle = document.title;

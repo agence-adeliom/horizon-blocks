@@ -1,6 +1,7 @@
 @reference "../app.css";
 
-.listing-block {
+.listing-block,
+.listing-drawer {
     .listing-filters {
         @apply mb-medium flex flex-col gap-xlarge lg:flex-row lg:items-end;
     }
@@ -79,28 +80,19 @@
     }
 
     .secondary-filters {
-        @apply w-full basis-full;
-    }
-
-    .secondary-filters--container {
-        @apply flex flex-col gap-medium rounded-input-md border border-input p-medium;
-    }
-
-    .secondary-filters--header {
-        @apply flex items-center justify-between gap-medium;
+        @apply shrink-0;
     }
 
     .secondary-filters--title {
-        @apply font-semibold;
+        @apply text-large font-semibold;
     }
 
-    .secondary-filters--close,
     .secondary-filters--reset {
         @apply text-small font-semibold text-primary hover:underline;
     }
 
     .secondary-filters--filters {
-        @apply grid gap-medium sm:grid-cols-2 lg:grid-cols-4;
+        @apply flex flex-col gap-large px-medium pb-medium lg:px-large;
 
         .select-group {
             @apply flex-none;
