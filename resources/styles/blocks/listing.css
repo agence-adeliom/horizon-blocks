@@ -8,10 +8,15 @@
 
     .listing-filters-fields {
         @apply flex min-w-0 flex-1 flex-col gap-xsmall lg:flex-row lg:flex-wrap lg:items-end;
+
+        /* The fields share the row, between 10 and 18 rem: a lone filter does not stretch over the whole row. */
+        > .select-group {
+            @apply lg:min-w-40 lg:max-w-72 lg:basis-0;
+        }
     }
 
     .select-group {
-        @apply flex min-w-0 flex-1 flex-col lg:max-w-none;
+        @apply flex min-w-0 flex-1 flex-col gap-0 lg:max-w-none;
 
         > label,
         > legend {
@@ -35,7 +40,7 @@
         @apply relative;
 
         select {
-            @apply cursor-pointer appearance-none bg-none pe-xlarge;
+            @apply cursor-pointer appearance-none bg-none pe-10;
         }
     }
 
@@ -47,11 +52,12 @@
         @apply relative;
 
         .indicator {
-            @apply relative flex cursor-pointer items-center gap-xsmall pe-xlarge text-start;
+            @apply relative flex cursor-pointer items-center gap-xsmall pe-10 text-start;
         }
 
-        .label {
-            @apply truncate;
+        .label,
+        .placeholder {
+            @apply min-w-0 truncate;
         }
 
         .placeholder {
