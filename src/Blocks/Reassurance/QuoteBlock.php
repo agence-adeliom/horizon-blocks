@@ -6,10 +6,11 @@ namespace Adeliom\HorizonBlocks\Blocks\Reassurance;
 
 use Adeliom\HorizonTools\Blocks\AbstractBlock;
 use Adeliom\HorizonTools\Fields\Tabs\ContentTab;
-use Adeliom\HorizonTools\Fields\Text\HeadingField;
+use Extended\ACF\Fields\Text;
 
 class QuoteBlock extends AbstractBlock
 {
+	public const string FIELD_QUOTE = 'quote';
 	public static ?string $slug = 'quote';
 	public static ?string $mode = 'preview';
 	public static string $category = 'reassurance';
@@ -28,7 +29,7 @@ class QuoteBlock extends AbstractBlock
 	public function getFields(): ?iterable
 	{
 		yield from ContentTab::make()->fields([
-			HeadingField::make(HeadingField::LABEL, HeadingField::NAME, null, 'h2')->required(),
+			Text::make(__('Citation', 'horizon-blocks'), self::FIELD_QUOTE)->required(),
 		]);
 	}
 }
