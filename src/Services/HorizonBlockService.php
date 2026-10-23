@@ -51,6 +51,7 @@ use Adeliom\HorizonBlocks\View\Components\Navigation\HierarchicalSummaryElement;
 use Adeliom\HorizonBlocks\View\Components\Offer;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\MergedResults;
 use Adeliom\HorizonBlocks\View\Components\SearchEngine\SeparatedResults;
+use Adeliom\HorizonPostTypes\PostTypes\CustomerReview;
 
 class HorizonBlockService
 {
@@ -139,6 +140,7 @@ class HorizonBlockService
                 self::ASSET_FILES => ['resources/scripts/blocks/customer-review.ts'],
                 self::LIVEWIRE_COMPONENTS => [],
                 self::COMPONENTS => [CardCustomerReview::class],
+                self::REQUIRED_POSTTYPES => [CustomerReview::class],
             ],
             KeyFigureBlock::class => [
                 self::REQUIRES_LIVEWIRE => false,
