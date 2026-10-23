@@ -1,3 +1,5 @@
+@reference "../app.css";
+
 .block-search-engine-results {
   .results-container {
     .results-header {
@@ -31,14 +33,28 @@
     }
 
     .results-search {
+      @apply my-4 flex flex-col gap-2;
+
+      label {
+        @apply font-semibold;
+      }
+
       input {
-        @apply w-full block my-4;
+        @apply w-full block;
       }
     }
 
     [search-results-container] {
       .results-filters {
-        @apply my-4;
+        @apply my-4 flex flex-wrap items-center gap-x-1 gap-y-2;
+
+        legend {
+          @apply w-full mb-2 font-semibold;
+        }
+
+        label {
+          @apply me-4;
+        }
       }
     }
   }
