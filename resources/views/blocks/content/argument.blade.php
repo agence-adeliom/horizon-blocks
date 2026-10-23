@@ -20,6 +20,27 @@
             @endif
         </div>
 
+        {{-- Pause en premier dans le code (contrôle du défilement avant le contenu qui défile),
+             affichée en bas : à droite du bouton en desktop, en dernier en mobile --}}
+        @if (count($args) > 1)
+            <div @class([
+                'flex justify-center lg:col-start-1 lg:col-span-5 lg:row-start-3 lg:self-center max-lg:order-last',
+                'lg:justify-self-end' => !empty($fields['button']['link']),
+                'lg:justify-self-start' => empty($fields['button']['link']),
+            ])>
+                <x-action.button tag="button" type="tertiary" at-click="togglePause()" x-show="!reducedMotion">
+                    <template x-if="!userPaused">
+                        <x-far-circle-pause class="icon-4" />
+                    </template>
+                    <template x-if="userPaused">
+                        <x-far-circle-play class="icon-4" />
+                    </template>
+                    <span
+                        x-text="userPaused ? '{{ __('Lecture', 'horizon-blocks') }}' : '{{ __('Pause', 'horizon-blocks') }}'">{{ __('Pause', 'horizon-blocks') }}</span>
+                </x-action.button>
+            </div>
+        @endif
+
         {{-- Desktop --}}
         @if (!empty($args))
             <ol class="max-lg:hidden lg:col-span-5 lg:col-start-1 flex flex-col gap-6">
@@ -42,6 +63,26 @@
                     </li>
                 @endforeach
             </ol>
+        @endif
+
+        {{-- Mobile : contrôles du slider, avant les slides dans le code et affichés dessous (order-1) --}}
+        @if (count($args) > 1)
+            <div class="lg:hidden flex items-center justify-center gap-4 max-lg:order-1">
+                <x-action.button tag="button" type="secondary" iconOnly at-click="prev()"
+                    aria-label="{{ __('Argument précédent', 'horizon-blocks') }}">
+                    <x-fas-angle-left class="icon-4" />
+                </x-action.button>
+                <div class="flex gap-2" aria-hidden="true">
+                    @foreach ($args as $arg)
+                        <span class="argument-dot" :class="{ 'is-active': index === {{ $loop->index }} }"></span>
+                    @endforeach
+                </div>
+                <x-action.button tag="button" type="secondary" iconOnly at-click="next()"
+                    aria-label="{{ __('Argument suivant', 'horizon-blocks') }}">
+                    <x-fas-angle-right class="icon-4" />
+                </x-action.button>
+            </div>
+            <p class="sr-only" aria-live="polite" x-text="announcement"></p>
         @endif
 
         {{-- Slider : image seule en desktop, image + texte en mobile --}}
@@ -67,41 +108,9 @@
             </div>
         </div>
 
-        {{-- Mobile : contrôles du slider --}}
-        @if (count($args) > 1)
-            <div class="lg:hidden flex items-center justify-center gap-4">
-                <x-action.button tag="button" type="secondary" iconOnly at-click="prev()"
-                    aria-label="{{ __('Argument précédent', 'horizon-blocks') }}">
-                    <x-fas-angle-left class="icon-4" />
-                </x-action.button>
-                <div class="flex gap-2" aria-hidden="true">
-                    @foreach ($args as $arg)
-                        <span class="argument-dot" :class="{ 'is-active': index === {{ $loop->index }} }"></span>
-                    @endforeach
-                </div>
-                <x-action.button tag="button" type="secondary" iconOnly at-click="next()"
-                    aria-label="{{ __('Argument suivant', 'horizon-blocks') }}">
-                    <x-fas-angle-right class="icon-4" />
-                </x-action.button>
-            </div>
-            <p class="sr-only" aria-live="polite" x-text="announcement"></p>
-        @endif
-
-        <div class="lg:col-span-5 lg:col-start-1 flex items-center justify-between gap-6 max-lg:flex-col">
+        <div class="lg:col-start-1 lg:col-span-5 lg:row-start-3 lg:justify-self-start lg:self-center max-lg:order-1">
             @if (!empty($fields['button']))
                 <x-action.button class="max-lg:w-full" :fields="$fields['button']" type="primary" />
-            @endif
-            @if (count($args) > 1)
-                <x-action.button tag="button" type="tertiary" at-click="togglePause()" x-show="!reducedMotion">
-                    <template x-if="!userPaused">
-                        <x-far-circle-pause class="icon-4" />
-                    </template>
-                    <template x-if="userPaused">
-                        <x-far-circle-play class="icon-4" />
-                    </template>
-                    <span
-                        x-text="userPaused ? '{{ __('Lecture', 'horizon-blocks') }}' : '{{ __('Pause', 'horizon-blocks') }}'">{{ __('Pause', 'horizon-blocks') }}</span>
-                </x-action.button>
             @endif
         </div>
     </div>
