@@ -556,7 +556,13 @@ class ListingBlock extends AbstractBlock
 			foreach ($fields as $field) {
 				$key = null;
 
-				$fieldData = $field->get();
+				/*
+					Unique parent key: without one, Extended ACF builds the key `_<name>` and records it
+					globally, so the second read of the post type's fields (filters of level 1, then 2, or
+					two listings) throws "The key [_<name>] is not unique". It is also needed to resolve
+					the conditional logic of a field (explode() on a null parent key).
+				*/
+				$fieldData = $field->get(uniqid('listing_filter_'));
 
 				if ($field instanceof Group) {
 					if (isset($fieldData['sub_fields']) && is_array($fieldData['sub_fields'])) {
