@@ -107,8 +107,17 @@ class Listing extends Component
         $this->getData();
     }
 
-    public function updated(): void
+    public function updated(string $property): void
     {
+        // A new filter or sort changes the results: the current page may no longer exist, back to the first one.
+        if (
+            str_starts_with($property, 'filterFields') ||
+            str_starts_with($property, 'secondaryFilterFields') ||
+            'order' === $property
+        ) {
+            $this->page = 1;
+        }
+
         $this->resetAllQAT();
     }
 
