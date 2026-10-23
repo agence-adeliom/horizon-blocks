@@ -11,7 +11,7 @@
 
 <x-block :fields="$fields" :block="$block" class="{{ $bgColor }} relative" background="none">
     @if (!empty($bgImage))
-        <x-media.img :image="$bgImage" class="cover-full" size="full" container-class="absolute-full"/>
+        <x-media.img :image="$bgImage" :decorative="true" class="cover-full" size="full" container-class="absolute-full"/>
     @endif
 
     <div class="z-10 relative">
