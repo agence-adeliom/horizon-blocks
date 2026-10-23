@@ -617,7 +617,7 @@ class Listing extends Component
                                             break;
                                         case 1:
                                         default:
-                                            $this->filterFields[$fieldName] = array_merge($this->filterField[$fieldName] ?? [], $toPush);
+                                            $this->filterFields[$fieldName] = array_merge($this->filterFields[$fieldName] ?? [], $toPush);
                                             break;
                                     }
 
