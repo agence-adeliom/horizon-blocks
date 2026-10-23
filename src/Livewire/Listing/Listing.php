@@ -39,8 +39,10 @@ class Listing extends Component
 
     public array $data = [];
 
+    // int|string|array: Livewire injects the raw ?pagination value before mount(), so a non-numeric
+    // one (?pagination=abc, ?pagination[]=2) threw a TypeError (500). Normalised to a positive int in mount().
     #[Url(as: 'pagination')]
-    public int $page = 1;
+    public int|string|array $page = 1;
     #[Url(as: 'filtres')]
     public array $filterFields = [];
     #[Url(as: 'filtres-secondaires')]
@@ -98,11 +100,8 @@ class Listing extends Component
 
         $this->initFilters();
 
-        if ($page = Request::get('pagination')) {
-            if (is_numeric($page)) {
-                $this->page = (int) $page;
-            }
-        }
+        // Invalid value (?pagination=abc, -1, 2.5): first page
+        $this->page = max(1, (int) filter_var(Request::get('pagination', $this->page), FILTER_VALIDATE_INT));
 
         $this->getData();
     }
