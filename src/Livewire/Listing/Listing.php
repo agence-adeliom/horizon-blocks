@@ -21,6 +21,7 @@ use Extended\ACF\Fields\Number;
 use Extended\ACF\Fields\Select;
 use Extended\ACF\Fields\Taxonomy;
 use Extended\ACF\Fields\Text;
+use Extended\ACF\Fields\TrueFalse;
 use Extended\ACF\Fields\WYSIWYGEditor;
 use Illuminate\Support\Facades\Request;
 use Illuminate\View\View;
@@ -341,6 +342,30 @@ class Listing extends Component
                         }
                     }
                     break;
+                case TrueFalse::class:
+                    // Readable choices, keyed by the stored value (1 / 0), « Oui » first.
+                    $booleanChoices = ['1' => __('Oui', 'horizon-blocks'), '0' => __('Non', 'horizon-blocks')];
+
+                    foreach ($booleanChoices as $booleanValue => $booleanLabel) {
+                        if (in_array((string) $booleanValue, array_map('strval', $values), true)) {
+                            $workingFilters[$filterName] ??= [
+                                'type' => $filterType->value,
+                                'metaType' => $fieldClass,
+                                'name' => $filterName,
+                                'appearance' => $appearance,
+                                'value' => $metaKey,
+                                'label' => $label,
+                                'placeholder' => $placeholder,
+                                'choices' => [],
+                            ];
+
+                            $workingFilters[$filterName]['choices'][] = [
+                                self::KEY_SLUG => (string) $booleanValue,
+                                self::KEY_NAME => $booleanLabel,
+                            ];
+                        }
+                    }
+                    break;
                 default:
                     foreach ($values as $value) {
                         if (!empty($value)) {
@@ -449,7 +474,8 @@ class Listing extends Component
                 };
 
                 if ($type === FilterTypesEnum::META->value) {
-                    preg_match('/([a-zA-Z]+)_(.+)/', $value, $matches);
+                    // `true_false` before the general case: the key of a TrueFalse field is `true_false_<name>`.
+                    preg_match('/^(true_false|[a-zA-Z]+)_(.+)/', $value, $matches);
 
                     if (isset($matches[1], $matches[2])) {
                         $value = $matches[2];
@@ -461,6 +487,7 @@ class Listing extends Component
                             'image' => Image::class,
                             'wysiwyg' => WYSIWYGEditor::class,
                             'taxonomy' => Taxonomy::class,
+                            'true_false' => TrueFalse::class,
                             default => throw new \Exception(sprintf('Field type "%s" not handled', $fieldType)),
                         };
                     }
@@ -810,6 +837,7 @@ class Listing extends Component
                                                 if (isset($metaSlugs[$valueKey])) {
                                                     switch ($workingFilters[$name]['metaType']) {
                                                         case Taxonomy::class:
+                                                        case TrueFalse::class:
                                                             break;
                                                         default:
                                                             $value[$metaSlugs[$valueKey]] = $valueValue;
@@ -825,6 +853,7 @@ class Listing extends Component
                                             if (isset($metaSlugs[$value])) {
                                                 switch ($workingFilters[$name]['metaType']) {
                                                     case Taxonomy::class:
+                                                    case TrueFalse::class:
                                                         break;
                                                     default:
                                                         $value = $metaSlugs[$value];
