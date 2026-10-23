@@ -34,8 +34,28 @@
         </div>
 
         @if ($count)
-            <div class="lg:col-start-3 lg:col-span-8 col-span-full min-w-0 mt-10">
-                <div x-ref="horizontalContainer" class="swiper">
+            <div class="lg:col-start-3 lg:col-span-8 col-span-full min-w-0 mt-10 flex flex-col">
+                {{-- Contrôles avant les photos dans le code, affichés dessous (order-last) --}}
+                <div class="order-last flex items-center justify-between gap-4 mt-4">
+                    <div class="flex-1 relative h-1" aria-hidden="true">
+                        <div x-ref="progressBar" class="w-full h-full bg-neutral-300 rounded overflow-hidden"></div>
+                    </div>
+                    @if ($count > 1)
+                        <div class="flex gap-2 shrink-0">
+                            <x-action.button tag="button" type="primary" iconOnly class="awc-theme-dark rounded-full"
+                                at-click="horizontalSwiper.slidePrev()"
+                                aria-label="{{ __('Photo précédente', 'horizon-blocks') }}">
+                                <x-far-chevron-left class="icon-5" />
+                            </x-action.button>
+                            <x-action.button tag="button" type="primary" iconOnly class="awc-theme-dark rounded-full"
+                                at-click="horizontalSwiper.slideNext()"
+                                aria-label="{{ __('Photo suivante', 'horizon-blocks') }}">
+                                <x-far-chevron-right class="icon-5" />
+                            </x-action.button>
+                        </div>
+                    @endif
+                </div>
+                <div x-ref="horizontalContainer" class="swiper w-full">
                     <div class="swiper-wrapper">
                         @foreach ($gallery as $item)
                             <figure class="swiper-slide"
@@ -55,25 +75,6 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between gap-4 mt-4">
-                    <div class="flex-1 relative h-1" aria-hidden="true">
-                        <div x-ref="progressBar" class="w-full h-full bg-neutral-300 rounded overflow-hidden"></div>
-                    </div>
-                    @if ($count > 1)
-                        <div class="flex gap-2 shrink-0">
-                            <x-action.button tag="button" type="primary" iconOnly class="awc-theme-dark rounded-full"
-                                at-click="horizontalSwiper.slidePrev()"
-                                aria-label="{{ __('Photo précédente', 'horizon-blocks') }}">
-                                <x-far-chevron-left class="icon-5" />
-                            </x-action.button>
-                            <x-action.button tag="button" type="primary" iconOnly class="awc-theme-dark rounded-full"
-                                at-click="horizontalSwiper.slideNext()"
-                                aria-label="{{ __('Photo suivante', 'horizon-blocks') }}">
-                                <x-far-chevron-right class="icon-5" />
-                            </x-action.button>
-                        </div>
-                    @endif
-                </div>
                 <p class="sr-only" aria-live="polite" x-text="inlineAnnouncement"></p>
             </div>
 
