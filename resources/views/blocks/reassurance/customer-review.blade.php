@@ -29,20 +29,40 @@
                 </div>
             </div>
 
-            <div class="col-span-full" x-data="initReviewsSlider()">
-                <div class="swiper w-full overflow-visible" x-ref="swiperContainer">
-                    <div class="swiper-wrapper cursor-grab">
-                        @if (!empty($fields['reviews']))
-                            @foreach ($fields['reviews'] as $review)
-                                @if (is_object($review) && property_exists($review, 'ID'))
-                                    <x-cards.card-customer-review :review="get_fields($review->ID)" class="swiper-slide" />
-                                @endif
+            @php
+                $reviews = array_filter(
+                    $fields['reviews'] ?? [],
+                    fn($review) => is_object($review) && property_exists($review, 'ID'),
+                );
+            @endphp
+
+            @if (!empty($reviews))
+                <div class="min-w-0" x-data="initReviewsSlider()">
+                    <div class="swiper w-full overflow-visible!" x-ref="swiperContainer">
+                        <ul role="list" class="swiper-wrapper cursor-grab">
+                            @foreach ($reviews as $review)
+                                <li class="swiper-slide h-auto">
+                                    <x-cards.card-customer-review :review="get_fields($review->ID)" class="h-full" />
+                                </li>
                             @endforeach
-                        @endif
+                        </ul>
+                        <div x-ref="swiperPagination" class="mt-6 flex justify-center gap-2" aria-hidden="true"></div>
                     </div>
-                    <div x-ref="swiperPagination" class="mt-6 flex justify-center gap-2"></div>
+
+                    @if (count($reviews) > 1)
+                        <div class="mt-4 flex justify-end gap-2" x-show="!locked">
+                            <x-action.button tag="button" type="primary" variant="outline" iconOnly
+                                at-click="swiper.slidePrev()" aria-label="{{ __('Avis précédent', 'horizon-blocks') }}">
+                                <x-fas-angle-left />
+                            </x-action.button>
+                            <x-action.button tag="button" type="primary" variant="outline" iconOnly
+                                at-click="swiper.slideNext()" aria-label="{{ __('Avis suivant', 'horizon-blocks') }}">
+                                <x-fas-angle-right />
+                            </x-action.button>
+                        </div>
+                    @endif
                 </div>
-            </div>
+            @endif
         </div>
     </x-block>
 @endif
