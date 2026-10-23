@@ -22,6 +22,23 @@
         $idToScroll = 'listing-container';
 
         $idToFocus = $idToFocus ?? 'listing-results';
+
+        /*
+            Link URLs: during a Livewire update the request URL is /livewire/update, so the links pointed
+            there (opening one in a new tab or copying it failed). The page URL comes from the Referer
+            instead (current address, filters included, as Livewire keeps them in the query string), or
+            from Livewire's original path when there is no usable Referer.
+        */
+        $pageBaseUrl = request()->fullUrl();
+
+        if (\Livewire\Livewire::isLivewireRequest()) {
+            $referer = request()->header('Referer');
+            $pageBaseUrl = $referer && parse_url($referer, PHP_URL_HOST) === request()->getHost()
+                ? $referer
+                : \Livewire\Livewire::originalUrl();
+        }
+
+        $pageUrl = static fn (int $page): string => add_query_arg('pagination', $page, $pageBaseUrl);
         $onClick = "scrollToAnchor('{$idToScroll}'); document.getElementById('{$idToFocus}')?.focus({ preventScroll: true })";
 
         $separator = '...';
@@ -121,7 +138,7 @@ if (!empty($extraHandleParams)) {
                     @if ($current > 1)
                         <li class="me-4 lg:me-10">
                             <a @class([$baseButtonClass]) title="{{ $previousLabel }}" aria-label="{{ $previousLabel }}"
-                                href="{{ request()->fullUrlWithQuery(['pagination' => $current - 1]) }}"
+                                href="{{ $pageUrl($current - 1) }}"
                                 @click.prevent="{{ $onClick }}"
                                 @if ($handle) wire:click.prevent="{{ $handle }}(
                                @if ($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif{{ $current - 1 }}@if (!$extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif
@@ -149,7 +166,7 @@ if (!empty($extraHandleParams)) {
                         <li>
                             <a @class([$baseNumberClass]) title="Page {{ $page }}"
                                 aria-label="Page {{ $page }}"
-                                href="{{ request()->fullUrlWithQuery(['pagination' => $page]) }}"
+                                href="{{ $pageUrl($page) }}"
                                 @click.prevent="{{ $onClick }}"
                                 @if ($handle) wire:click.prevent="{{ $handle }}(
                                @if ($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif
@@ -166,7 +183,7 @@ if (!empty($extraHandleParams)) {
                         <li class="ms-4 lg:ms-10">
                             <a @class([$baseButtonClass]) title="{{ $nextLabel }}"
                                 aria-label="{{ $nextLabel }}"
-                                href="{{ request()->fullUrlWithQuery(['pagination' => $current + 1]) }}"
+                                href="{{ $pageUrl($current + 1) }}"
                                 @click.prevent="{{ $onClick }}"
                                 @if ($handle) wire:click.prevent="{{ $handle }}(
                                @if ($extraHandleParamsFirst && $extraHandleParams) {{ $extraHandleParams }} @endif
