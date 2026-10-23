@@ -596,10 +596,11 @@ class ListingBlock extends AbstractBlock
 						}
 					}
 				} else {
-					if ($level === 1) {
-						$fieldData = $field->get();
-					}
-
+					/*
+						No second $field->get() here: the first call already turned the field's
+						ConditionalLogic objects into arrays, and calling get() again on them failed
+						("Call to a member function get() on array").
+					*/
 					$toAdd = [];
 					if (isset($fieldData['type'])) {
 						$toAdd['type'] = $fieldData['type'];
