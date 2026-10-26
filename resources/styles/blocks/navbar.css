@@ -1,3 +1,7 @@
+@reference "../app.css";
+
+@layer theme, base, components, utilities;
+
 /*
     Barre d'ancres collante du bloc « Barre de navigation interne (ancres) ».
 
@@ -18,44 +22,19 @@
 */
 
 @layer components {
-    /*
-        Desktop uniquement : sous lg les thèmes Horizon basculent sur une barre mobile et son
-        panneau plein écran, où une seconde barre collante n'aurait plus de place.
-
-        z-index en retrait : la barre ne doit jamais passer devant le header ni un sous-menu
-        ouvert, qui montent plus haut dans les thèmes Horizon.
-    */
     .navbar-anchors {
-        /* Fond en `color-01-50`, résolu par `awc-theme-dark` (posé dans le Blade) en sa valeur
-           sombre. Attention : `neutral-1000` basculerait au blanc sous ce thème. */
         @apply bg-color-01-50 sticky inset-x-0 z-[100] max-lg:hidden;
 
         top: var(--navbar-anchors-offset, 0px);
     }
 
-    /* 28px (`2xlarge`) entre les ancres et le CTA. */
     .navbar-anchors-inner {
-        @apply flex items-center gap-x-7 py-3;
+        @apply flex items-stretch gap-x-7;
     }
 
-    /*
-        `flex-1` : le scroller occupe toute la largeur laissée par le CTA, il ne se contente pas
-        de la largeur de ses pastilles. C'est ce qui repousse le dégradé de fondu à l'extrémité
-        droite de la barre — sinon il se collait au bord du contenu et voilait en permanence la
-        dernière pastille, même quand tout tenait largement dans la largeur.
-
-        `min-w-0` l'autorise en retour à rétrécir sous la largeur de son contenu : sans lui, un
-        grand nombre d'ancres pousserait la largeur du flex au lieu de déclencher le défilement,
-        et c'est le CTA qui serait comprimé.
-    */
     .navbar-anchors-scroller {
         @apply relative min-w-0 flex-1;
 
-        /*
-            Dégradé de droite : signale qu'il reste des ancres à faire défiler. Il n'a pas
-            besoin d'être masqué quand tout tient dans la largeur, puisqu'il se fond alors
-            dans le fond de la barre, de la même couleur.
-        */
         &::after {
             @apply pointer-events-none absolute inset-y-0 right-0 w-12;
 
@@ -64,54 +43,26 @@
         }
     }
 
-    /* 28px (`2xlarge`) entre les ancres, comme entre les blocs de la barre. */
     .navbar-anchors-list {
-        @apply flex items-center gap-7 overflow-x-auto;
+        @apply -ml-1 flex h-full items-stretch gap-5 overflow-x-auto;
 
-        /* La barre de défilement alourdirait la barre : on garde le geste, sans le chrome. */
+        & > li {
+            @apply flex;
+        }
+
         scrollbar-width: none;
 
         &::-webkit-scrollbar {
             @apply hidden;
         }
-
-        /*
-            Ancres centrées dans la place laissée par le CTA, comme dans le design system.
-
-            Le centrage passe par des marges auto et non par `justify-content: center` : en cas
-            de débordement, `center` rend le début de la liste inatteignable au défilement — les
-            premières ancres sont rognées sans pouvoir y revenir. Les marges auto, elles, se
-            réduisent d'elles-mêmes à zéro dès qu'il n'y a plus d'espace libre à absorber.
-        */
-        & > li:first-child {
-            margin-inline-start: auto;
-        }
-
-        & > li:last-child {
-            margin-inline-end: auto;
-        }
     }
 
-    /*
-        Ancre : un lien texte, sans fond ni bordure, conformément au design system. Pas de
-        majuscules non plus — ce sont des libellés de section, parfois longs, que la casse haute
-        rendrait pénibles à lire.
 
-        `whitespace-nowrap` : un libellé ne revient jamais à la ligne, c'est la liste qui défile.
-    */
     .navbar-anchors-link {
-        /* Graisse normale au repos : le design system met les liens en semibold, mais l'écart
-           avec le gras de l'ancre active est alors trop ténu pour se lire. */
         @apply text-medium whitespace-nowrap font-normal text-neutral-950;
         @apply transition-opacity duration-300 ease-out;
-
-        /*
-            L'ancre active passe en gras, ce qui élargit son libellé — et décalerait toute la
-            rangée à chaque changement de section. On réserve donc en permanence la largeur du
-            gras : le libellé et une copie en gras (`::after`, invisible) partagent la même
-            cellule de grille, dont la largeur est celle du plus large des deux.
-        */
-        display: inline-grid;
+        @apply content-center border-y-2 border-transparent px-1;
+        display: grid;
 
         & > span,
         &::after {
@@ -127,19 +78,17 @@
         &:hover {
             @apply opacity-70;
         }
-
-        /* `aria-current` est la seule source de vérité de l'état actif : pas de classe en double. */
         &[aria-current] {
-            @apply font-bold;
+            @apply border-b-current font-bold;
         }
 
         &:focus-visible {
-            @apply outline-2 outline-offset-2 outline-white;
+            @apply outline-2 -outline-offset-2 outline-current;
         }
     }
 
     .navbar-anchors-cta {
-        @apply shrink-0;
+        @apply my-3 shrink-0 self-center;
     }
 
     /*
