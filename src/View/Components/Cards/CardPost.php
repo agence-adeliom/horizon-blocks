@@ -25,6 +25,7 @@ class CardPost extends Component
      * @param bool $withExcerpt affiche l’extrait de l’article sous le titre
      * @param bool $withDate affiche la date de publication à côté de la catégorie
      * @param string|null $taxonomy taxonomie dont le premier terme est affiché en étiquette
+     * @param string $headingTag niveau du titre de la carte, un cran sous le titre de la section qui la contient
      */
     public function __construct(
         public WP_Post|int|null $post = null,
@@ -32,7 +33,12 @@ class CardPost extends Component
         public bool $withExcerpt = false,
         public bool $withDate = false,
         public ?string $taxonomy = 'category',
+        public string $headingTag = 'h3',
     ) {
+        if (!preg_match('/^h[2-6]$/', $this->headingTag)) {
+            $this->headingTag = 'h3';
+        }
+
         $this->handlePost();
     }
 
