@@ -1,5 +1,11 @@
 @php
     use App\Blocks\Blog\LatestPostBlock;
+
+    // Titres des cartes un cran sous le titre du bloc ; h2 si le bloc n’a pas de titre.
+    $cardHeadingTag =
+        preg_match('/^h([1-5])$/', $fields['title']['tag'] ?? '', $level) && !empty($fields['title']['content'])
+            ? 'h' . ($level[1] + 1)
+            : 'h2';
 @endphp
 
 @if (! empty($context['posts']) || ! empty($context['featuredPosts']))
@@ -22,36 +28,32 @@
             </div>
 
             @if ($context['layout'] === LatestPostBlock::VALUE_LAYOUT_THREE)
-                <ul class="gap-xlarge grid lg:grid-cols-3">
+                <ul role="list" class="gap-xlarge grid lg:grid-cols-3">
                     @foreach ($context['posts'] as $post)
                         <li class="flex">
-                            <x-cards.card-post :post="$post" class="w-full" />
+                            <x-cards.card-post :post="$post" :heading-tag="$cardHeadingTag" class="w-full" />
                         </li>
                     @endforeach
                 </ul>
             @else
                 {{--
                     Mise en page « quatre articles » : le premier article occupe la moitié gauche en
-                    grand format, les suivants s’empilent en cartes horizontales à droite.
+                    grand format, les suivants s’empilent en cartes horizontales à droite. Une seule
+                    liste, la disposition est faite en grille : le lecteur d’écran annonce autant
+                    d’éléments que d’articles.
                 --}}
-                <ul class="gap-xlarge grid lg:grid-cols-2">
+                <ul role="list" class="gap-xlarge grid lg:grid-cols-2">
                     @foreach ($context['featuredPosts'] as $post)
-                        <li class="flex">
-                            <x-cards.card-post :post="$post" :with-excerpt="true" class="w-full" />
+                        <li class="flex lg:row-span-3">
+                            <x-cards.card-post :post="$post" :with-excerpt="true" :heading-tag="$cardHeadingTag" class="w-full" />
                         </li>
                     @endforeach
 
-                    @if (! empty($context['posts']))
-                        <li>
-                            <ul class="gap-xlarge flex h-full flex-col">
-                                @foreach ($context['posts'] as $post)
-                                    <li class="flex flex-1">
-                                        <x-cards.card-post :post="$post" :vertical="false" class="w-full" />
-                                    </li>
-                                @endforeach
-                            </ul>
+                    @foreach ($context['posts'] as $post)
+                        <li class="flex">
+                            <x-cards.card-post :post="$post" :vertical="false" :heading-tag="$cardHeadingTag" class="w-full" />
                         </li>
-                    @endif
+                    @endforeach
                 </ul>
             @endif
 
